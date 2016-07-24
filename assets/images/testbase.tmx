@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="128" tileheight="128">
  <tileset firstgid="1" name="tileset128" tilewidth="128" tileheight="128">
-  <image source="../images/tileset128.png" width="256" height="128"/>
+  <image source="tileset128.png" width="256" height="128"/>
  </tileset>
  <tileset firstgid="3" name="fouleJaune" tilewidth="128" tileheight="128">
   <image source="fouleJaune.png" width="128" height="128"/>

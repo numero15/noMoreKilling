@@ -43,7 +43,7 @@ class PlayState extends FlxState
 		bgColor = FlxColor.WHITE;
 		
 		crowds = new FlxTypedGroup();
-		level = new TiledLevel("assets/maps/testbase.tmx", this);
+		level = new TiledLevel("assets/images/testbase.tmx", this);
 		
 		add(level.foregroundTiles);
 		add(crowds);

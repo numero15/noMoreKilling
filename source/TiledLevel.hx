@@ -25,7 +25,7 @@ class TiledLevel extends TiledMap
 	private inline static var c_PATH_LEVEL_TILESHEETS = "assets/images/";
 	
 	// Array of tilemaps used for collision
-	public var spawnTiles:FlxGroup;
+	public var spawnTiles:FlxTypedGroup<SpawnPoint>;
 	public var foregroundTiles:FlxGroup;
 	public var objectsLayer:FlxGroup;
 	public var backgroundLayer:FlxGroup;
@@ -42,6 +42,7 @@ class TiledLevel extends TiledMap
 		foregroundTiles = new FlxGroup();
 		objectsLayer = new FlxGroup();
 		backgroundLayer = new FlxGroup();
+		spawnTiles = new FlxTypedGroup<SpawnPoint>();
 		
 		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
 		
@@ -117,7 +118,7 @@ class TiledLevel extends TiledMap
 			{
 				for (o in objectLayer.objects)
 				{
-					loadObject(state, o, objectLayer, objectsLayer);
+					loadSpawn(state, o, objectLayer, objectsLayer);
 				}
 			}
 		}
@@ -156,7 +157,7 @@ class TiledLevel extends TiledMap
 		backgroundLayer.add(decoSprite);
 	}
 	
-	private function loadObject(state:PlayState, o:TiledObject, g:TiledObjectLayer, group:FlxGroup)
+	/*private function loadRioter(state:PlayState, o:TiledObject, g:TiledObjectLayer, group:FlxGroup)
 	{
 		var x:Int = o.x;
 		var y:Int = o.y;
@@ -171,48 +172,23 @@ class TiledLevel extends TiledMap
 		if (Std.parseInt(o.properties.isLeader) == 1) rioter.isLeader = true;
 		else rioter.isLeader = false;
 		
-		rioter.crowd = Std.parseInt(o.properties.crowd);
-		
 		if (rioter.isLeader == false) rioter.alpha = .5;
 		
 		state.crowds.add(rioter);
-		/*
-		switch (o.type.toLowerCase())
-		{
-			case "player_start":
-				var player = new FlxSprite(x, y);
-				player.makeGraphic(32, 32, 0xffaa1111);
-				player.maxVelocity.x = 160;
-				player.maxVelocity.y = 400;
-				player.acceleration.y = 400;
-				player.drag.x = player.maxVelocity.x * 4;
-				FlxG.camera.follow(player);
-				state.player = player;
-				group.add(player);
-				
-			case "floor":
-				var floor = new FlxObject(x, y, o.width, o.height);
-				state.floor = floor;
-				
-			case "coin":
-				var tileset = g.map.getGidOwner(o.gid);
-				var coin = new FlxSprite(x, y, c_PATH_LEVEL_TILESHEETS + tileset.imageSource);
-				state.coins.add(coin);
-				
-			case "exit":
-				// Create the level exit
-				var exit = new FlxSprite(x, y);
-				exit.makeGraphic(32, 32, 0xff3f3f3f);
-				exit.exists = false;
-				state.exit = exit;
-				group.add(exit);
-				
-				
-			case "rioter":
-				var tileset = g.map.getGidOwner(o.gid);
-				var rioter = new Rioter(x, y, c_PATH_LEVEL_TILESHEETS + tileset.imageSource);
-				state.crowds.add(rioter);
-		}*/
+	}*/
+	
+	private function loadSpawn(state:PlayState, o:TiledObject, g:TiledObjectLayer, group:FlxGroup)
+	{
+		var x:Int = o.x;
+		var y:Int = o.y;
+		
+		// objects in tiled are aligned bottom-left (top-left in flixel)
+		if (o.gid != -1)
+			y -= g.map.getGidOwner(o.gid).tileHeight;
+		
+		var tileset = g.map.getGidOwner(o.gid);
+		var swawnPoint = new SpawnPoint(x, y, c_PATH_LEVEL_TILESHEETS + tileset.imageSource, tileset.name);
+		spawnTiles.add(swawnPoint);
 	}
 
 	public function loadImages()
