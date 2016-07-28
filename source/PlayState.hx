@@ -4,7 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.group.FlxGroup;
+
 import flixel.group.FlxGroup;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
@@ -22,14 +22,7 @@ import flixel.FlxCamera;
  */
 class PlayState extends FlxState
 {
-	public var prevMouseCoord : FlxPoint;
-	
-	public var level:TiledLevel;
-	
-	public var seekers:FlxTypedGroup<Seeker>;
-	private var cameraGame:FlxCamera;
-	
-	public var crowds : FlxTypedGroup<Rioter>;
+	public var prevMouseCoord : FlxPoint;	
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -40,19 +33,19 @@ class PlayState extends FlxState
 		FlxG.log.redirectTraces = true;		
 		
 		super.create();
-		bgColor = FlxColor.WHITE;
+		bgColor = FlxColor.GRAY;
 		
-		crowds = new FlxTypedGroup();
-		level = new TiledLevel("assets/images/testbase.tmx", this);
+		Reg.level = new TiledLevel("assets/images/testbase.tmx", this);
 		
-		add(level.foregroundTiles);
-		add(crowds);
-		add(level.spawnTiles);
+		add(Reg.level.foregroundTiles);
+		add(Reg.level.crowds);
+		add(Reg.level.spawnTiles);		
 		
-		//updatePaths();
+		for (spawn in Reg.level.spawnTiles)
+		{
+			spawn.init();
+		}
 		
-		/*cameraGame = new FlxCamera(0, 0, 1080, 960);
-		FlxG.cameras.add(cameraGame);*/
 		FlxG.camera.zoom = .5;
 		FlxG.camera.width = 960;
 		FlxG.camera.height = 960;
@@ -83,8 +76,8 @@ class PlayState extends FlxState
 			prevMouseCoord.y = FlxG.mouse.screenY;
 		}		
 	}
-	
-	private function updatePaths():Void
+	// move this inside the rioter class
+	/*private function updatePaths():Void
 	{
 		var paths : Array<Array<FlxPoint>>;	
 		
@@ -118,9 +111,9 @@ class PlayState extends FlxState
 	
 	private function findPath(_unit:FlxSprite, _goal:FlxSprite ):Array<FlxPoint>
 	{
-		var pathPoints:Array<FlxPoint> = level.collidableTileLayers[0].findPath(
+		var pathPoints:Array<FlxPoint> = Reg.level.collidableTileLayers[0].findPath(
 			FlxPoint.get(_unit.x + _unit.width / 2, _unit.y + _unit.height / 2),
 			FlxPoint.get(_goal.x + _goal.width / 2, _goal.y + _goal.height / 2));
 		return pathPoints;
-	}	
+	}	*/
 }

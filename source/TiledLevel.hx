@@ -29,7 +29,8 @@ class TiledLevel extends TiledMap
 	public var foregroundTiles:FlxGroup;
 	public var objectsLayer:FlxGroup;
 	public var backgroundLayer:FlxGroup;
-	public var collidableTileLayers:Array<FlxTilemap>;
+	public var collidableTileLayers:Array<FlxTilemap>;	
+	public var crowds : FlxTypedGroup<Rioter>;
 	
 	// Sprites of images layers
 	public var imagesLayer:FlxGroup;
@@ -43,6 +44,7 @@ class TiledLevel extends TiledMap
 		objectsLayer = new FlxGroup();
 		backgroundLayer = new FlxGroup();
 		spawnTiles = new FlxTypedGroup<SpawnPoint>();
+		crowds = new FlxTypedGroup<Rioter>();
 		
 		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
 		
