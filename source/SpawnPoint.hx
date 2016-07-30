@@ -11,6 +11,8 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	private var delaySpawns :Int = 0;
 	private var crowdSize: Int = 0;
 	
+	private var currentLeader : Rioter;
+	
 	private var currentCrowd: Int = 0;
 	
 	private var timerFirstSpawn : FlxTimer; // délai avant le spawn da la première vague
@@ -54,5 +56,21 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		rioter = new Rioter(this.x, this.y,"assets/images/"+faction+".png", faction,_timer.elapsedLoops-1);
 		rioter.updatePaths();
 		Reg.level.crowds.add(rioter);
+		if (_timer.elapsedLoops == 1)
+		{
+			currentLeader = rioter;
+			rioter.health = 500;
+		}
+		else
+		{
+			rioter.leader = currentLeader;
+			currentLeader.followers.add(rioter);
+		}
+		
+		if (_timer.loopsLeft == 0)
+		{
+			currentLeader = null;
+		}
+		rioter = null;
 	}
 }

@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.util.FlxTimer;
 
 import flixel.group.FlxGroup;
 import flixel.math.FlxPoint;
@@ -22,7 +23,8 @@ import flixel.FlxCamera;
  */
 class PlayState extends FlxState
 {
-	public var prevMouseCoord : FlxPoint;	
+	public var prevMouseCoord : FlxPoint;
+	private var timerFight : FlxTimer;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -53,6 +55,8 @@ class PlayState extends FlxState
 		FlxG.camera.y = -240;		
 		prevMouseCoord = new FlxPoint(0, 0);
 		
+		timerFight = new FlxTimer();
+		timerFight.start(1, updateFight, 0);
 	}
 
 	/**
@@ -60,7 +64,7 @@ class PlayState extends FlxState
 	 */
 	override public function update(elapsed:Float):Void
 	{
-		super.update(elapsed);
+		FlxG.overlap(Reg.level.crowds, rioterCollide);
 		
 		if (FlxG.mouse.justPressed)
 		{
@@ -74,46 +78,51 @@ class PlayState extends FlxState
 			FlxG.camera.scroll.y -= FlxG.mouse.screenY - prevMouseCoord.y;
 			prevMouseCoord.x = FlxG.mouse.screenX;
 			prevMouseCoord.y = FlxG.mouse.screenY;
-		}		
-	}
-	// move this inside the rioter class
-	/*private function updatePaths():Void
-	{
-		var paths : Array<Array<FlxPoint>>;	
+		}
 		
-		for (rioter in crowds)
+		super.update(elapsed);
+	}	
+	
+	private function rioterCollide(r1 : Rioter, r2 : Rioter):Void
+	{
+		
+		//trace(r1);
+		if (r1.faction != r2.faction)
 		{
-			if (rioter.isLeader)
-			{
-				paths  = new Array<Array<FlxPoint>>();
-				
-				for (rioterEnemy in crowds)
-				{
-					if (rioterEnemy.isLeader && rioterEnemy.faction == rioter.enemy)
-					{
-						var path : Array<FlxPoint>;
-						path = findPath(rioter, rioterEnemy);
-						
-						if (path != null) paths.push (path);						
-					}
-				}
-				
-				if (paths.length == 1) // si un seul chemin
-				{
-					rioter.path = new FlxPath();
-					rioter.path.start(paths[0]);
-					rioter.alpha = .5;
-				}
-				// sinon si plusieurs chemins prendre le plus court
-			}
+			r1.stopCrowd();
+			r2.stopCrowd();
+			
+			r1.addOpponent(r2);
+			r2.addOpponent(r1);
 		}
 	}
 	
-	private function findPath(_unit:FlxSprite, _goal:FlxSprite ):Array<FlxPoint>
+	private function updateFight(_t:FlxTimer):Void
 	{
-		var pathPoints:Array<FlxPoint> = Reg.level.collidableTileLayers[0].findPath(
-			FlxPoint.get(_unit.x + _unit.width / 2, _unit.y + _unit.height / 2),
-			FlxPoint.get(_goal.x + _goal.width / 2, _goal.y + _goal.height / 2));
-		return pathPoints;
-	}	*/
+		
+		
+		
+		for (r in Reg.level.crowds)
+		{
+			if (r.followNumber == 0  && r.alive) // agir seulement sur les leaders
+			{
+				r.fight(); // cacluler
+			}
+			
+			if (!r.alive) 			
+			{
+				r.destroy();
+				Reg.level.crowds.remove(r,true);				
+			}
+		}
+		
+		for (r in Reg.level.crowds)
+		{
+			
+			if (r.followNumber == 0 && r.alive) // agir seulement sur les leaders
+			{
+				r.hit();// décompter les dégats
+			}
+		}
+	}
 }
