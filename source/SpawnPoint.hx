@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxSprite;
 import flixel.util.FlxTimer;
+import flixel.FlxG;
 
 class SpawnPoint extends FlxSprite // un seul objet graphique
 {
@@ -24,6 +25,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		super(X, Y, image_path);		
 		
 		faction = _faction;
+		this.cameras = [FlxG.cameras.list[0]];
 	}
 	
 	public function init():Void

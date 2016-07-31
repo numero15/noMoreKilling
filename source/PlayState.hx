@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -25,7 +26,10 @@ class PlayState extends FlxState
 {
 	public var prevMouseCoord : FlxPoint;
 	private var timerFight : FlxTimer;
-	
+	private var UI : HUD;
+	private var cameraUI : FlxCamera;
+	private var draggedBuilding : Building; // objet temporaire quand on drag drop un batiment
+	private var draggedPower : Power; // objet temporaire quand on drag drop ou pouvoir
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -37,22 +41,63 @@ class PlayState extends FlxState
 		super.create();
 		bgColor = FlxColor.GRAY;
 		
+		draggedBuilding = new Building(0, 0, 0);
+		draggedBuilding.kill();
+		
+		draggedPower = new Power(0, 0, 0);
+		draggedPower.kill();		
+		
 		Reg.level = new TiledLevel("assets/images/testbase.tmx", this);
+		
+		FlxG.camera.zoom = .5;
+		FlxG.camera.width = 960;
+		FlxG.camera.height = 960;
+		FlxG.camera.x = -240;
+		FlxG.camera.y = -240;	
+		cameraUI = new FlxCamera(0, 0, Std.int(FlxG.width), Std.int(FlxG.height));
+		cameraUI.bgColor = FlxColor.TRANSPARENT;
+		FlxG.cameras.add(cameraUI);		
+		
+		
+		var activeCam : Array <FlxCamera>;		
+		activeCam = new Array();
+		activeCam.push(FlxG.cameras.list[1]);		
+		
+		
+		Reg.level.foregroundTiles.cameras = [FlxG.cameras.list[0]];
+		UI = new HUD();	
 		
 		add(Reg.level.foregroundTiles);
 		add(Reg.level.crowds);
 		add(Reg.level.spawnTiles);		
+		add(UI);
+		add(draggedBuilding);
+		add(draggedPower);
+		
+		
+		UI.cameras = activeCam;
+		UI.forEach(function(_b:FlxBasic):Void
+		{			
+			_b.cameras = activeCam;
+		});
+		
+		for (_b in UI.buildings)
+		{
+			_b.cameras = activeCam;
+		}
+		
+		
+		draggedBuilding.cameras = activeCam;
+		
+		
+		
 		
 		for (spawn in Reg.level.spawnTiles)
 		{
 			spawn.init();
 		}
 		
-		FlxG.camera.zoom = .5;
-		FlxG.camera.width = 960;
-		FlxG.camera.height = 960;
-		FlxG.camera.x = -240;
-		FlxG.camera.y = -240;		
+			
 		prevMouseCoord = new FlxPoint(0, 0);
 		
 		timerFight = new FlxTimer();
@@ -63,21 +108,74 @@ class PlayState extends FlxState
 	 * Function that is called once every frame.
 	 */
 	override public function update(elapsed:Float):Void
-	{
+	{		
 		FlxG.overlap(Reg.level.crowds, rioterCollide);
 		
 		if (FlxG.mouse.justPressed)
 		{
 			prevMouseCoord.x = FlxG.mouse.screenX;
 			prevMouseCoord.y = FlxG.mouse.screenY;
+			
+			for (b in UI.buildings)
+			{
+				if ( b.overlapsPoint(FlxG.mouse.getScreenPosition(cameraUI)))
+				{
+					draggedBuilding.revive();
+					draggedBuilding.set(b.type);
+					draggedBuilding.x = FlxG.mouse.screenX;
+					draggedBuilding.y = FlxG.mouse.screenY;
+					draggedBuilding.scale.x = draggedBuilding.scale.y = FlxG.camera.zoom;
+					draggedBuilding.updateHitbox();
+					break;
+				}
+			}			
 		}
 		
 		if (FlxG.mouse.pressed)
 		{
-			FlxG.camera.scroll.x -= FlxG.mouse.screenX - prevMouseCoord.x;
-			FlxG.camera.scroll.y -= FlxG.mouse.screenY - prevMouseCoord.y;
-			prevMouseCoord.x = FlxG.mouse.screenX;
-			prevMouseCoord.y = FlxG.mouse.screenY;
+			if (!UI.BG.overlapsPoint(FlxG.mouse.getScreenPosition()) && !draggedBuilding.alive  && !draggedPower.alive) // scroll map seulement si on n'est pas sur l'UI et que l'on ne drag pas de building/power
+			{
+				if( Std.int(Math.abs(FlxG.mouse.screenX - prevMouseCoord.x))/Reg.TILE_SIZE>1)
+				{
+					FlxG.camera.scroll.x -= Std.int((FlxG.mouse.screenX - prevMouseCoord.x)/Reg.TILE_SIZE) * Reg.TILE_SIZE;
+					prevMouseCoord.x = FlxG.mouse.screenX;
+				}
+				if( Std.int(Math.abs(FlxG.mouse.screenY - prevMouseCoord.y))/Reg.TILE_SIZE>1)
+				{
+					FlxG.camera.scroll.y -= Std.int((FlxG.mouse.screenY - prevMouseCoord.y)/Reg.TILE_SIZE) * Reg.TILE_SIZE;		
+					prevMouseCoord.y = FlxG.mouse.screenY;
+				}
+			}
+			
+			if (draggedBuilding.alive)
+				{
+					
+					draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom);
+					
+					//draggedBuilding.x = Std.int(FlxG.mouse.getScreenPosition(cameraUI).x / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom) - FlxG.camera.scroll.x % Reg.TILE_SIZE * FlxG.camera.zoom ;
+
+					draggedBuilding.y = Std.int(FlxG.mouse.getScreenPosition(cameraUI).y / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom)/* - FlxG.camera.scroll.y % Reg.TILE_SIZE * FlxG.camera.zoom*/;
+					trace(Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)));
+					if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 2)
+					draggedBuilding.alpha = 1;
+					else
+					draggedBuilding.alpha = .5;
+				}
+			
+			
+		}
+		
+		if (FlxG.mouse.justReleased)
+		{
+			if (draggedBuilding.alive)
+			{
+				draggedBuilding.kill();
+			}
+			
+			if (draggedPower.alive)
+			{
+				draggedPower.kill();
+			}
 		}
 		
 		super.update(elapsed);

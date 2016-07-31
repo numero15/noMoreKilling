@@ -26,7 +26,7 @@ class TiledLevel extends TiledMap
 	
 	// Array of tilemaps used for collision
 	public var spawnTiles:FlxTypedGroup<SpawnPoint>;
-	public var foregroundTiles:FlxGroup;
+	public var foregroundTiles:FlxTilemap;
 	public var objectsLayer:FlxGroup;
 	public var backgroundLayer:FlxGroup;
 	public var collidableTileLayers:Array<FlxTilemap>;	
@@ -40,7 +40,7 @@ class TiledLevel extends TiledMap
 		super(tiledLevel);
 		
 		imagesLayer = new FlxGroup();
-		foregroundTiles = new FlxGroup();
+		foregroundTiles = new FlxTilemap();
 		objectsLayer = new FlxGroup();
 		backgroundLayer = new FlxGroup();
 		spawnTiles = new FlxTypedGroup<SpawnPoint>();
@@ -91,7 +91,8 @@ class TiledLevel extends TiledMap
 				if (collidableTileLayers == null)
 					collidableTileLayers = new Array<FlxTilemap>();
 				
-				foregroundTiles.add(tilemap);
+				//foregroundTiles.add(tilemap);
+				foregroundTiles = tilemap;
 				collidableTileLayers.push(tilemap);
 			}
 		}

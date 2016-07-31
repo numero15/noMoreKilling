@@ -4,6 +4,7 @@ import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.util.FlxPath;
 import flixel.util.FlxTimer;
+import flixel.FlxG;
 
 class Rioter extends FlxSprite // un seul objet graphique
 {
@@ -26,6 +27,8 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public function new(X:Float, Y:Float, image_path:String /*source du .png*/, _faction : String, _followNumber: Int)
 	{		
 		super(X+Reg.TILE_SIZE * .1, Y+Reg.TILE_SIZE * .1, image_path);
+		this.cameras = [FlxG.cameras.list[0]];
+		
 		alpha = .5;
 		updateHitbox();
 		setSize(Reg.TILE_SIZE * .8, Reg.TILE_SIZE * .8);
