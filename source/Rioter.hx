@@ -55,11 +55,11 @@ class Rioter extends FlxSprite // un seul objet graphique
 		
 		switch(faction)
 		{
-			case "fouleJaune":
-				enemy = "fouleRouge";
+			case "yellow":
+				enemy = "red";
 				
-			case "fouleRouge":
-				enemy = "fouleJaune";
+			case "red":
+				enemy = "yellow";
 		}
 	}
 	
@@ -82,8 +82,8 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public function updatePaths(?Timer:FlxTimer):Void  // pour les leaders : définit un nouveau path vers la foule ennemie la plus proche
 	{
 		var paths : Array<Array<FlxPoint>>;			
-		
-		if (followNumber==0)
+		//trace (followNumber);
+		if (followNumber==0) // est le leader
 		{
 			paths  = new Array<Array<FlxPoint>>();
 			
@@ -101,7 +101,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 			if (paths.length == 1 && isMoving) // si un seul chemin
 			{
 				path = new FlxPath();
-				path.start(paths[0],128);
+				path.start(paths[0], 16);
 				alpha = .5;
 				//asign path to followers
 				for (rioter in Reg.level.crowds)
@@ -116,8 +116,20 @@ class Rioter extends FlxSprite // un seul objet graphique
 			// TODO sinon si plusieurs chemins prendre le plus court
 			else if (paths.length >= 1  && isMoving)
 			{
+				// trouve la destination la plus proche PAS TESTE
+				var shorterPath : Int = paths[0].length;
+				var shorterPathId : Int = 0;
+				for (i in 1...paths.length)
+				{
+					if (paths[i].length < shorterPath)
+					{
+						shorterPathId = i;
+						shorterPath = paths[i].length;
+					}
+				}
+				
 				path = new FlxPath();
-				path.start(paths[0],128);
+				path.start(paths[shorterPathId],16);
 				alpha = .5;
 				//asign path to followers
 			}
@@ -126,6 +138,8 @@ class Rioter extends FlxSprite // un seul objet graphique
 			{
 				path = null;
 			}
+			
+			overlapBuilding();
 		}	
 		
 		else
@@ -147,7 +161,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 					
 					if (p.length > followNumber)
 					{
-						path.start(p, 128);
+						path.start(p, 16);
 						//if (faction == "fouleJaune") trace( followNumber);
 					}
 					
@@ -200,7 +214,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 		path = new FlxPath();
 		if (newPath.length > followNumber)
 		{
-			path.start(newPath, 128);
+			path.start(newPath, 16);
 			//if (faction == "fouleJaune") trace( followNumber);
 		}
 		else
@@ -320,9 +334,36 @@ class Rioter extends FlxSprite // un seul objet graphique
 			}
 			this.kill();
 			//this.destroy();
-		}
-		
+		}		
 		damage = 0;
+	}
+	
+	private function overlapBuilding():Void
+	{
+		var distInTile : Int;
+		
+		for (_b in Reg.level.buildings)
+		{
+			distInTile =Std.int( Math.abs (Std.int(this.x / Reg.TILE_SIZE) - Std.int(_b.x / Reg.TILE_SIZE))  /*distance en tile sur l'axe x*/
+					   + Math.abs (Std.int(this.y / Reg.TILE_SIZE) - Std.int(_b.y / Reg.TILE_SIZE))); /*distance en tile sur l'axe y*/
+					   
+			//trace(distInTile);
+			if (distInTile <= _b.radius)
+			{
+				//trace('overlap batiment' + _b.ID);
+			}
+		}
+	}
+	override function kill():Void
+	{	
+		
+		//timerSearchEnemy.cancel();
+		if (followNumber == 0)
+		{
+			timerSearchEnemy.cancel();
+			//trace(timerSearchEnemy.active);
+		}
+		super.kill();
 	}
 	
 	override function destroy():Void

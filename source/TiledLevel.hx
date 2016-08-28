@@ -27,10 +27,16 @@ class TiledLevel extends TiledMap
 	// Array of tilemaps used for collision
 	public var spawnTiles:FlxTypedGroup<SpawnPoint>;
 	public var foregroundTiles:FlxTilemap;
+	public var buildingBase:FlxTilemap;
+	public var buildingTop:FlxTilemap;
+	public var fog01:FlxTilemap;
+	public var fog02:FlxTilemap;
 	public var objectsLayer:FlxGroup;
 	public var backgroundLayer:FlxGroup;
 	public var collidableTileLayers:Array<FlxTilemap>;	
 	public var crowds : FlxTypedGroup<Rioter>;
+	public var buildings : FlxTypedGroup<Building>;
+	
 	
 	// Sprites of images layers
 	public var imagesLayer:FlxGroup;
@@ -41,14 +47,19 @@ class TiledLevel extends TiledMap
 		
 		imagesLayer = new FlxGroup();
 		foregroundTiles = new FlxTilemap();
+		buildingTop = new FlxTilemap();
+		buildingBase = new FlxTilemap();
+		fog01 = new FlxTilemap();
+		fog02 = new FlxTilemap();
 		objectsLayer = new FlxGroup();
 		backgroundLayer = new FlxGroup();
 		spawnTiles = new FlxTypedGroup<SpawnPoint>();
 		crowds = new FlxTypedGroup<Rioter>();
+		buildings = new FlxTypedGroup<Building>();
 		
 		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
 		
-		loadImages();
+		//loadImages();
 		loadObjects(state);
 		
 		// Load Tile Maps
@@ -80,20 +91,25 @@ class TiledLevel extends TiledMap
 			
 			var tilemap:FlxTilemap = new FlxTilemap();
 			tilemap.loadMapFromArray(tileLayer.tileArray, width, height, processedPath,
-				tileSet.tileWidth, tileSet.tileHeight, OFF, tileSet.firstGID, 1, 1);
-			
-			if (tileLayer.properties.contains("nocollide"))
+				tileSet.tileWidth, tileSet.tileHeight, OFF, tileSet.firstGID, tileSet.firstGID, tileSet.firstGID+12); //tileSet.firstGID => numero du premier tile de la feuille (sur l'ensemble des tiles du niveau)
+				
+			if (tileLayer.name == "ground")
 			{
-				backgroundLayer.add(tilemap);
-			}
-			else
-			{
+				foregroundTiles = tilemap;
 				if (collidableTileLayers == null)
 					collidableTileLayers = new Array<FlxTilemap>();
-				
-				//foregroundTiles.add(tilemap);
-				foregroundTiles = tilemap;
 				collidableTileLayers.push(tilemap);
+			}
+			
+			if (tileLayer.name == "buildingBG")
+			{
+				buildingBase = tilemap;
+			}
+			
+			if (tileLayer.name == "buildingFG")
+			{
+				buildingTop = tilemap;
+				//trace(tileSet.firstGID);
 			}
 		}
 	}
@@ -106,15 +122,6 @@ class TiledLevel extends TiledMap
 			if (layer.type != TiledLayerType.OBJECT)
 				continue;
 			var objectLayer:TiledObjectLayer = cast layer;
-
-			//collection of images layer
-			if (layer.name == "images")
-			{
-				for (o in objectLayer.objects)
-				{
-					loadImageObject(o);
-				}
-			}
 			
 			//objects layer
 			if (layer.name == "spawn")
@@ -127,58 +134,8 @@ class TiledLevel extends TiledMap
 		}
 	}
 	
-	private function loadImageObject(object:TiledObject)
-	{
-		var tilesImageCollection:TiledTileSet = this.getTileSet("imageCollection");
-		var tileImagesSource:TiledImageTile = tilesImageCollection.getImageSourceByGid(object.gid);
-		
-		//decorative sprites
-		var levelsDir:String = "assets/tiled/";
-		
-		var decoSprite:FlxSprite = new FlxSprite(0, 0, levelsDir + tileImagesSource.source);
-		if (decoSprite.width != object.width ||
-			decoSprite.height != object.height)
-		{
-			decoSprite.antialiasing = true;
-			decoSprite.setGraphicSize(object.width, object.height);
-		}
-		decoSprite.setPosition(object.x, object.y - decoSprite.height);
-		decoSprite.origin.set(0, decoSprite.height);
-		if (object.angle != 0)
-		{
-			decoSprite.angle = object.angle;
-			decoSprite.antialiasing = true;
-		}
-		
-		//Custom Properties
-		if (object.properties.contains("depth"))
-		{
-			var depth = Std.parseFloat( object.properties.get("depth"));
-			decoSprite.scrollFactor.set(depth,depth);
-		}
-
-		backgroundLayer.add(decoSprite);
-	}
 	
-	/*private function loadRioter(state:PlayState, o:TiledObject, g:TiledObjectLayer, group:FlxGroup)
-	{
-		var x:Int = o.x;
-		var y:Int = o.y;
-		
-		// objects in tiled are aligned bottom-left (top-left in flixel)
-		if (o.gid != -1)
-			y -= g.map.getGidOwner(o.gid).tileHeight;
-			
-		var tileset = g.map.getGidOwner(o.gid);
-		var rioter = new Rioter(x, y, c_PATH_LEVEL_TILESHEETS + tileset.imageSource, tileset.name);
-		
-		if (Std.parseInt(o.properties.isLeader) == 1) rioter.isLeader = true;
-		else rioter.isLeader = false;
-		
-		if (rioter.isLeader == false) rioter.alpha = .5;
-		
-		state.crowds.add(rioter);
-	}*/
+
 	
 	private function loadSpawn(state:PlayState, o:TiledObject, g:TiledObjectLayer, group:FlxGroup)
 	{
@@ -190,23 +147,27 @@ class TiledLevel extends TiledMap
 			y -= g.map.getGidOwner(o.gid).tileHeight;
 		
 		var tileset = g.map.getGidOwner(o.gid);
-		var swawnPoint = new SpawnPoint(x, y, c_PATH_LEVEL_TILESHEETS + tileset.imageSource, tileset.name);
-		spawnTiles.add(swawnPoint);
-	}
-
-	public function loadImages()
-	{
-		for (layer in layers)
+		var faction : String = new String("");
+		switch(tileset.name)
 		{
-			if (layer.type != TiledLayerType.IMAGE)
-				continue;
-
-			var image:TiledImageLayer = cast layer;
-			var sprite = new FlxSprite(image.x, image.y, c_PATH_LEVEL_TILESHEETS + image.imagePath);
-			imagesLayer.add(sprite);
+			case "spawnRouge":
+				faction = new String("red");
+				
+			case "spawnJaune":
+				faction = new String("yellow");
 		}
+		
+		var spawnPoint = new SpawnPoint(x, y, c_PATH_LEVEL_TILESHEETS + tileset.imageSource, faction);
+		spawnPoint.count = Std.parseInt(o.properties.get("count"));
+		spawnPoint.delayFirstSpawn = Std.parseInt(o.properties.get("delayFirstSpawn"));
+		spawnPoint.delaySpawns = Std.parseInt(o.properties.get("delaySpawns"));
+		spawnPoint.crowdSize = Std.parseInt(o.properties.get("crowdSize"));
+		//trace(spawnPoint.crowdSize);
+		
+		spawnTiles.add(spawnPoint);
 	}
-	
+
+
 	public function collideWithLevel(obj:FlxObject, ?notifyCallback:FlxObject->FlxObject->Void, ?processCallback:FlxObject->FlxObject->Bool):Bool
 	{
 		if (collidableTileLayers == null)

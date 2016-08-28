@@ -28,7 +28,7 @@ class PlayState extends FlxState
 	private var timerFight : FlxTimer;
 	private var UI : HUD;
 	private var cameraUI : FlxCamera;
-	private var draggedBuilding : Building; // objet temporaire quand on drag drop un batiment
+	private var draggedBuilding : BuildingDroppable; // objet temporaire quand on drag drop un batiment
 	private var draggedPower : Power; // objet temporaire quand on drag drop ou pouvoir
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -41,19 +41,19 @@ class PlayState extends FlxState
 		super.create();
 		bgColor = FlxColor.GRAY;
 		
-		draggedBuilding = new Building(0, 0, 0);
+		draggedBuilding = new BuildingDroppable(0, 0, 0);
 		draggedBuilding.kill();
 		
 		draggedPower = new Power(0, 0, 0);
 		draggedPower.kill();		
 		
-		Reg.level = new TiledLevel("assets/images/testbase.tmx", this);
+		Reg.level = new TiledLevel("assets/images/template.tmx", this);
 		
-		FlxG.camera.zoom = .5;
-		FlxG.camera.width = 960;
-		FlxG.camera.height = 960;
-		FlxG.camera.x = -240;
-		FlxG.camera.y = -240;	
+		FlxG.camera.zoom = 1;
+		FlxG.camera.width = 480;
+		FlxG.camera.height = 480;
+		FlxG.camera.x = 0;
+		FlxG.camera.y = 0;	
 		cameraUI = new FlxCamera(0, 0, Std.int(FlxG.width), Std.int(FlxG.height));
 		cameraUI.bgColor = FlxColor.TRANSPARENT;
 		FlxG.cameras.add(cameraUI);		
@@ -63,13 +63,18 @@ class PlayState extends FlxState
 		activeCam = new Array();
 		activeCam.push(FlxG.cameras.list[1]);		
 		
-		
 		Reg.level.foregroundTiles.cameras = [FlxG.cameras.list[0]];
+		Reg.level.buildingBase.cameras = [FlxG.cameras.list[0]];
+		Reg.level.buildingTop.cameras = [FlxG.cameras.list[0]];
+		
 		UI = new HUD();	
 		
 		add(Reg.level.foregroundTiles);
+		add(Reg.level.buildings);
+		add(Reg.level.buildingBase);
 		add(Reg.level.crowds);
-		add(Reg.level.spawnTiles);		
+		add(Reg.level.spawnTiles);	
+		add(Reg.level.buildingTop);
 		add(UI);
 		add(draggedBuilding);
 		add(draggedPower);
@@ -155,11 +160,18 @@ class PlayState extends FlxState
 					//draggedBuilding.x = Std.int(FlxG.mouse.getScreenPosition(cameraUI).x / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom) - FlxG.camera.scroll.x % Reg.TILE_SIZE * FlxG.camera.zoom ;
 
 					draggedBuilding.y = Std.int(FlxG.mouse.getScreenPosition(cameraUI).y / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom)/* - FlxG.camera.scroll.y % Reg.TILE_SIZE * FlxG.camera.zoom*/;
-					trace(Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)));
-					if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 2)
-					draggedBuilding.alpha = 1;
+					
+					//trace(Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)));
+					
+					if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 68 
+					&& Reg.level.buildingBase.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 0 )
+					{
+						draggedBuilding.alpha = 1;
+					}
 					else
-					draggedBuilding.alpha = .5;
+					{
+						draggedBuilding.alpha = .5;
+					}
 				}
 			
 			
@@ -169,6 +181,14 @@ class PlayState extends FlxState
 		{
 			if (draggedBuilding.alive)
 			{
+				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 68 
+					&& Reg.level.buildingBase.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 0 )
+				{
+					var _b : Building = new Building(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE)* Reg.TILE_SIZE, draggedBuilding.type);
+					
+					_b.cameras = [FlxG.cameras.list[0]];
+					Reg.level.buildings.add(_b);
+				}
 				draggedBuilding.kill();
 			}
 			
@@ -196,10 +216,7 @@ class PlayState extends FlxState
 	}
 	
 	private function updateFight(_t:FlxTimer):Void
-	{
-		
-		
-		
+	{		
 		for (r in Reg.level.crowds)
 		{
 			if (r.followNumber == 0  && r.alive) // agir seulement sur les leaders
@@ -215,8 +232,7 @@ class PlayState extends FlxState
 		}
 		
 		for (r in Reg.level.crowds)
-		{
-			
+		{			
 			if (r.followNumber == 0 && r.alive) // agir seulement sur les leaders
 			{
 				r.hit();// décompter les dégats

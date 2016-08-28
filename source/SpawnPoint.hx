@@ -7,10 +7,10 @@ import flixel.FlxG;
 class SpawnPoint extends FlxSprite // un seul objet graphique
 {
 	private var faction : String;
-	private var count :Int = 0;
-	private var delayFirstSpawn : Int = 0;
-	private var delaySpawns :Int = 0;
-	private var crowdSize: Int = 0;
+	public var count :Int = 0;
+	public var delayFirstSpawn : Int = 0;
+	public var delaySpawns :Int = 0;
+	public var crowdSize: Int = 0;
 	
 	private var currentLeader : Rioter;
 	
@@ -48,7 +48,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	{
 		currentCrowd++;
 		timerRioterSpawn = new FlxTimer();
-		timerRioterSpawn.start(1, spawnRioter, 5);
+		timerRioterSpawn.start(1, spawnRioter, crowdSize);
 	}
 	
 	public function spawnRioter (_timer:FlxTimer):Void

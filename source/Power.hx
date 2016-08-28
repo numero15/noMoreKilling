@@ -17,13 +17,13 @@ class Power extends FlxSprite
 		switch(type)
 		{
 			case 0:
-				this.makeGraphic(128, 128, FlxColor.PURPLE);
+				this.makeGraphic(Reg.TILE_SIZE, Reg.TILE_SIZE, FlxColor.PURPLE);
 			case 1:
-				this.makeGraphic(128, 128, FlxColor.LIME);
+				this.makeGraphic(Reg.TILE_SIZE, Reg.TILE_SIZE, FlxColor.LIME);
 			case 2:
-				this.makeGraphic(128, 128, FlxColor.ORANGE);
+				this.makeGraphic(Reg.TILE_SIZE, Reg.TILE_SIZE, FlxColor.ORANGE);
 			case 3:
-				this.makeGraphic(128, 128, FlxColor.PINK);
+				this.makeGraphic(Reg.TILE_SIZE, Reg.TILE_SIZE, FlxColor.PINK);
 		}
 	}
 	
