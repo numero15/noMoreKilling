@@ -4,10 +4,10 @@ import flixel.FlxGame;
 import openfl.display.Sprite;
 
 class Main extends Sprite
-{
+{	
 	public function new()
 	{
-		super();
+		super();		
 		addChild(new FlxGame(480, 480, PlayState));
 	}
 }

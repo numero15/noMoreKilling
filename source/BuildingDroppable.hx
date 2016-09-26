@@ -9,37 +9,37 @@ import flixel.FlxSprite;
  * ...
  * @author ...
  */
-class BuildingDroppable extends FlxSpriteGroup // les GFX du batiment sont dans les calques building top et base, cette classe gère uniquement leurs paramètres PAS L'IMAGE AFFICHEE
+class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour placer les bâtiments et pour leur miniature dans l'UI
 {
 	
 	public var type : Int;
 	private var GFX : FlxSprite;
+	public  var radius : Int;
 	
 	public function new(?X:Float=0, ?Y:Float=0, _t:Int) 
 	{
 		super(X, Y);
 		type = _t;
+		GFX  = new FlxSprite(-Reg.TILE_SIZE/2,-Reg.TILE_SIZE*2);
+		GFX.loadGraphic("assets/images/tilemapBuilding.png", true, 16, 32);
+		this.add(GFX);
 		set(_t);
 		
 	}
 	
 	public function set (_t:Int)
 	{
-		GFX  = new FlxSprite(-Reg.TILE_SIZE/2,-Reg.TILE_SIZE*2);
-		GFX.loadGraphic("assets/images/tilemapBuilding.png", true, 16, 32);
 		switch(_t)
 		{
 			case 0:
 				GFX.animation.frameIndex = 21;
 			case 1:
-				GFX.animation.frameIndex = 21;
+				GFX.animation.frameIndex = 23;
 			case 2:
-				GFX.animation.frameIndex = 21;
-			case 3:
-				GFX.animation.frameIndex = 21;
+				GFX.animation.frameIndex = 25;
 		}
 		
-		this.add(GFX);
+		
 		type = _t;
 	}
 	

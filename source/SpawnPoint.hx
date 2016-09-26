@@ -47,18 +47,24 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	public function spawnCrowd (?Timer:FlxTimer):Void
 	{
 		currentCrowd++;
-		timerRioterSpawn = new FlxTimer();
-		timerRioterSpawn.start(1, spawnRioter, crowdSize);
+		/*timerRioterSpawn = new FlxTimer();
+		timerRioterSpawn.start(1, spawnRioter, crowdSize);*/
+		for (i in 0...crowdSize)
+		{
+			spawnRioter(i);
+		}
 	}
 	
-	public function spawnRioter (_timer:FlxTimer):Void
+	public function spawnRioter (/*_timer:FlxTimer*/_num:Int):Void
 	{
 		var rioter : Rioter;
-		// spwan leader
-		rioter = new Rioter(this.x, this.y,"assets/images/"+faction+".png", faction,_timer.elapsedLoops-1);
+		// spawn leader
+		rioter = Reg.level.crowds.getFirstAvailable();
+		rioter.setup(this.x, this.y,"assets/images/crowd_"+faction+".png", faction,_num/*_timer.elapsedLoops-1*/);
 		rioter.updatePaths();
-		Reg.level.crowds.add(rioter);
-		if (_timer.elapsedLoops == 1)
+		
+		//if (_timer.elapsedLoops == 1)
+		if (_num == 0)
 		{
 			currentLeader = rioter;
 			rioter.health = 500;
@@ -69,7 +75,8 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			currentLeader.followers.add(rioter);
 		}
 		
-		if (_timer.loopsLeft == 0)
+		//if (_timer.loopsLeft == 0)
+		if (_num == crowdSize-1)
 		{
 			currentLeader = null;
 		}

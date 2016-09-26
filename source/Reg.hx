@@ -15,4 +15,6 @@ class Reg
 	 */
 	public static var level:TiledLevel;
 	public static inline var TILE_SIZE:Int = 16;
+	
+	public static var money : Int;
 }

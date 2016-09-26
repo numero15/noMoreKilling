@@ -2,6 +2,13 @@ package;
 
 import flixel.FlxBasic;
 import flixel.FlxG;
+import flixel.system.scaleModes.BaseScaleMode;
+import flixel.system.scaleModes.FillScaleMode;
+import flixel.system.scaleModes.FixedScaleMode;
+import flixel.system.scaleModes.RatioScaleMode;
+import flixel.system.scaleModes.RelativeScaleMode;
+import flixel.system.scaleModes.StageSizeScaleMode;
+import flixel.system.scaleModes.PixelPerfectScaleMode;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -36,7 +43,10 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		FlxG.debugger.visible = true;
-		FlxG.log.redirectTraces = true;		
+		FlxG.log.redirectTraces = true;	
+		//FlxG.scaleMode = new PixelPerfectScaleMode();
+		
+		Reg.money = 500;
 		
 		super.create();
 		bgColor = FlxColor.GRAY;
@@ -140,26 +150,28 @@ class PlayState extends FlxState
 		{
 			if (!UI.BG.overlapsPoint(FlxG.mouse.getScreenPosition()) && !draggedBuilding.alive  && !draggedPower.alive) // scroll map seulement si on n'est pas sur l'UI et que l'on ne drag pas de building/power
 			{
-				if( Std.int(Math.abs(FlxG.mouse.screenX - prevMouseCoord.x))/Reg.TILE_SIZE>1)
-				{
-					FlxG.camera.scroll.x -= Std.int((FlxG.mouse.screenX - prevMouseCoord.x)/Reg.TILE_SIZE) * Reg.TILE_SIZE;
+				/*if( Std.int(Math.abs(FlxG.mouse.screenX - prevMouseCoord.x))/Reg.TILE_SIZE>1)
+				{*/
+					FlxG.camera.scroll.x -= Std.int((FlxG.mouse.screenX - prevMouseCoord.x)/*/Reg.TILE_SIZE*/) /** Reg.TILE_SIZE*/;
 					prevMouseCoord.x = FlxG.mouse.screenX;
-				}
+				/*}
 				if( Std.int(Math.abs(FlxG.mouse.screenY - prevMouseCoord.y))/Reg.TILE_SIZE>1)
 				{
 					FlxG.camera.scroll.y -= Std.int((FlxG.mouse.screenY - prevMouseCoord.y)/Reg.TILE_SIZE) * Reg.TILE_SIZE;		
 					prevMouseCoord.y = FlxG.mouse.screenY;
-				}
+				}*/
 			}
 			
 			if (draggedBuilding.alive)
 				{
 					
-					draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom);
+					//draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x ) / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom);
+					
+					draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom) - (FlxG.camera.scroll.x % Reg.TILE_SIZE - Reg.TILE_SIZE); // TODO ajuster au zoom, utiliser des var
 					
 					//draggedBuilding.x = Std.int(FlxG.mouse.getScreenPosition(cameraUI).x / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom) - FlxG.camera.scroll.x % Reg.TILE_SIZE * FlxG.camera.zoom ;
 
-					draggedBuilding.y = Std.int(FlxG.mouse.getScreenPosition(cameraUI).y / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom)/* - FlxG.camera.scroll.y % Reg.TILE_SIZE * FlxG.camera.zoom*/;
+					draggedBuilding.y = Std.int(FlxG.mouse.getScreenPosition(cameraUI).y / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom);
 					
 					//trace(Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)));
 					
@@ -226,8 +238,8 @@ class PlayState extends FlxState
 			
 			if (!r.alive) 			
 			{
-				r.destroy();
-				Reg.level.crowds.remove(r,true);				
+				//r.destroy();
+				//Reg.level.crowds.remove(r,true);
 			}
 		}
 		

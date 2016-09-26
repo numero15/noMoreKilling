@@ -54,11 +54,19 @@ class TiledLevel extends TiledMap
 		objectsLayer = new FlxGroup();
 		backgroundLayer = new FlxGroup();
 		spawnTiles = new FlxTypedGroup<SpawnPoint>();
-		crowds = new FlxTypedGroup<Rioter>();
+		crowds = new FlxTypedGroup<Rioter>(100);
 		buildings = new FlxTypedGroup<Building>();
 		
 		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
 		
+		
+		for (i in 0...100)
+		{
+			var _r = new Rioter();
+			_r.kill();
+			crowds.add(_r);
+		}
+
 		//loadImages();
 		loadObjects(state);
 		

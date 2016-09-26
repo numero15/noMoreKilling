@@ -23,8 +23,6 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 		super(X, Y);
 		type = _t;
 		set(_t);
-		//this.alpha = .0;
-		
 	}
 	
 	public function set (_t:Int)
@@ -50,7 +48,7 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 				for (distY in radius - distX...radius - distX + (distX * 2) + 1)
 				{
 					radiusGFX.stamp(_brush, distX * Reg.TILE_SIZE, distY * Reg.TILE_SIZE);
-					trace(distX * Reg.TILE_SIZE);
+					
 				}
 			}
 			else
@@ -58,7 +56,7 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 				for (distY in distX - radius...radius * 2 + 1 - (distX-radius))
 				{
 					radiusGFX.stamp(_brush, distX * Reg.TILE_SIZE, distY * Reg.TILE_SIZE);
-					trace(distX * Reg.TILE_SIZE);
+					
 				}
 			}
 		}	
@@ -70,8 +68,8 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 		timerFlash.start(1, flash, 1);
 			
 			
-		Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 45 + 3/*first GID*/ + type*2);
-		Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 19 + 3/*first GID*/ + type*2);
+		Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47 + 3/*first GID*/ + type*2);
+		Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 21 + 3/*first GID*/ + type*2);
 		/*switch(_t)
 		{
 			case 0:
@@ -91,14 +89,14 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 	{		
 		if (Reg.level.buildingBase.getTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)) % 2 == 1)
 		{
-			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 45 + 3 + type*2/*first GID*/);
-			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 19 + 3 + type*2/*first GID*/);
+			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47 + 3 + type*2/*first GID*/);
+			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 21 + 3 + type*2/*first GID*/);
 		}
 		
 		else
 		{
-			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 45 + 3 + type*2 - 1/*first GID*/);
-			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 19 + 3 + type*2 - 1/*first GID*/);
+			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47 + 3 + type*2 - 1/*first GID*/);
+			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 21 + 3 + type*2 - 1/*first GID*/);
 		}	
 		timerFlash.reset(FlxG.random.float(.25, 1));
 	}	
