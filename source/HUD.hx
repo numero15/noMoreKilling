@@ -92,7 +92,7 @@ class HUD extends FlxGroup
 	{
 		super.update(elapsed);
 		
-		for (i in 0...Reg.level.foregroundTiles.totalTiles) {
+		/*for (i in 0...Reg.level.foregroundTiles.totalTiles) {
 			if (!Reg.level.foregroundTiles.overlapsPoint(FlxPoint.get(i % Reg.level.foregroundTiles.widthInTiles * 16, i / Reg.level.foregroundTiles.widthInTiles * 16))) miniMap.pixels.setPixel(i % Reg.level.foregroundTiles.widthInTiles, Math.floor(i / Reg.level.foregroundTiles.widthInTiles), 0xFF909090);
 		}
 		
@@ -109,7 +109,7 @@ class HUD extends FlxGroup
 						miniMap.pixels.setPixel(Std.int(_r.x/Reg.TILE_SIZE),Std.int(_r.y/Reg.TILE_SIZE), 0xFFFF00);
 				}	
 			}
-		}
+		}*/
 	}
 	
 }

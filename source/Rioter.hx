@@ -72,7 +72,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public override function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);	
-	}	
+	}
 	
 	override public function draw():Void
 	{
@@ -179,10 +179,8 @@ class Rioter extends FlxSprite // un seul objet graphique
 							if (Std.int(directions[i].x / Reg.TILE_SIZE) * Reg.TILE_SIZE == Std.int(path.nodes[0].x / Reg.TILE_SIZE) * Reg.TILE_SIZE
 							&&
 							Std.int(directions[i].y / Reg.TILE_SIZE) * Reg.TILE_SIZE == Std.int(path.nodes[0].y / Reg.TILE_SIZE) * Reg.TILE_SIZE) // enlève le demi tour
-							{
 								Uturn = i;
-								trace('Uturn');
-							}							
+														
 						}						
 						direction = directions[FlxG.random.int(0,directions.length-1, [Uturn])];
 					}
@@ -199,7 +197,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 			
 			// ne garder que deux nodes dans le path
 			p.splice(2, p.length - 2);	
-			trace(speed);
 			path = new FlxPath();						
 			path.start(p, 16  + speed);
 			path.onComplete = function(_p : FlxPath){ updatePaths() ; } ;			

@@ -39,10 +39,10 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		}
 	}
 	
-	public override function update(elapsed:Float):Void 
+	/*public override function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
-	}
+	}*/
 	
 	public function spawnCrowd (?Timer:FlxTimer):Void
 	{
@@ -57,17 +57,17 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	
 	public function spawnRioter (/*_timer:FlxTimer*/_num:Int):Void
 	{
-		var rioter : Rioter;
+		/*var rioter : Rioter;
 		// spawn leader
 		rioter = Reg.level.crowds.getFirstAvailable();
-		rioter.setup(this.x, this.y,"assets/images/crowd_"+faction+".png", faction,_num/*_timer.elapsedLoops-1*/);
+		rioter.setup(this.x, this.y,"assets/images/crowd_"+faction+".png", faction,_num);
 		rioter.updatePaths();
 		
 		//if (_timer.elapsedLoops == 1)
 		if (_num == 0)
 		{
 			currentLeader = rioter;
-			rioter.health = 500;
+			rioter.health = crowdSize*100;
 		}
 		else
 		{
@@ -80,6 +80,6 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		{
 			currentLeader = null;
 		}
-		rioter = null;
+		rioter = null;*/
 	}
 }
