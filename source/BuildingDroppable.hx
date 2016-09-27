@@ -12,11 +12,15 @@ import flixel.FlxSprite;
 class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour placer les bâtiments et pour leur miniature dans l'UI
 {
 	
-	public var type : Int;
+	public var type : String;
 	private var GFX : FlxSprite;
 	public  var radius : Int;
+	public var effectMotivation : Int;
+	public var effectHealth : Int;
+	public var effectSpeed : Int;
+	public var effectResource : Int;
 	
-	public function new(?X:Float=0, ?Y:Float=0, _t:Int) 
+	public function new(?X:Float=0, ?Y:Float=0, _t:String) 
 	{
 		super(X, Y);
 		type = _t;
@@ -24,21 +28,20 @@ class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour place
 		GFX.loadGraphic("assets/images/tilemapBuilding.png", true, 16, 32);
 		this.add(GFX);
 		set(_t);
-		
+		effectHealth = effectMotivation = effectResource = effectSpeed = 0;		
 	}
 	
-	public function set (_t:Int)
+	public function set (_t:String)
 	{
 		switch(_t)
 		{
-			case 0:
+			case "bar":
 				GFX.animation.frameIndex = 21;
-			case 1:
+			case "garage":
 				GFX.animation.frameIndex = 23;
-			case 2:
+			case "coffeeShop":
 				GFX.animation.frameIndex = 25;
 		}
-		
 		
 		type = _t;
 	}

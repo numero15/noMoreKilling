@@ -51,7 +51,7 @@ class PlayState extends FlxState
 		super.create();
 		bgColor = FlxColor.GRAY;
 		
-		draggedBuilding = new BuildingDroppable(0, 0, 0);
+		draggedBuilding = new BuildingDroppable(0, 0, "bar");
 		draggedBuilding.kill();
 		
 		draggedPower = new Power(0, 0, 0);
@@ -167,7 +167,7 @@ class PlayState extends FlxState
 					
 					//draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x ) / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom);
 					
-					draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom) - (FlxG.camera.scroll.x % Reg.TILE_SIZE - Reg.TILE_SIZE); // TODO ajuster au zoom, utiliser des var
+					draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom) - (FlxG.camera.scroll.x % Reg.TILE_SIZE /*- Reg.TILE_SIZE*/); // TODO ajuster au zoom, utiliser des var
 					
 					//draggedBuilding.x = Std.int(FlxG.mouse.getScreenPosition(cameraUI).x / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom) - FlxG.camera.scroll.x % Reg.TILE_SIZE * FlxG.camera.zoom ;
 

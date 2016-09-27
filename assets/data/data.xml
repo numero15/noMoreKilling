@@ -1,0 +1,33 @@
+<root>
+	<!-- crowd types, if needed -->
+	<crowd type="red">
+		
+	</crowd>
+
+
+	<!-- building types -->
+	<building type="bar">
+		<motivation value ="0"/>
+		<health value ="-50"/>
+		<speed value ="5"/>
+		<resource value ="0"/>	
+	</building>
+
+	<building type="garage">
+		<motivation value ="0"/>
+		<health value ="-50"/>
+		<speed value ="5"/>
+		<resource value ="0"/>	
+	</building>
+
+	<building type="coffeeShop">
+		<motivation value ="0"/>
+		<health value ="-50"/>
+		<speed value ="5"/>
+		<resource value ="4"/>	
+	</building>
+
+	<!-- power types -->
+
+	
+</root>

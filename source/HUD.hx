@@ -17,10 +17,15 @@ class HUD extends FlxGroup
 	public var buildings : FlxTypedGroup<BuildingDroppable>;
 	public var BG : FlxSprite;
 	private var miniMap : FlxSprite;
+	private var buildingsStats: Xml;
+	
 	
 	public function new() 
 	{
 		super();
+		
+		buildingsStats = Xml.parse(sys.io.File.getContent(AssetPaths.data__xml)).firstChild();		
+		
 		BG = new FlxSprite();
 		BG.makeGraphic(480, 64);
 		BG.alpha = .5;
@@ -28,23 +33,40 @@ class HUD extends FlxGroup
 		BG.y = (FlxG.height - BG.height);
 		BG.scrollFactor.set(0, 0);
 		
-		add(BG);
+		
 		
 		buildings = new  FlxTypedGroup<BuildingDroppable>();
-		for (i in 0...3)
-		{
-			buildings.add(new BuildingDroppable(BG.x + i * Reg.TILE_SIZE*2 + Reg.TILE_SIZE, BG.y + Reg.TILE_SIZE*3, i));
+		
+		var i : Int = 0;
+		var _b : BuildingDroppable;
+		for (_buildingStats in buildingsStats.elementsNamed("building")) {
+			i++;
+			_b = new BuildingDroppable(BG.x + i * Reg.TILE_SIZE * 2 + Reg.TILE_SIZE, BG.y + Reg.TILE_SIZE * 3, _buildingStats.get("type"));
+			_b.scrollFactor.set(0, 0);
+			
+			for ( _stat in _buildingStats.elements())
+			{
+				switch _stat.nodeName {
+					case "motivation" :
+						_b.effectMotivation = Std.parseInt( _stat.get("value"));
+					case "health" :
+						_b.effectHealth = Std.parseInt(_stat.get("value"));
+					case "speed" :
+						_b.effectSpeed = Std.parseInt(_stat.get("value"));
+					case "resource" :
+						_b.effectResource = Std.parseInt(_stat.get("value"));
+				}
+			}			
+			buildings.add(_b);
 		}
-		for (b in buildings)
-		{
-			b.scrollFactor.set(0, 0);
-		}
-		add(buildings);
 		
 		miniMap = getMiniMap();
 		/*miniMap.scale.x = miniMap.scale.y = 2;
 		miniMap.updateHitbox();*/
 		miniMap.x = FlxG.width - miniMap.width;
+		
+		add(BG);
+		add(buildings);
 		add(miniMap);
 	}
 	
