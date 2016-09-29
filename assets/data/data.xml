@@ -1,7 +1,10 @@
 <root>
 	<!-- crowd types, if needed -->
 	<crowd type="red">
-		
+		<motivation value ="100"/><!--motivation par crowd-->
+		<health value ="75"/><!--health par tile-->
+		<speed value ="5"/><!-- vitesse de déplacement & modificateur de Damage-->
+		<firePower value="0"/><!-- modificateur sur Damage-->
 	</crowd>
 
 
@@ -13,6 +16,7 @@
 		<speed value ="5"/>
 		<gold value ="0"/>
 		<mana value ="0"/>
+		<radius value ="4"/>
 	</building>
 
 	<building type="garage">
@@ -22,6 +26,7 @@
 		<speed value ="5"/>
 		<gold value ="0"/>
 		<mana value ="0"/>
+		<radius value ="3"/>
 	</building>
 
 	<building type="coffeeShop">
@@ -31,7 +36,9 @@
 		<speed value ="5"/>
 		<gold value ="0"/>
 		<mana value ="0"/>
+		<radius value ="2"/>	
 	</building>
+	
 
 	<!-- power types -->
 
