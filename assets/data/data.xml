@@ -7,24 +7,30 @@
 
 	<!-- building types -->
 	<building type="bar">
+		<cost value="50"/>
 		<motivation value ="0"/>
 		<health value ="-50"/>
 		<speed value ="5"/>
-		<resource value ="0"/>	
+		<gold value ="0"/>
+		<mana value ="0"/>
 	</building>
 
 	<building type="garage">
+		<cost value="50"/>
 		<motivation value ="0"/>
 		<health value ="-50"/>
 		<speed value ="5"/>
-		<resource value ="0"/>	
+		<gold value ="0"/>
+		<mana value ="0"/>
 	</building>
 
 	<building type="coffeeShop">
+		<cost value="50"/>
 		<motivation value ="0"/>
 		<health value ="-50"/>
 		<speed value ="5"/>
-		<resource value ="4"/>	
+		<gold value ="0"/>
+		<mana value ="0"/>
 	</building>
 
 	<!-- power types -->
