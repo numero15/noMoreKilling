@@ -72,6 +72,7 @@ class TiledLevel extends TiledMap
 		{
 			var _b = new FlxBar();
 			_b.kill();
+			_b.cameras = [FlxG.cameras.list[0]];
 			crowdsUI.add(_b);
 		}
 

@@ -69,6 +69,9 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			
 			rioter.bar = Reg.level.crowdsUI.getFirstAvailable();
 			rioter.bar.revive();
+			rioter.bar.parent = rioter;
+			rioter.bar.parentVariable = "speed";
+			rioter.bar.setRange(0, 20);
 			
 		}
 		else //followers

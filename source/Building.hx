@@ -51,7 +51,7 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 							effectHealth = Std.parseInt(_stat.get("value"));
 						case "speed" :
 							effectSpeed = Std.parseInt(_stat.get("value"));
-						case "resource" :
+						case "gold" :
 							effectResource = Std.parseInt(_stat.get("value"));
 					}
 				}
