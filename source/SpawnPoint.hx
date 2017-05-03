@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxSprite;
+import flixel.ui.FlxBar;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 
@@ -18,7 +19,6 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	
 	private var timerFirstSpawn : FlxTimer; // délai avant le spawn da la première vague
 	private var timerSpawns : FlxTimer; // délai entre le spawn de chaque vague de rioters
-	private var timerRioterSpawn:FlxTimer; // délai entre le spawn de chaque rioter
 	
 	public function new(X:Float, Y:Float, image_path:String, _faction : String)
 	{		
@@ -47,39 +47,40 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	public function spawnCrowd (?Timer:FlxTimer):Void
 	{
 		currentCrowd++;
-		/*timerRioterSpawn = new FlxTimer();
-		timerRioterSpawn.start(1, spawnRioter, crowdSize);*/
 		for (i in 0...crowdSize)
 		{
 			spawnRioter(i);
 		}
 	}
 	
-	public function spawnRioter (/*_timer:FlxTimer*/_num:Int):Void
+	public function spawnRioter (_num:Int):Void
 	{
-		/*var rioter : Rioter;
+		var rioter : Rioter;
 		// spawn leader
 		rioter = Reg.level.crowds.getFirstAvailable();
 		rioter.setup(this.x, this.y,"assets/images/crowd_"+faction+".png", faction,_num);
 		rioter.updatePaths();
 		
-		//if (_timer.elapsedLoops == 1)
-		if (_num == 0)
+		if (_num == 0) // leader
 		{
 			currentLeader = rioter;
-			rioter.health = crowdSize*100;
+			rioter.health = crowdSize * 100;
+			
+			
+			rioter.bar = Reg.level.crowdsUI.getFirstAvailable();
+			rioter.bar.revive();
+			
 		}
-		else
+		else //followers
 		{
 			rioter.leader = currentLeader;
 			currentLeader.followers.add(rioter);
 		}
 		
-		//if (_timer.loopsLeft == 0)
 		if (_num == crowdSize-1)
 		{
 			currentLeader = null;
 		}
-		rioter = null;*/
+		rioter = null;
 	}
 }

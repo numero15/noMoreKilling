@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.ui.FlxBar;
 import flixel.util.FlxPath;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
@@ -24,6 +25,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public var motivation : Int;
 	// + health (native de FlxSprite)
 	public var damage : Int; // utiliser pour différer l'application des dommages
+	public var bar : FlxBar;
 	
 	public function new()
 	{		
@@ -83,6 +85,12 @@ class Rioter extends FlxSprite // un seul objet graphique
 		{
 			drawDebug();
 		}*/
+		
+		if (followNumber == 0)
+		{
+			bar.x = this.x;
+			bar.y = this.y;
+		}
 	}
 	
 	
@@ -500,6 +508,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 		{
 			followers.clear();
 			followers = null;
+			bar.kill();
 		}
 	}
 }

@@ -13,6 +13,7 @@ import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
+import flixel.ui.FlxBar;
 import haxe.io.Path;
 
 /**
@@ -24,7 +25,6 @@ class TiledLevel extends TiledMap
 	// used to draw tiles in that layer (without file extension). The image file must be located in the directory specified bellow.
 	private inline static var c_PATH_LEVEL_TILESHEETS = "assets/images/";
 	
-	// Array of tilemaps used for collision
 	public var spawnTiles:FlxTypedGroup<SpawnPoint>;
 	public var foregroundTiles:FlxTilemap;
 	public var buildingBase:FlxTilemap;
@@ -36,7 +36,7 @@ class TiledLevel extends TiledMap
 	public var collidableTileLayers:Array<FlxTilemap>;	
 	public var crowds : FlxTypedGroup<Rioter>;
 	public var buildings : FlxTypedGroup<Building>;
-	
+	public var crowdsUI : FlxTypedGroup<FlxBar>;
 	
 	// Sprites of images layers
 	public var imagesLayer:FlxGroup;
@@ -56,6 +56,7 @@ class TiledLevel extends TiledMap
 		spawnTiles = new FlxTypedGroup<SpawnPoint>();
 		crowds = new FlxTypedGroup<Rioter>(100);
 		buildings = new FlxTypedGroup<Building>();
+		crowdsUI = new FlxTypedGroup<FlxBar>(25);
 		
 		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
 		
@@ -66,6 +67,14 @@ class TiledLevel extends TiledMap
 			_r.kill();
 			crowds.add(_r);
 		}
+		
+		for (i in 0...25)
+		{
+			var _b = new FlxBar();
+			_b.kill();
+			crowdsUI.add(_b);
+		}
+
 
 		//loadImages();
 		loadObjects(state);
@@ -141,9 +150,6 @@ class TiledLevel extends TiledMap
 			}
 		}
 	}
-	
-	
-
 	
 	private function loadSpawn(state:PlayState, o:TiledObject, g:TiledObjectLayer, group:FlxGroup)
 	{

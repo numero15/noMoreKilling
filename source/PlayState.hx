@@ -36,6 +36,7 @@ class PlayState extends FlxState
 	var timerFight : FlxTimer;
 	var UI : HUD;
 	var cameraUI : FlxCamera;
+	var cameraDroppable : FlxCamera;
 	var draggedBuilding : BuildingDroppable; // objet temporaire quand on drag drop un batiment
 	var draggedPower : Power; // objet temporaire quand on drag drop ou pouvoir
 	
@@ -56,13 +57,7 @@ class PlayState extends FlxState
 		Reg.money = 500;
 		
 		super.create();
-		bgColor = FlxColor.GRAY;
-		
-		draggedBuilding = new BuildingDroppable(0, 0, "bar");
-		draggedBuilding.kill();
-		
-		draggedPower = new Power(0, 0, 0);
-		draggedPower.kill();		
+		bgColor = FlxColor.GRAY;	
 		
 		Reg.level = new TiledLevel("assets/images/template.tmx", this);
 		
@@ -73,7 +68,10 @@ class PlayState extends FlxState
 		FlxG.camera.y = 0;
 		cameraUI = new FlxCamera(0, 0, Std.int(FlxG.width), Std.int(FlxG.height));
 		cameraUI.bgColor = FlxColor.TRANSPARENT;
-		FlxG.cameras.add(cameraUI);	
+		FlxG.cameras.add(cameraUI);			
+		cameraDroppable = new FlxCamera(0, 0, Std.int(FlxG.width), Std.int(FlxG.height));
+		cameraDroppable.bgColor = FlxColor.TRANSPARENT;
+		FlxG.cameras.add(cameraDroppable);	
 		
 		oriCameraZoom = FlxG.camera.zoom;
         oriCameraWidth = FlxG.camera.width;
@@ -88,6 +86,14 @@ class PlayState extends FlxState
 		Reg.level.buildingBase.cameras = [FlxG.cameras.list[0]];
 		Reg.level.buildingTop.cameras = [FlxG.cameras.list[0]];
 		
+		draggedBuilding = new BuildingDroppable(0, 0, "bar");
+		draggedBuilding.kill();
+		draggedBuilding.cameras = [FlxG.cameras.list[2]];
+		
+		draggedPower = new Power(0, 0, 0);
+		draggedPower.kill();
+		draggedPower.cameras = [FlxG.cameras.list[2]];
+		
 		UI = new HUD();	
 		
 		add(Reg.level.foregroundTiles);
@@ -96,8 +102,9 @@ class PlayState extends FlxState
 		add(Reg.level.crowds);
 		add(Reg.level.spawnTiles);	
 		add(Reg.level.buildingTop);
+		add(Reg.level.crowdsUI);
 		add(UI);
-		//add(draggedBuilding);
+		add(draggedBuilding);
 		//add(draggedPower);
 		
 		
@@ -112,18 +119,11 @@ class PlayState extends FlxState
 			_b.cameras = activeCam;
 		}
 		
-		
-		draggedBuilding.cameras = activeCam;
-		
-		
-		
-		
 		for (spawn in Reg.level.spawnTiles)
 		{
 			spawn.init();
 		}
 		
-			
 		prevMouseCoord = new FlxPoint(0, 0);
 		
 		timerFight = new FlxTimer();
@@ -150,7 +150,7 @@ class PlayState extends FlxState
 					draggedBuilding.set(b.type);
 					draggedBuilding.x = FlxG.mouse.screenX;
 					draggedBuilding.y = FlxG.mouse.screenY;
-					draggedBuilding.scale.x = draggedBuilding.scale.y = FlxG.camera.zoom;
+					//draggedBuilding.scale.x = draggedBuilding.scale.y = FlxG.camera.zoom;
 					draggedBuilding.updateHitbox();
 					break;
 				}
@@ -165,14 +165,25 @@ class PlayState extends FlxState
 				prevMouseCoord.x = FlxG.mouse.screenX;
 				FlxG.camera.scroll.y -= Std.int((FlxG.mouse.screenY - prevMouseCoord.y)/*/Reg.TILE_SIZE*/) /** Reg.TILE_SIZE*/;
 				prevMouseCoord.y = FlxG.mouse.screenY;
+				
+				cameraDroppable.scroll.x = FlxG.camera.scroll.x;
+				cameraDroppable.scroll.y = FlxG.camera.scroll.y;
 			}
 			
-			if (draggedBuilding.alive)
+			/*if (draggedBuilding.alive)
 			{
 				
-				draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom) - (FlxG.camera.scroll.x % Reg.TILE_SIZE /*- Reg.TILE_SIZE*/); // TODO ajuster au zoom, utiliser des var
-
-				draggedBuilding.y = Std.int(FlxG.mouse.getScreenPosition(cameraUI).y / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom);
+				draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom)// + (Reg.TILE_SIZE - FlxG.camera.scroll.x % Reg.TILE_SIZE - Reg.TILE_SIZE);  TODO ajuster au zoom, utiliser des var
+				if (FlxG.camera.scroll.x % Reg.TILE_SIZE != 0)
+					{
+						draggedBuilding.x += Reg.TILE_SIZE - (FlxG.camera.scroll.x % Reg.TILE_SIZE);
+					}
+				draggedBuilding.y = Std.int(FlxG.mouse.getScreenPosition(cameraUI).y / (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom)// + ( Reg.TILE_SIZE - FlxG.camera.scroll.y % Reg.TILE_SIZE - Reg.TILE_SIZE);
+				if (FlxG.camera.scroll.y % Reg.TILE_SIZE != 0)
+					{
+						draggedBuilding.y += Reg.TILE_SIZE - (FlxG.camera.scroll.y % Reg.TILE_SIZE);
+						trace(FlxG.camera.scroll.y % Reg.TILE_SIZE);
+					}
 				
 				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 68 
 				&& Reg.level.buildingBase.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 0 )
@@ -180,7 +191,14 @@ class PlayState extends FlxState
 				
 				else
 					draggedBuilding.alpha = .5;					
-			}		
+			}*/
+			
+			if (draggedBuilding.alive)
+			{
+				draggedBuilding.x = Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE  ;
+				draggedBuilding.y = Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE  ;
+				//var _b : Building = new Building(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE)* Reg.TILE_SIZE, draggedBuilding.type);
+			}
 		}
 		
 		if (FlxG.mouse.justReleased)
@@ -218,32 +236,36 @@ class PlayState extends FlxState
 		
 		
         FlxG.camera.zoom += val;
-		if ( FlxG.camera.zoom < .5)
-			 FlxG.camera.zoom = .5;
-
+		if ( FlxG.camera.zoom < .5)		
+			FlxG.camera.zoom = .5;			
+		
+		cameraDroppable.zoom = FlxG.camera.zoom;
+		
         var newWidth:Float = oriCameraZoom / FlxG.camera.zoom * oriCameraWidth;
         var newHeight:Float = oriCameraZoom / FlxG.camera.zoom * oriCameraHeight;
         var newX:Float = (FlxG.width-FlxG.camera.width);
         var newY:Float = (FlxG.height - FlxG.camera.height);
-		
-		
- 
        
         if ( FlxG.camera.zoom <= 1)
+		{
 			FlxG.camera.setSize(Std.int(newWidth), Std.int(newHeight));
+			cameraDroppable.setSize(Std.int(newWidth), Std.int(newHeight));
+		}
 		
-        FlxG.camera.setPosition(- FlxG.camera.width/2+oriCameraWidth/2, - FlxG.camera.height/2+oriCameraHeight/2);
+        FlxG.camera.setPosition( - FlxG.camera.width / 2 + oriCameraWidth / 2, - FlxG.camera.height / 2 + oriCameraHeight / 2);
+		cameraDroppable.setPosition( - FlxG.camera.width / 2 + oriCameraWidth / 2, - FlxG.camera.height / 2 + oriCameraHeight / 2);
        
         Reg.level.foregroundTiles.updateBuffers();
 		Reg.level.buildingBase.updateBuffers();
 		Reg.level.buildingTop.updateBuffers();
 		
 		var centerCoord : FlxPoint = FlxG.mouse.getWorldPosition(FlxG.camera);
-		/*FlxG.camera.scroll.x += (prevCenterCoord.x - centerCoord.x);
-		FlxG.camera.scroll.y += (prevCenterCoord.y - centerCoord.y);*/
 		
-		FlxG.camera.scroll.x+= (prevCenterCoord.x - centerCoord.x);
-		FlxG.camera.scroll.y+= (prevCenterCoord.y - centerCoord.y);
+		FlxG.camera.scroll.x += (prevCenterCoord.x - centerCoord.x);		
+		FlxG.camera.scroll.y += (prevCenterCoord.y - centerCoord.y);
+		
+		cameraDroppable.scroll.x = FlxG.camera.scroll.x;
+		cameraDroppable.scroll.y = FlxG.camera.scroll.y;
     }
 	
 	private function rioterCollide(r1 : Rioter, r2 : Rioter):Void
