@@ -23,13 +23,13 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 	public var effectHealth : Int;
 	public var effectSpeed : Int;
 	public var effectResource : Int;
-	private var stats:Xml;
+	//private var stats:Xml;
 	
 	public function new(?X:Float=0, ?Y:Float=0, _t:String) 
 	{
 		super(X, Y);
 		type = _t;
-		stats = Xml.parse(sys.io.File.getContent(AssetPaths.data__xml)).firstChild();
+		//stats = Xml.parse(sys.io.File.getContent(AssetPaths.data__xml)).firstChild();
 		 
 		set(type);
 	}
@@ -38,7 +38,7 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 	{
 		ID = Reg.level.buildings.length;		
 		
-		for (_buildingStats in stats.elementsNamed("building"))
+		for (_buildingStats in Reg.stats.elementsNamed("building"))
 		{		
 			if (_buildingStats.get('type') == type)
 			{
