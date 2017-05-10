@@ -9,16 +9,17 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 {
 	private var faction : String;
 	public var count :Int = 0;
+	private var currCount : Int = 0;
 	public var delayFirstSpawn : Int = 0;
 	public var delaySpawns :Int = 0;
 	public var crowdSize: Int = 0;
 	
 	private var currentLeader : Rioter;
 	
-	private var currentCrowd: Int = 0;
+	//private var currentCrowd: Int = 0;
 	
-	private var timerFirstSpawn : FlxTimer; // délai avant le spawn da la première vague
-	private var timerSpawns : FlxTimer; // délai entre le spawn de chaque vague de rioters
+	
+	private var timerSpawn : FlxTimer; // délai entre le spawn de chaque vague de rioters
 	
 	public function new(X:Float, Y:Float, image_path:String, _faction : String)
 	{		
@@ -34,9 +35,10 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		
 		else
 		{
-			timerFirstSpawn = new FlxTimer();
-			timerFirstSpawn.start(delayFirstSpawn, spawnCrowd, 1);
+			timerSpawn = new FlxTimer();
+			timerSpawn.start(delayFirstSpawn, spawnCrowd, 1);
 		}
+		currCount = 0;
 	}
 	
 	/*public override function update(elapsed:Float):Void 
@@ -44,12 +46,32 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		super.update(elapsed);
 	}*/
 	
-	public function spawnCrowd (?Timer:FlxTimer):Void
+	public function spawnCrowd (?_t:FlxTimer):Void
 	{
-		currentCrowd++;
-		for (i in 0...crowdSize)
+		
+		if (currCount < count)
 		{
-			spawnRioter(i);
+			for (i in 0...crowdSize)
+			{
+				spawnRioter(i);
+			}			
+			currCount ++;
+			
+			if (timerSpawn != null)
+				timerSpawn.reset(delaySpawns);
+			
+			else
+			{
+				timerSpawn = new FlxTimer();
+				timerSpawn.start(delaySpawns, spawnCrowd, 1);
+			}
+		}
+		
+		else if (timerSpawn != null)
+		{
+			timerSpawn.cancel();
+			timerSpawn.destroy();
+			timerSpawn = null;
 		}
 	}
 	

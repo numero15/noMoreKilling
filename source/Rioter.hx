@@ -77,7 +77,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 		if (followNumber == 0)
 		{
 			bar.parentVariable = "health";
-			trace(bar.value);
 		}
 	}
 	
