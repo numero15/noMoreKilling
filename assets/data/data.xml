@@ -2,10 +2,22 @@
 	<!-- crowd types, if needed -->
 	<crowd type="red">
 		<motivation value ="100"/><!--motivation par crowd-->
+        <motivationMax value ="100"/><!--motivation par crowd-->
 		<health value ="75"/><!--health par tile-->
 		<speed value ="5"/><!-- vitesse de déplacement & modificateur de Damage-->
+        <speedMax value ="10"/><!-- vitesse de déplacement maximum-->
 		<firePower value="0"/><!-- modificateur sur Damage-->
 	</crowd>
+    
+    <crowd type="yellow">
+		<motivation value ="100"/><!--motivation par crowd-->
+        <motivationMax value ="200"/><!--motivation par crowd-->
+		<health value ="75"/><!--health par tile-->
+		<speed value ="0"/><!-- vitesse de déplacement & modificateur de Damage-->
+        <speedMax value ="10"/><!-- vitesse de déplacement maximum-->
+		<firePower value="0"/><!-- modificateur sur Damage-->
+	</crowd>
+
 
 
 	<!-- building types -->

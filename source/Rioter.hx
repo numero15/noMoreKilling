@@ -22,7 +22,9 @@ class Rioter extends FlxSprite // un seul objet graphique
 	private var isMoving : Bool;
 	// stat pour les combat
 	public var speed : Int;
+	public var speedMax : Int = 10;
 	public var motivation : Int;
+	public var motivationMax : Int = 200;
 	// + health (native de FlxSprite)
 	public var damage : Int; // utiliser pour différer l'application des dommages
 	public var bar : FlxBar;
@@ -76,7 +78,8 @@ class Rioter extends FlxSprite // un seul objet graphique
 		super.update(elapsed);
 		if (followNumber == 0)
 		{
-			bar.parentVariable = "health";
+			bar.parentVariable = "motivation";
+			trace(motivation);
 		}
 	}
 	
@@ -106,16 +109,19 @@ class Rioter extends FlxSprite // un seul objet graphique
 		
 		if (followNumber==0) // est le leader, par sécurité
 		{		
-
-			for (rioterEnemy in Reg.level.crowds)
-			{
-				if (rioterEnemy.followNumber==0 && rioterEnemy.faction == enemy && rioterEnemy.alive)
-				{					
-					p = findNewPath(this, rioterEnemy);					
-					if (p != null)
-						paths.push (p);						
+			// si motivation maximum trouver un path
+			//if (motivation == motivationMax)
+			//{
+				for (rioterEnemy in Reg.level.crowds)
+				{
+					if (rioterEnemy.followNumber==0 && rioterEnemy.faction == enemy && rioterEnemy.alive)
+					{					
+						p = findNewPath(this, rioterEnemy);					
+						if (p != null)
+							paths.push (p);						
+					}
 				}
-			}
+			//}
 			
 			if (paths.length == 1 && isMoving) // si un seul chemin
 				p = paths[0];				
@@ -394,6 +400,11 @@ class Rioter extends FlxSprite // un seul objet graphique
 			damage -= _b.effectHealth;
 			Reg.money += _b.effectResource;
 			speed += _b.effectSpeed;
+			if (speed > speedMax )
+				speed = speedMax;
+			if (speed < 0)
+				speed = 0;
+			
 			motivation += _b.effectMotivation;
 		}
 	}
@@ -402,7 +413,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 	{
 		if (damage > 0)
 		{
-			//this.motivation--;
+			this.motivation--;
 		}
 		
 		if (motivation < 0) motivation = 0;

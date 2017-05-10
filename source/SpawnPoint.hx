@@ -88,18 +88,35 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			currentLeader = rioter;
 			rioter.health = crowdSize * 100;
 			
-			
+			// à finir
 			rioter.bar = Reg.level.crowdsUI.getFirstAvailable();
 			rioter.bar.revive();
 			rioter.bar.parent = rioter;
-			rioter.bar.parentVariable = "speed";
-			rioter.bar.setRange(0, 20);
+			rioter.bar.parentVariable = "motivation";
+			rioter.bar.setRange(0, 200);
 			
 		}
 		else //followers
 		{
 			rioter.leader = currentLeader;
 			currentLeader.followers.add(rioter);
+		}
+		
+		for (_buildingStats in Reg.stats.elementsNamed("crowd"))
+		{		
+			if (_buildingStats.get('type') == faction)
+			{
+				for ( _stat in _buildingStats.elements())
+				{
+					switch _stat.nodeName
+					{
+						case "speed" :
+							rioter.speed = Std.parseInt( _stat.get("value"));
+						case "speedMax" :
+							rioter.speedMax = Std.parseInt(_stat.get("value"));
+					}
+				}
+			}			
 		}
 		
 		if (_num == crowdSize-1)
