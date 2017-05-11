@@ -18,4 +18,5 @@ class Reg
 	public static var stats : Xml;
 	
 	public static var money : Int;
+	public static var currentLeaderID : Int;
 }

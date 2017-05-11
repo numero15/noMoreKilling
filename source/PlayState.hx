@@ -56,6 +56,7 @@ class PlayState extends FlxState
 		
 		Reg.money = 500;
 		Reg.stats = Xml.parse(sys.io.File.getContent(AssetPaths.data__xml)).firstChild();
+		Reg.currentLeaderID = 0;
 		
 		super.create();
 		bgColor = FlxColor.GRAY;	
@@ -136,7 +137,7 @@ class PlayState extends FlxState
 	 */
 	override public function update(elapsed:Float):Void
 	{		
-		FlxG.overlap(Reg.level.crowds, rioterCollide);
+		//FlxG.overlap(Reg.level.crowds, rioterCollide);
 		
 		if (FlxG.mouse.justPressed)
 		{
@@ -272,7 +273,7 @@ class PlayState extends FlxState
 	private function rioterCollide(r1 : Rioter, r2 : Rioter):Void
 	{
 		
-		//trace(r1);
+		//combat
 		if (r1.faction != r2.faction)
 		{
 			r1.stopCrowd();
@@ -280,6 +281,29 @@ class PlayState extends FlxState
 			
 			r1.addOpponent(r2);
 			r2.addOpponent(r1);
+		}
+		
+		//joint
+		else if(r1.faction == r2.faction && r1.leaderId != r2.leaderId) // meme faction mais foule differente
+		{
+			if (r1.followNumber == 0)
+			{
+				if (r2.followNumber != 0)
+					r1.jointOtherCrowd(r2.leader, r2.followNumber);
+				
+				else
+					r1.jointOtherCrowd(r2, r2.followNumber);				
+			}
+			
+			else if (r2.followNumber == 0)
+			{
+				if (r1.followNumber != 0)
+					r2.jointOtherCrowd(r1.leader, r1.followNumber);
+				
+				else
+					r2.jointOtherCrowd(r1, r1.followNumber);				
+			}
+			
 		}
 	}
 	

@@ -56,6 +56,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 				spawnRioter(i);
 			}			
 			currCount ++;
+			Reg.currentLeaderID++;
 			
 			if (timerSpawn != null)
 				timerSpawn.reset(delaySpawns);
@@ -80,8 +81,8 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		var rioter : Rioter;
 		// spawn leader
 		rioter = Reg.level.crowds.getFirstAvailable();
-		rioter.setup(this.x, this.y,"assets/images/crowd_"+faction+".png", faction,_num);
-		rioter.updatePaths();
+		rioter.setup(this.x, this.y, "assets/images/crowd_" + faction + ".png", faction, _num);
+		rioter.leaderId = Reg.currentLeaderID;
 		
 		if (_num == 0) // leader
 		{
@@ -94,6 +95,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			rioter.bar.parent = rioter;
 			rioter.bar.parentVariable = "motivation";
 			rioter.bar.setRange(0, 200);
+			rioter.bar.visible = false;
 			
 		}
 		else //followers
@@ -113,7 +115,11 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 						case "speed" :
 							rioter.speed = Std.parseInt( _stat.get("value"));
 						case "speedMax" :
-							rioter.speedMax = Std.parseInt(_stat.get("value"));
+							rioter.speedMax = Std.parseInt(_stat.get("value"));							
+						case "motivation" :
+							rioter.motivation = Std.parseInt( _stat.get("value"));
+						case "motivationMax" :
+							rioter.motivationMax = Std.parseInt(_stat.get("value"));
 					}
 				}
 			}			
