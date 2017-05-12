@@ -104,11 +104,12 @@ class PlayState extends FlxState
 		add(Reg.level.buildings);
 		add(Reg.level.buildingBase);
 		add(Reg.level.crowds);
-		add(Reg.level.crowdsUI);
+		add(Reg.level.UIBars);
 		add(Reg.level.fog01);
 		add(Reg.level.spawnTiles);	
 		add(Reg.level.buildingTop);		
 		add(Reg.level.fog02);
+		add(Reg.level.UIBtnsClose);
 		add(UI);
 		add(draggedBuilding);
 		//add(draggedPower);
@@ -205,7 +206,6 @@ class PlayState extends FlxState
 			{
 				draggedBuilding.x = Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE  ;
 				draggedBuilding.y = Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE  ;
-				//var _b : Building = new Building(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE)* Reg.TILE_SIZE, draggedBuilding.type);
 			}
 		}
 		
@@ -229,11 +229,7 @@ class PlayState extends FlxState
 		}
 		
 		if (FlxG.mouse.wheel != 0)
-		{
-			// Mouse wheel logic goes here, for example zooming in / out:
-		ZoomCamera(FlxG.mouse.wheel / 10);
-			
-		}
+			ZoomCamera(FlxG.mouse.wheel / 10);
 		
 		super.update(elapsed);
 	}	
@@ -244,8 +240,12 @@ class PlayState extends FlxState
 		
 		
         FlxG.camera.zoom += val;
-		if ( FlxG.camera.zoom < .5)		
-			FlxG.camera.zoom = .5;			
+		if ( FlxG.camera.zoom < 1)		
+			FlxG.camera.zoom = 1;
+			
+		if ( FlxG.camera.zoom > 3)		
+			FlxG.camera.zoom = 3;
+		
 		
 		cameraDroppable.zoom = FlxG.camera.zoom;
 		

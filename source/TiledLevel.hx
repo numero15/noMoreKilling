@@ -36,7 +36,8 @@ class TiledLevel extends TiledMap
 	public var collidableTileLayers:Array<FlxTilemap>;	
 	public var crowds : FlxTypedGroup<Rioter>;
 	public var buildings : FlxTypedGroup<Building>;
-	public var crowdsUI : FlxTypedGroup<FlxBar>;
+	public var UIBars : FlxTypedGroup<FlxBar>;
+	public var UIBtnsClose :  FlxTypedGroup<FlxSprite>;
 	
 	// Sprites of images layers
 	public var imagesLayer:FlxGroup;
@@ -56,7 +57,8 @@ class TiledLevel extends TiledMap
 		spawnTiles = new FlxTypedGroup<SpawnPoint>();
 		crowds = new FlxTypedGroup<Rioter>(100);
 		buildings = new FlxTypedGroup<Building>();
-		crowdsUI = new FlxTypedGroup<FlxBar>(25);
+		UIBars = new FlxTypedGroup<FlxBar>(25);
+		UIBtnsClose = new FlxTypedGroup<FlxSprite>();
 		
 		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
 		
@@ -73,9 +75,8 @@ class TiledLevel extends TiledMap
 			var _b = new FlxBar(0,0,FlxBarFillDirection.LEFT_TO_RIGHT,8,2);
 			_b.kill();
 			_b.cameras = [FlxG.cameras.list[0]];
-			crowdsUI.add(_b);
-		}
-
+			UIBars.add(_b);
+		}	
 
 		//loadImages();
 		loadObjects(state);

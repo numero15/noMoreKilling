@@ -488,12 +488,9 @@ class Rioter extends FlxSprite // un seul objet graphique
 		this.health -= damage;
 		
 		if (this.health < 0) this.health = 0;			
-		
-		trace(health);
+	
 		if (this.motivation <= 0 || this.health <= 0)// disperser la foule
-		{
-			trace("kill" + leaderId);
-			
+		{			
 			for (f in followers)
 			{
 				followers.remove(f);

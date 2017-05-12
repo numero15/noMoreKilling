@@ -90,7 +90,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			rioter.health = crowdSize * 100;
 			
 			// à finir
-			rioter.bar = Reg.level.crowdsUI.getFirstAvailable();
+			rioter.bar = Reg.level.UIBars.getFirstAvailable();
 			rioter.bar.revive();
 			rioter.bar.parent = rioter;
 			rioter.bar.parentVariable = "health";
