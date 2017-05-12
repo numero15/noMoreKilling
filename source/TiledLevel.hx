@@ -70,7 +70,7 @@ class TiledLevel extends TiledMap
 		
 		for (i in 0...25)
 		{
-			var _b = new FlxBar();
+			var _b = new FlxBar(0,0,FlxBarFillDirection.LEFT_TO_RIGHT,8,2);
 			_b.kill();
 			_b.cameras = [FlxG.cameras.list[0]];
 			crowdsUI.add(_b);

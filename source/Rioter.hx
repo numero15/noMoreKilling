@@ -18,7 +18,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 	private var buildings : List<Building>; // only for leader
 	public var followers : List<Rioter>; //only for leader
 	public var followNumber : Int; // place du rioter dans la foule : 3->2->1->leader(0)
-	private var timerSearchEnemy : FlxTimer;
 	private var isMoving : Bool;
 	// stat pour les combat
 	public var speed : Int;
@@ -47,7 +46,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 		
 		previousPos = new FlxPoint(X, Y);
 		
-		alpha = .5;
+		alpha = 1;
 		updateHitbox();
 		setSize(Reg.TILE_SIZE * .8, Reg.TILE_SIZE * .8);
 		centerOffsets();
@@ -64,12 +63,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 		startTick = FlxG.game.ticks;
 		delayTicks = 1000;
 		
-		if (followNumber == 0)
-		{
-			timerSearchEnemy = new FlxTimer();
-			//timerSearchEnemy.start(1, updatePaths, 0);
-		}
-		
 		switch(faction)
 		{
 			case "yellow":
@@ -85,7 +78,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 		super.update(elapsed);
 		if (followNumber == 0)
 		{
-			bar.parentVariable = "motivation";
+			//bar.parentVariable = "health";
 			/*trace ("FACTION = " + faction);
 			trace ("motivation = " + motivation);
 			trace("speed = " + speed);
@@ -100,24 +93,19 @@ class Rioter extends FlxSprite // un seul objet graphique
 			}
 			
 			bar.x = this.x;
-			bar.y = this.y;
-		
+			bar.y = this.y;		
 		}
 	}
 	
 	override public function draw():Void
 	{
-		super.draw();
-		
+		super.draw();		
 		// To draw path
 		/*if (path != null && !path.finished && followNumber == 2 && faction == "fouleJaune")
 		{
 			drawDebug();
-		}*/
-		
-		
-	}
-	
+		}*/	
+	}	
 	
 	//lancer quand le leader est arrivé à un point du path
 	public function updatePaths(?_path:FlxPath):Void  // pour les leaders : définit un nouveau path vers la foule ennemie la plus proche
@@ -162,7 +150,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 				}
 			}
 			else // si pas de cible déplacement aléatoire
-			{
+			{				
 				var directions : Array<FlxPoint>;
 				directions = new Array <FlxPoint>();
 				var direction : FlxPoint = new FlxPoint();
@@ -227,41 +215,89 @@ class Rioter extends FlxSprite // un seul objet graphique
 				this.y = p[1].y - this.height / 2;
 				
 				//move followers
-				for (_f in followers)
-				{					
-					_f.previousPos.x = _f.x;
-					_f.previousPos.y = _f.y;
-					
-					
-					if (_f.followNumber == 1)
-					{						
-						_f.x = previousPos.x;
-						_f.y = previousPos.y;
-					}
-					
-					else
-					{
-						for (_pf in followers)
+				
+				
+				//update followers in order
+				var i : Int;
+				i = 0;
+				while (i < followers.length)
+				{
+					for (_f in followers)
+					{					
+						if (_f.followNumber == i + 1)
 						{
-							if (_pf.followNumber == _f.followNumber-1)
+							i++;
+							
+							_f.previousPos.x = _f.x;
+							_f.previousPos.y = _f.y;
+							
+							
+							if (_f.followNumber == 1)
+							{						
+								_f.x = previousPos.x;
+								_f.y = previousPos.y;
+							}
+							
+							else
 							{
-								_f.x = _pf.previousPos.x;
-								_f.y = _pf.previousPos.y;
+								for (_pf in followers)
+								{
+									if (_pf.followNumber == _f.followNumber-1)
+									{
+										_f.x = _pf.previousPos.x;
+										_f.y = _pf.previousPos.y;
+									}
+								}
 							}
 						}
-					}					
+					}
 				}
 			}
 			
 		}	
 	}
 	
-	private function collide(_p:FlxPoint):Bool
+	private function collide(_p:FlxPoint):Bool // appeler uniquement sur les leaders
 	{
 		for (_r in Reg.level.crowds)
 		{
-			if (_r.x == _p.x && _r.y == _p.y)
-				return true;
+			if (_r.x == _p.x && _r.y == _p.y && _r.alive)
+			{
+				//fight
+				if (_r.faction != faction)
+				{					
+					_r.stopCrowd();
+					stopCrowd();
+					
+					if (_r.followNumber == 0)
+					{
+						_r.addOpponent(this);
+						addOpponent(_r);
+					}
+						
+					else
+					{
+						_r.leader.addOpponent(this);
+						addOpponent(_r.leader);
+					}				
+					
+					
+					return true;
+				}
+				
+				//joint
+				else if(_r.faction == faction && _r.leaderId != leaderId) // meme faction mais foule differente
+				{					
+					if (_r.followNumber != 0)
+						jointOtherCrowd(_r.leader, _r.followNumber);
+						
+					else							
+						jointOtherCrowd(_r, _r.followNumber);	
+					
+					return true;
+				}
+				
+			}
 		}
 		return false;		
 	}
@@ -284,10 +320,10 @@ class Rioter extends FlxSprite // un seul objet graphique
 		{
 			for (r in Reg.level.crowds)
 			{
-				if (r.leaderId == this.leaderId)				
-					r.isMoving = false;
-				
-			}			
+				if (r.leaderId == this.leaderId && r.isMoving)				
+					r.isMoving = false;	
+			}	
+			
 		}
 	}
 	
@@ -311,40 +347,95 @@ class Rioter extends FlxSprite // un seul objet graphique
 		}
 	}
 	
-	public function fight():Void // appeler uniquement sur les leaders
+	public function cleanOpponents():Void
 	{
+		var removeBool : Bool = false;
+		
 		for (op in opponents)
 		{
 			// enlever l'opposant si il est mort
-			if (!op.alive  || op == null)
+			if (!op.alive || op == null)
 			{
 				opponents.remove(op);
 			}
 			
-			//TODO enveler l'opposant si il n'est plus en contact
-			
+			//enveler l'opposant si il n'est plus en contact
+			// si le le leader ou un follower est en contact avec le leader ou un follower			
 			else
 			{
-				if (op.leader != null)				
+				removeBool = true;	
+				
+				if (distInTile(this.getPosition(), op.getPosition() )< 2)
 				{
-					//op.leader.hit(Std.int(health/10));
-					op.leader.damage += Std.int(health / 10);
+					removeBool = false;
+				}
+					
+				for (op_f in op.followers)
+				{					
+					if (distInTile(this.getPosition(), op_f.getPosition()) < 2)
+					{
+						removeBool = false;
+						break;
+					}
 				}
 				
-				else
+				for (f in followers)
 				{
-					//op.hit(Std.int(health/10));
-					op.damage += Std.int(health / 10);
+					if (distInTile(f.getPosition(), op.getPosition() )< 2)
+					{
+						removeBool = false;
+					}
+						
+					for (op_f in op.followers)
+					{					
+						if (distInTile(f.getPosition(), op_f.getPosition()) < 2)
+						{
+							removeBool = false;
+							break;
+						}
+					}
+				}				
+				
+				if (removeBool)
+				{
+					opponents.remove(op);
 				}
 			}
 		}
 		
-		if (opponents.length == 0) // remettre la foule en marche si elle n'a pas de combat en cour
-		{
-			this.isMoving = true;	
-			//updatePaths();
+		
+			
+	}
+	
+	private function distInTile(_p1 : FlxPoint, _p2 : FlxPoint):Int
+	{
+		return Std.int( Math.abs (Std.int(_p1.x / Reg.TILE_SIZE) - Std.int(_p2.x / Reg.TILE_SIZE))  /*distance en tile sur l'axe x*/
+					   + Math.abs (Std.int(_p1.y / Reg.TILE_SIZE) - Std.int(_p2.y / Reg.TILE_SIZE))); /*distance en tile sur l'axe y*/
+	}
+	
+	public function fight():Void // appeler uniquement sur les leaders
+	{
+		cleanOpponents();
+		
+		var addToDamage : Int;
+		for (op in opponents)
+		{		
+			// dommage minimum
+			addToDamage = Std.int(health / 10);
+			
+			if (Std.int(health / 10) < 50)
+				addToDamage = 50;
+			
+			if (op.leader != null)				
+				op.leader.damage += addToDamage;
+			
+			else
+				op.damage += addToDamage;
 		}
 		
+		if (opponents.length == 0) // remettre la foule en marche si elle n'a pas de combat en cour
+			this.isMoving = true;	
+
 		// calculer les effets des batiments
 		buildings.clear();
 		
@@ -373,10 +464,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 	
 	public function hit():Void // appeler uniquement sur les leaders
 	{
-		if (damage > 0)
-		{
-			this.motivation--;
-		}
+		if (damage > 0)	this.motivation--;
 		
 		if (motivation < 0) motivation = 0;
 		
@@ -388,31 +476,31 @@ class Rioter extends FlxSprite // un seul objet graphique
 				{
 					followers.remove(f);
 					f.kill();
-					//f.destroy();
 				}
 				
-				if (followers.length == 0)
+				/*if (followers.length == 0)
 				{
 					this.kill();
-					//this.destroy();
-				}
+				}*/
 			}
 		}
 		
 		this.health -= damage;
 		
-		if (this.health < 0) this.health = 0;		
+		if (this.health < 0) this.health = 0;			
 		
-		if (this.motivation <= 0)// disperser la foule
+		trace(health);
+		if (this.motivation <= 0 || this.health <= 0)// disperser la foule
 		{
+			trace("kill" + leaderId);
+			
 			for (f in followers)
 			{
 				followers.remove(f);
-				f.kill();
-				//f.destroy();				
+				f.kill();		
 			}
+			this.bar.kill();
 			this.kill();
-			//this.destroy();
 		}	
 		
 		for (rioter in Reg.level.crowds)
@@ -453,8 +541,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 		}
 	}
 	
-
-	
 	public function jointOtherCrowd(_otherLeader : Rioter, _followNumber:Int):Void // for leaders
 	{
 		if (followNumber == 0)
@@ -475,10 +561,9 @@ class Rioter extends FlxSprite // un seul objet graphique
 			{
 				if (_f.followNumber > _followNumber)
 				{
-					_f.followNumber += this.followers.length+1;
+					_f.followNumber += this.followers.length + 1;
 				}				
 			}
-			
 			// ajoute les followers à l'autre foule
 			for ( _f in followers)
 			{
@@ -489,11 +574,20 @@ class Rioter extends FlxSprite // un seul objet graphique
 			
 			for ( _f in _otherLeader.followers)
 			{
-				trace(_f.followNumber);
+				_f.alpha = 1 - (_f.followNumber + 1) / 10;
 			}
+			_otherLeader.alpha = 1;
 			
 			followers.clear();		
 		}		
+	}
+	
+	public function setAlpha():Void
+	{
+		if (followNumber > 0)
+		{
+			alpha = 1 - followNumber / (leader.health/100);
+		}
 	}
 	
 	private function updateGFX():Void
@@ -504,12 +598,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 	
 	override function kill():Void
 	{			
-		//timerSearchEnemy.cancel();
-		/*if (followNumber == 0)
-		{
-			timerSearchEnemy.cancel();
-			
-		}*/
 		super.kill();
 	}
 	

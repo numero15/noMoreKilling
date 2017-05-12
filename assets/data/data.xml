@@ -13,7 +13,7 @@
 		<motivation value ="100"/><!--motivation par crowd-->
         <motivationMax value ="200"/><!--motivation par crowd-->
 		<health value ="75"/><!--health par tile-->
-		<speed value ="300"/><!-- vitesse de déplacement & modificateur de Damage-->
+		<speed value ="0"/><!-- vitesse de déplacement & modificateur de Damage-->
         <speedMax value ="500"/><!-- vitesse de déplacement maximum-->
 		<firePower value="0"/><!-- modificateur sur Damage-->
 	</crowd>

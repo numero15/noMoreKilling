@@ -270,7 +270,7 @@ class PlayState extends FlxState
 		cameraDroppable.scroll.y = FlxG.camera.scroll.y;
     }
 	
-	private function rioterCollide(r1 : Rioter, r2 : Rioter):Void
+	/*private function rioterCollide(r1 : Rioter, r2 : Rioter):Void
 	{
 		
 		//combat
@@ -305,7 +305,7 @@ class PlayState extends FlxState
 			}
 			
 		}
-	}
+	}*/
 	
 	private function updateFight(_t:FlxTimer):Void
 	{		
