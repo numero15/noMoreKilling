@@ -86,7 +86,9 @@ class PlayState extends FlxState
 		
 		Reg.level.foregroundTiles.cameras = [FlxG.cameras.list[0]];
 		Reg.level.buildingBase.cameras = [FlxG.cameras.list[0]];
+		Reg.level.fog01.cameras = [FlxG.cameras.list[0]];
 		Reg.level.buildingTop.cameras = [FlxG.cameras.list[0]];
+		Reg.level.fog02.cameras = [FlxG.cameras.list[0]];
 		
 		draggedBuilding = new BuildingDroppable(0, 0, "bar");
 		draggedBuilding.kill();
@@ -102,9 +104,11 @@ class PlayState extends FlxState
 		add(Reg.level.buildings);
 		add(Reg.level.buildingBase);
 		add(Reg.level.crowds);
-		add(Reg.level.spawnTiles);	
-		add(Reg.level.buildingTop);
 		add(Reg.level.crowdsUI);
+		add(Reg.level.fog01);
+		add(Reg.level.spawnTiles);	
+		add(Reg.level.buildingTop);		
+		add(Reg.level.fog02);
 		add(UI);
 		add(draggedBuilding);
 		//add(draggedPower);
@@ -138,6 +142,8 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{		
 		//FlxG.overlap(Reg.level.crowds, rioterCollide);
+		
+		Reg.level.moveFog();
 		
 		if (FlxG.mouse.justPressed)
 		{

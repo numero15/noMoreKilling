@@ -110,7 +110,6 @@ class TiledLevel extends TiledMap
 			var tilemap:FlxTilemap = new FlxTilemap();
 			tilemap.loadMapFromArray(tileLayer.tileArray, width, height, processedPath,
 				tileSet.tileWidth, tileSet.tileHeight, OFF, tileSet.firstGID, tileSet.firstGID, tileSet.firstGID+12); //tileSet.firstGID => numero du premier tile de la feuille (sur l'ensemble des tiles du niveau)
-				
 			if (tileLayer.name == "ground")
 			{
 				foregroundTiles = tilemap;
@@ -122,6 +121,19 @@ class TiledLevel extends TiledMap
 			if (tileLayer.name == "buildingBG")
 			{
 				buildingBase = tilemap;
+			}
+			
+			if (tileLayer.name == "fog01")
+			{
+				fog01 = tilemap;
+				fog01.alpha = .1;
+			}
+			
+			if (tileLayer.name == "fog02")
+			{
+				fog02= tilemap;
+				fog02.alpha = .1;
+				fog02.y = 8;
 			}
 			
 			if (tileLayer.name == "buildingFG")
@@ -198,5 +210,11 @@ class TiledLevel extends TiledMap
 			}
 		}
 		return false;
+	}
+	
+	public function moveFog():Void
+	{
+		fog01.x = Math.sin(FlxG.game.ticks / 7000) * 24;
+		fog02.x = Math.cos(FlxG.game.ticks / 7000) * 24;
 	}
 }
