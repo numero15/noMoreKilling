@@ -143,7 +143,6 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{		
 		//FlxG.overlap(Reg.level.crowds, rioterCollide);
-		
 		Reg.level.moveFog();
 		
 		if (FlxG.mouse.justPressed)

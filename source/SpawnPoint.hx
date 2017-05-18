@@ -16,6 +16,9 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	
 	private var currentLeader : Rioter;
 	
+	public var startTick : Int;
+	public var delayTicks : Int;
+	
 	//private var currentCrowd: Int = 0;
 	
 	
@@ -31,20 +34,27 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	
 	public function init():Void
 	{
+		startTick = FlxG.game.ticks;
 		if (delayFirstSpawn == 0) spawnCrowd();
 		
 		else
 		{
-			timerSpawn = new FlxTimer();
-			timerSpawn.start(delayFirstSpawn, spawnCrowd, 1);
+			startTick = FlxG.game.ticks;
+			delayTicks = delayFirstSpawn;
+			//timerSpawn = new FlxTimer();
+			//timerSpawn.start(delayFirstSpawn, spawnCrowd, 1);
 		}
 		currCount = 0;
 	}
 	
-	/*public override function update(elapsed:Float):Void 
+	public override function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
-	}*/
+		if (FlxG.game.ticks >= startTick + delayTicks)
+		{
+			spawnCrowd();
+		}
+	}
 	
 	public function spawnCrowd (?_t:FlxTimer):Void
 	{
@@ -58,22 +68,26 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			currCount ++;
 			Reg.currentLeaderID++;
 			
-			if (timerSpawn != null)
+			
+			startTick = FlxG.game.ticks;
+			delayTicks = delaySpawns;
+			
+			/*if (timerSpawn != null)
 				timerSpawn.reset(delaySpawns);
 			
 			else
 			{
 				timerSpawn = new FlxTimer();
 				timerSpawn.start(delaySpawns, spawnCrowd, 1);
-			}
+			}*/
 		}
 		
-		else if (timerSpawn != null)
+		/*else if (timerSpawn != null)
 		{
 			timerSpawn.cancel();
 			timerSpawn.destroy();
 			timerSpawn = null;
-		}
+		}*/
 	}
 	
 	public function spawnRioter (_num:Int):Void
