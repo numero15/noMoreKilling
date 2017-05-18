@@ -78,7 +78,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 		super.update(elapsed);
 		if (followNumber == 0)
 		{
-			//bar.parentVariable = "health";
 			/*trace ("FACTION = " + faction);
 			trace ("motivation = " + motivation);
 			trace("speed = " + speed);
@@ -148,62 +147,13 @@ class Rioter extends FlxSprite // un seul objet graphique
 					}
 					p = paths[shorterPathId];				
 				}
+				
+				else
+					p = randomMovement();
 			}
 			else // si pas de cible déplacement aléatoire
 			{				
-				var directions : Array<FlxPoint>;
-				directions = new Array <FlxPoint>();
-				var direction : FlxPoint = new FlxPoint();
-				var coordTile : FlxPoint = new FlxPoint();
-				coordTile.set(Math.round(this.x / Reg.TILE_SIZE), Math.round(this.y / Reg.TILE_SIZE));
-				
-				// trouve les case adjacentes libres
-				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x + 1), Std.int(coordTile.y)))!= FlxObject.ANY)
-					//right					
-					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
-
-				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x - 1), Std.int(coordTile.y)))!= FlxObject.ANY)
-					//left					
-					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE,  coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
-
-				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) + 1))!= FlxObject.ANY)
-					//down					
-					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE));
-
-				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) - 1))!= FlxObject.ANY)
-					//up
-					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE));
-				
-				// choisi une direction parmi les possibles
-			
-					if (directions.length == 1)
-					{
-						direction = directions[0];
-					}	
-					
-					else if (directions.length > 1)
-					{
-						var Uturn : Int = -1;
-						
-						
-						for ( i in 0...directions.length)
-						{						
-							if (Std.int(directions[i].x / Reg.TILE_SIZE) * Reg.TILE_SIZE == Std.int(previousPos.x / Reg.TILE_SIZE) * Reg.TILE_SIZE
-							&&
-							Std.int(directions[i].y / Reg.TILE_SIZE) * Reg.TILE_SIZE == Std.int(previousPos.y / Reg.TILE_SIZE) * Reg.TILE_SIZE) // enlève le demi tour
-								Uturn = i;
-														
-						}						
-						direction = directions[FlxG.random.int(0,directions.length-1, [Uturn])];
-					}
-			
-				p = Reg.level.collidableTileLayers[0].findPath(
-					FlxPoint.get(this.x + this.width / 2, this.y + this.height / 2),
-					FlxPoint.get(direction.x, direction.y),
-					false,
-					false,
-					NONE
-					 );
+				p = randomMovement();
 			}
 			
 			if (!collide(new FlxPoint(p[1].x - this.width / 2, p[1].y - this.height / 2)))
@@ -255,6 +205,69 @@ class Rioter extends FlxSprite // un seul objet graphique
 			}
 			
 		}	
+	}
+	
+	
+	private function randomMovement():Array<FlxPoint>
+	{
+		var directions : Array<FlxPoint>;
+				directions = new Array <FlxPoint>();
+				var direction : FlxPoint = new FlxPoint();
+				var coordTile : FlxPoint = new FlxPoint();
+				coordTile.set(Math.round(this.x / Reg.TILE_SIZE), Math.round(this.y / Reg.TILE_SIZE));
+				
+				// trouve les case adjacentes libres
+				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x + 1), Std.int(coordTile.y)))!= FlxObject.ANY)
+					//right					
+					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
+
+				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x - 1), Std.int(coordTile.y)))!= FlxObject.ANY)
+					//left					
+					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE,  coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
+
+				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) + 1))!= FlxObject.ANY)
+					//down					
+					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE));
+
+				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) - 1))!= FlxObject.ANY)
+					//up
+					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE));
+				
+				// choisi une direction parmi les possibles
+			
+					if (directions.length == 1)
+					{
+						direction = directions[0];
+					}	
+					
+					else if (directions.length > 1)
+					{
+						var Uturn : Int = -1;
+						
+						
+						for ( i in 0...directions.length)
+						{						
+							if (Std.int(directions[i].x / Reg.TILE_SIZE) * Reg.TILE_SIZE == Std.int(previousPos.x / Reg.TILE_SIZE) * Reg.TILE_SIZE
+							&&
+							Std.int(directions[i].y / Reg.TILE_SIZE) * Reg.TILE_SIZE == Std.int(previousPos.y / Reg.TILE_SIZE) * Reg.TILE_SIZE) // enlève le demi tour
+								Uturn = i;
+														
+						}						
+						direction = directions[FlxG.random.int(0,directions.length-1, [Uturn])];
+					}
+			
+				return  Reg.level.collidableTileLayers[0].findPath(
+					FlxPoint.get(this.x + this.width / 2, this.y + this.height / 2),
+					FlxPoint.get(direction.x, direction.y),
+					false,
+					false,
+					NONE
+					 );
+	}
+	
+	function freeTile() : Void
+	{
+		
 	}
 	
 	private function collide(_p:FlxPoint):Bool // appeler uniquement sur les leaders
