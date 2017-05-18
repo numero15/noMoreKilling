@@ -1,20 +1,20 @@
 <root>
 	<!-- crowd types, if needed -->
 	<crowd type="red">
-		<motivation value ="100"/><!--motivation par crowd-->
-        <motivationMax value ="100"/><!--motivation par crowd-->
+		<motivation value ="10"/><!--motivation par crowd-->
+        <motivationMax value ="200"/><!--motivation par crowd-->
 		<health value ="75"/><!--health par tile-->
 		<speed value ="0"/><!-- vitesse de déplacement & modificateur de Damage-->
-        <speedMax value ="500"/><!-- vitesse de déplacement maximum-->
+        <speedMax value ="900"/><!-- vitesse de déplacement maximum-->
 		<firePower value="0"/><!-- modificateur sur Damage-->
 	</crowd>
     
     <crowd type="yellow">
-		<motivation value ="100"/><!--motivation par crowd-->
+		<motivation value ="10"/><!--motivation par crowd-->
         <motivationMax value ="200"/><!--motivation par crowd-->
 		<health value ="75"/><!--health par tile-->
 		<speed value ="0"/><!-- vitesse de déplacement & modificateur de Damage-->
-        <speedMax value ="500"/><!-- vitesse de déplacement maximum-->
+        <speedMax value ="900"/><!-- vitesse de déplacement maximum-->
 		<firePower value="0"/><!-- modificateur sur Damage-->
 	</crowd>
 
@@ -35,7 +35,7 @@
 		<cost value="50"/>
 		<motivation value ="0"/>
 		<health value ="0"/>
-		<speed value ="5"/>
+		<speed value ="20"/>
 		<gold value ="10"/>
 		<mana value ="0"/>
 		<radius value ="4"/>
