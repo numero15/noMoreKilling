@@ -217,20 +217,24 @@ class Rioter extends FlxSprite // un seul objet graphique
 				coordTile.set(Math.round(this.x / Reg.TILE_SIZE), Math.round(this.y / Reg.TILE_SIZE));
 				
 				// trouve les case adjacentes libres
-				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x + 1), Std.int(coordTile.y)))!= FlxObject.ANY)
-					//right					
+				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x + 1), Std.int(coordTile.y)))!= FlxObject.ANY)
+				if(freeTile(new FlxPoint(coordTile.x + 1, coordTile.y)))	
+				//right					
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
 
-				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x - 1), Std.int(coordTile.y)))!= FlxObject.ANY)
-					//left					
+				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x - 1), Std.int(coordTile.y)))!= FlxObject.ANY)
+					//left	
+				if(freeTile(new FlxPoint(coordTile.x - 1, coordTile.y)))	
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE,  coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
 
-				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) + 1))!= FlxObject.ANY)
-					//down					
+				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) + 1))!= FlxObject.ANY)
+				if(freeTile(new FlxPoint(coordTile.x, coordTile.y+1)))		
+				//down					
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE));
 
-				if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) - 1))!= FlxObject.ANY)
-					//up
+				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) - 1))!= FlxObject.ANY)
+				if(freeTile(new FlxPoint(coordTile.x, coordTile.y-1)))		
+				//up
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE));
 				
 				// choisi une direction parmi les possibles
@@ -265,9 +269,17 @@ class Rioter extends FlxSprite // un seul objet graphique
 					 );
 	}
 	
-	function freeTile() : Void
+	function freeTile(_p: FlxPoint) : Bool
 	{
+		if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(_p.x), Std.int(_p.y))) == FlxObject.ANY)
+			return false;
+		for (_sp in Reg.level.spawnTiles)
+		{
+			if (Std.int(_sp.x / Reg.TILE_SIZE) == _p.x && Std.int(_sp.y / Reg.TILE_SIZE) == _p.y)
+				return false;
+		}	
 		
+		return true;
 	}
 	
 	private function collide(_p:FlxPoint):Bool // appeler uniquement sur les leaders
