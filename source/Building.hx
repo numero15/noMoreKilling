@@ -126,8 +126,8 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 				animStartIndex = 2;
 		}		
 		
-		Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47 + 3/*first GID*/ + animStartIndex*2);
-		Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE) - 1, 21 + 3/*first GID*/ + animStartIndex * 2);
+		Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47/* + 3 first GID*/ + animStartIndex*2);
+		Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE) - 1, 21 /*+ 3 first GID*/ + animStartIndex * 2);
 		
 		
 		FlxMouseEventManager.add(buildingHitbox, onDown, onUp, onOver, onOut,false,true,false);
@@ -135,16 +135,16 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 	
 	private function animate(Timer:FlxTimer):Void //change tile image
 	{		
-		if (Reg.level.buildingBase.getTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)) % 2 == 1)
+		if (Reg.level.buildingBase.getTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)) % 2 == 0)
 		{
-			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47 + 3 + animStartIndex*2/*first GID*/);
-			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 21 + 3 + animStartIndex*2/*first GID*/);
+			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47 /*+ 3*/ + animStartIndex*2/*first GID*/);
+			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 21/* + 3 */+ animStartIndex*2/*first GID*/);
 		}
 		
 		else
 		{
-			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47 + 3 + animStartIndex*2 - 1/*first GID*/);
-			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 21 + 3 + animStartIndex*2 - 1/*first GID*/);
+			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47/* + 3*/ + animStartIndex*2 - 1/*first GID*/);
+			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 21/* + 3*/ + animStartIndex*2 - 1/*first GID*/);
 		}	
 		timerAnimate.reset(FlxG.random.float(.25, 1));
 	}	

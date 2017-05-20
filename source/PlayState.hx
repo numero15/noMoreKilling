@@ -114,7 +114,6 @@ class PlayState extends FlxState
 		add(draggedBuilding);
 		//add(draggedPower);
 		
-		
 		UI.cameras = activeCam;
 		UI.forEach(function(_b:FlxBasic):Void
 		{			
@@ -212,7 +211,7 @@ class PlayState extends FlxState
 		{
 			if (draggedBuilding.alive)
 			{
-				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 68 
+				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 67
 					&& Reg.level.buildingBase.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 0 )
 				{
 					var _b : Building = new Building(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE)* Reg.TILE_SIZE, draggedBuilding.type);
