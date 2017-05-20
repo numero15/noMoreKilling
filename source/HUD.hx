@@ -5,6 +5,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxG;
+import flixel.text.FlxText;
 import openfl.display.BitmapData;
 import flixel.math.FlxPoint;
 /**
@@ -18,7 +19,8 @@ class HUD extends FlxGroup
 	public var BG : FlxSprite;
 	private var miniMap : FlxSprite;
 	private var buildingsStats: Xml;
-	
+	private var moneyText : FlxText;
+	private var prevMoney : Int;
 	
 	public function new() 
 	{
@@ -33,6 +35,11 @@ class HUD extends FlxGroup
 		BG.y = (FlxG.height - BG.height);
 		BG.scrollFactor.set(0, 0);
 		
+		moneyText = new FlxText(0, 0, "0",13);
+		moneyText.wordWrap = false;
+		moneyText.autoSize = true;
+		moneyText.x = FlxG.width / 2;
+		moneyText.y = 16;
 		
 		
 		buildings = new  FlxTypedGroup<BuildingDroppable>();
@@ -55,6 +62,8 @@ class HUD extends FlxGroup
 						_b.effectSpeed = Std.parseInt(_stat.get("value"));
 					case "resource" :
 						_b.effectResource = Std.parseInt(_stat.get("value"));
+					case "cost" :
+						_b.cost = Std.parseInt(_stat.get("value"));
 				}
 			}			
 			buildings.add(_b);
@@ -66,6 +75,7 @@ class HUD extends FlxGroup
 		miniMap.x = FlxG.width - miniMap.width;
 		
 		add(BG);
+		add(moneyText);
 		add(buildings);
 		add(miniMap);
 	}
@@ -88,9 +98,23 @@ class HUD extends FlxGroup
 		return minimap;
 	}
 	
+	private function setAffordables():Void
+	{
+		for (_b in buildings)
+		{
+			_b.setAffordable();
+		}
+	}
+	
 	override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		
+		moneyText.text = Std.string(Reg.money +" §");
+		moneyText.x = (FlxG.width - moneyText.width) / 2;
+		
+		if (prevMoney != Reg.money)
+		setAffordables();
 		
 		/*for (i in 0...Reg.level.foregroundTiles.totalTiles) {
 			if (!Reg.level.foregroundTiles.overlapsPoint(FlxPoint.get(i % Reg.level.foregroundTiles.widthInTiles * 16, i / Reg.level.foregroundTiles.widthInTiles * 16))) miniMap.pixels.setPixel(i % Reg.level.foregroundTiles.widthInTiles, Math.floor(i / Reg.level.foregroundTiles.widthInTiles), 0xFF909090);

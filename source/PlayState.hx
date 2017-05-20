@@ -54,7 +54,7 @@ class PlayState extends FlxState
 		//FlxG.scaleMode = new PixelPerfectScaleMode();
 		FlxG.plugins.add(new FlxMouseEventManager());
 		
-		Reg.money = 500;
+		Reg.money = 100;
 		Reg.stats = Xml.parse(sys.io.File.getContent(AssetPaths.data__xml)).firstChild();
 		Reg.currentLeaderID = 0;
 		
@@ -152,7 +152,7 @@ class PlayState extends FlxState
 			
 			for (b in UI.buildings)
 			{
-				if ( b.overlapsPoint(FlxG.mouse.getScreenPosition(cameraUI)))
+				if ( b.overlapsPoint(FlxG.mouse.getScreenPosition(cameraUI)) && b.isAffordable)
 				{
 					draggedBuilding.revive();
 					draggedBuilding.set(b.type);
