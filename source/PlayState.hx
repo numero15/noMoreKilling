@@ -55,7 +55,7 @@ class PlayState extends FlxState
 		FlxG.plugins.add(new FlxMouseEventManager());
 		
 		Reg.money = 100;
-		Reg.stats = Xml.parse(sys.io.File.getContent(AssetPaths.data__xml)).firstChild();
+		Reg.stats = Xml.parse(sys.io.File.getContent("assets/data/data.xml")).firstChild();
 		Reg.currentLeaderID = 0;
 		
 		super.create();

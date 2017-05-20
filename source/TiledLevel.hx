@@ -162,7 +162,7 @@ class TiledLevel extends TiledMap
 			_a.push(0);
 		}
 		_tm = new FlxTilemap();
-		_tm.loadMapFromArray(_a,collidableTileLayers[0].widthInTiles , collidableTileLayers[0].heightInTiles, AssetPaths.tilemapBuilding__png, Reg.TILE_SIZE, Reg.TILE_SIZE);
+		_tm.loadMapFromArray(_a,collidableTileLayers[0].widthInTiles , collidableTileLayers[0].heightInTiles, "assets/images/tilemapBuilding.png", Reg.TILE_SIZE, Reg.TILE_SIZE);
 		buildingBase = _tm;
 		
 		_a = [];
@@ -174,7 +174,7 @@ class TiledLevel extends TiledMap
 			_a.push(0);
 		}
 		_tm = new FlxTilemap();
-		_tm.loadMapFromArray(_a,collidableTileLayers[0].widthInTiles , collidableTileLayers[0].heightInTiles-1, AssetPaths.tilemapBuilding__png, Reg.TILE_SIZE, Reg.TILE_SIZE);
+		_tm.loadMapFromArray(_a,collidableTileLayers[0].widthInTiles , collidableTileLayers[0].heightInTiles-1, "assets/images/tilemapBuilding.png", Reg.TILE_SIZE, Reg.TILE_SIZE);
 		buildingTop = _tm;
 	}
 	

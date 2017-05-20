@@ -26,7 +26,7 @@ class HUD extends FlxGroup
 	{
 		super();
 		
-		buildingsStats = Xml.parse(sys.io.File.getContent(AssetPaths.data__xml)).firstChild();		
+		buildingsStats = Xml.parse(sys.io.File.getContent("assets/data/data.xml")).firstChild();		
 		
 		BG = new FlxSprite();
 		BG.makeGraphic(480, 64);
