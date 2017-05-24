@@ -18,6 +18,9 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	
 	public var startTick : Int;
 	public var delayTicks : Int;
+	var pourCentTimer : Float;
+	
+	public var bar : FlxBar;
 	
 	//private var currentCrowd: Int = 0;
 	
@@ -44,12 +47,23 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			//timerSpawn = new FlxTimer();
 			//timerSpawn.start(delayFirstSpawn, spawnCrowd, 1);
 		}
+		pourCentTimer = 0;
+		bar = Reg.level.UIBars.getFirstAvailable();
+		bar.revive();
+		bar.parent = this;
+		bar.parentVariable = "pourCentTimer";
+		bar.setRange(0, 1);
+		bar.x = this.x;
+		bar.y = this.y;
+		
 		currCount = 0;
 	}
 	
 	public override function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
+		pourCentTimer = (FlxG.game.ticks - startTick) / delayTicks;
+		trace(pourCentTimer);
 		if (FlxG.game.ticks >= startTick + delayTicks)
 		{
 			spawnCrowd();
@@ -71,6 +85,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			
 			startTick = FlxG.game.ticks;
 			delayTicks = delaySpawns;
+			//bar.setRange(0, delayTicks);
 			
 			/*if (timerSpawn != null)
 				timerSpawn.reset(delaySpawns);

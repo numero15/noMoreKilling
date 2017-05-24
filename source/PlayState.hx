@@ -108,9 +108,9 @@ class PlayState extends FlxState
 		add(Reg.level.buildings);
 		add(Reg.level.buildingBase);
 		add(Reg.level.crowds);
-		add(Reg.level.UIBars);
 		add(Reg.level.fog01);
-		add(Reg.level.spawnTiles);	
+		add(Reg.level.spawnTiles);
+		add(Reg.level.UIBars);
 		add(Reg.level.buildingTop);		
 		add(Reg.level.fog02);
 		add(Reg.level.UIBtnsClose);

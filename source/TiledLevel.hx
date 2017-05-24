@@ -71,7 +71,7 @@ class TiledLevel extends TiledMap
 			crowds.add(_r);
 		}
 		
-		for (i in 0...25)
+		for (i in 0...50)
 		{
 			var _b = new FlxBar(0,0,FlxBarFillDirection.LEFT_TO_RIGHT,8,2);
 			_b.kill();
