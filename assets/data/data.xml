@@ -26,7 +26,7 @@
 		<motivation value ="100"/>
 		<health value ="-1"/>
 		<speed value ="0"/>
-		<gold value ="0"/>
+		<gold value ="2"/>
 		<mana value ="0"/>
 		<radius value ="4"/>
 	</building>
@@ -36,7 +36,7 @@
 		<motivation value ="0"/>
 		<health value ="0"/>
 		<speed value ="20"/>
-		<gold value ="10"/>
+		<gold value ="2"/>
 		<mana value ="0"/>
 		<radius value ="4"/>
 	</building>
@@ -45,8 +45,8 @@
 		<cost value="50"/>
 		<motivation value ="0"/>
 		<health value ="0"/>
-		<speed value ="-10"/>
-		<gold value ="0"/>
+		<speed value ="-30"/>
+		<gold value ="1"/>
 		<mana value ="0"/>
 		<radius value ="4"/>	
 	</building>
