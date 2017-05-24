@@ -4,7 +4,6 @@ import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.ui.FlxBar;
 import flixel.util.FlxPath;
-import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxObject;
 
@@ -445,10 +444,10 @@ class Rioter extends FlxSprite // un seul objet graphique
 		var addToDamage : Int;
 		for (op in opponents)
 		{		
-			// dommage minimum
-			addToDamage = Std.int(health / 10);
+			// formule calcul des dommages SIMON
+			addToDamage = Std.int(health / 10) * (1 + speed / 100);
 			
-			if (Std.int(health / 10) < 50)
+			if (addToDamage < 50)
 				addToDamage = 50;
 			
 			if (op.leader != null)				
