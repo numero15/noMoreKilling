@@ -210,6 +210,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 	
 	private function randomMovement():Array<FlxPoint>
 	{
+		trace("random");
 		var directions : Array<FlxPoint>;
 				directions = new Array <FlxPoint>();
 				var direction : FlxPoint = new FlxPoint();
@@ -457,8 +458,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 			else
 				op.damage += addToDamage;
 		}
-		if (opponents.length > 0) 
-			trace(health);
 		
 		if (opponents.length == 0) // remettre la foule en marche si elle n'a pas de combat en cour
 			this.isMoving = true;	
@@ -483,8 +482,10 @@ class Rioter extends FlxSprite // un seul objet graphique
 			if (speed < 0)
 				speed = 0;
 			
+			
 			motivation += _b.effectMotivation;
 		}
+		
 	}
 	
 	public function hit():Void // appeler uniquement sur les leaders
@@ -591,8 +592,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 			{
 				_otherLeader.followers.push(_f);
 			}
-			trace(this.health);
-			trace(_otherLeader.health);
 			_otherLeader.health += this.health;
 			
 			

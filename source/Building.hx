@@ -61,16 +61,15 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 							effectResource = Std.parseInt(_stat.get("value"));
 						case "cost" :
 							Reg.money -=  Std.parseInt(_stat.get("value"));
+						case "radius" :
+							radius =  Std.parseInt(_stat.get("value"));
 					}
 				}
 			}			
 		}
-		
 		buildingHitbox = new FlxSprite();
 		buildingHitbox.makeGraphic(Reg.TILE_SIZE, Reg.TILE_SIZE * 2,0x00ffffff);
 		buildingHitbox.y =-Reg.TILE_SIZE;		
-		
-		radius = 2;
 		
 		radiusGFX = new FlxSprite();
 		radiusGFX.makeGraphic((radius * 2 + 1) * Reg.TILE_SIZE, (radius * 2 + 1) * Reg.TILE_SIZE, FlxColor.TRANSPARENT);
@@ -208,7 +207,8 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 		buildingHitbox.destroy();
 		btn_remove.destroy();
 		Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 0);
-		Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 0);
+		Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE) - 1, 0);
+		kill();
 	}
 	
 }
