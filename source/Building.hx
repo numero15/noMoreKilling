@@ -4,7 +4,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
+//import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.input.mouse.FlxMouseEventManager;
 /**
@@ -15,7 +15,7 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 {
 	public var type : String;
 	private var animStartIndex : Int;
-	private var timerAnimate : FlxTimer;
+	//private var timerAnimate : FlxTimer;
 	public  var radius : Int;
 	private var radiusGFX : FlxSprite;
 	private var buildingHitbox : FlxSprite;
@@ -25,6 +25,9 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 	public var effectSpeed : Int;
 	public var effectResource : Int;
 	//private var stats:Xml;
+	
+	public var animateStartTick : Int;
+	public var animateDelayTicks : Int;
 	
 	public function new(?X:Float=0, ?Y:Float=0, _t:String) 
 	{
@@ -37,6 +40,8 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 	
 	public function set (_t:String)
 	{
+		animateStartTick = FlxG.game.ticks;
+		animateDelayTicks = 1000;
 		ID = Reg.level.buildings.length;		
 		
 		for (_buildingStats in Reg.stats.elementsNamed("building"))
@@ -112,8 +117,8 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 		
 		
 		
-		timerAnimate = new FlxTimer();
-		timerAnimate.start(1, animate, 1);		
+		/*timerAnimate = new FlxTimer();
+		timerAnimate.start(1, animate, 1);	*/	
 		type = _t;
 		
 		switch type
@@ -133,7 +138,17 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 		FlxMouseEventManager.add(buildingHitbox, onDown, onUp, onOver, onOut,false,true,false);
 	}
 	
-	private function animate(Timer:FlxTimer):Void //change tile image
+	public override function update(elapsed:Float):Void 
+	{
+		super.update(elapsed);
+		if (FlxG.game.ticks >= animateStartTick + animateDelayTicks)
+		{
+			animate();
+			animateStartTick = FlxG.game.ticks;
+		}
+	}
+	
+	private function animate(/*Timer:FlxTimer*/):Void //change tile image
 	{		
 		if (Reg.level.buildingBase.getTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)) % 2 == 0)
 		{
@@ -146,7 +161,7 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 			Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 47/* + 3*/ + animStartIndex*2 - 1/*first GID*/);
 			Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE)-1, 21/* + 3*/ + animStartIndex*2 - 1/*first GID*/);
 		}	
-		timerAnimate.reset(FlxG.random.float(.25, 1));
+		//timerAnimate.reset(FlxG.random.float(.25, 1));
 	}	
 	
 	
@@ -187,8 +202,8 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 	{
 		FlxMouseEventManager.add(buildingHitbox, onDown, onUp, onOver, onOut, false, true, false);
 		FlxMouseEventManager.add(btn_remove, null, removeBuilding, null, null, false, true, false);
-		timerAnimate.cancel();
-		timerAnimate.destroy();
+		//timerAnimate.cancel();
+		//timerAnimate.destroy();
 		radiusGFX.destroy();
 		buildingHitbox.destroy();
 		btn_remove.destroy();

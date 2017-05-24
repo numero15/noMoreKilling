@@ -12,7 +12,7 @@ import flixel.system.scaleModes.PixelPerfectScaleMode;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.util.FlxTimer;
+//import flixel.util.FlxTimer;
 import flixel.input.mouse.FlxMouseEventManager;
 
 import flixel.group.FlxGroup;
@@ -33,7 +33,7 @@ import flixel.FlxCamera;
 class PlayState extends FlxState
 {
 	public var prevMouseCoord : FlxPoint;
-	var timerFight : FlxTimer;
+	//var timerFight : FlxTimer;
 	var UI : HUD;
 	var cameraUI : FlxCamera;
 	var cameraDroppable : FlxCamera;
@@ -43,6 +43,10 @@ class PlayState extends FlxState
 	var oriCameraZoom:Float;
     var oriCameraWidth:Int;
     var oriCameraHeight:Int;
+	
+	public var fightStartTick : Int;
+	public var fightDelayTicks : Int;
+	
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -132,8 +136,10 @@ class PlayState extends FlxState
 		
 		prevMouseCoord = new FlxPoint(0, 0);
 		
-		timerFight = new FlxTimer();
-		timerFight.start(1, updateFight, 0);
+		//timerFight = new FlxTimer();
+		//timerFight.start(1, updateFight, 0);
+		fightStartTick = FlxG.game.ticks;
+		fightDelayTicks = 1000;
 	}
 
 	/**
@@ -143,6 +149,12 @@ class PlayState extends FlxState
 	{		
 		//FlxG.overlap(Reg.level.crowds, rioterCollide);
 		Reg.level.moveFog();
+		
+		if (FlxG.game.ticks >= fightStartTick + fightDelayTicks)
+		{
+			updateFight();
+			fightStartTick = FlxG.game.ticks;
+		}
 		
 		if (FlxG.mouse.justPressed)
 		{
@@ -311,7 +323,7 @@ class PlayState extends FlxState
 		}
 	}*/
 	
-	private function updateFight(_t:FlxTimer):Void
+	private function updateFight(/*_t:FlxTimer*/):Void
 	{		
 		for (r in Reg.level.crowds)
 		{
