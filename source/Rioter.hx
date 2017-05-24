@@ -114,9 +114,8 @@ class Rioter extends FlxSprite // un seul objet graphique
 		if (followNumber==0 && isMoving) // est le leader, par sécurité
 		{		
 			// si motivation maximum trouver un path
-			if (motivation >= motivationMax)
+			if (motivation == motivationMax)
 			{
-				motivation = motivationMax;
 				for (rioterEnemy in Reg.level.crowds)
 				{
 					if (rioterEnemy.followNumber==0 && rioterEnemy.faction == enemy && rioterEnemy.alive)
@@ -470,7 +469,9 @@ class Rioter extends FlxSprite // un seul objet graphique
 		
 		// test si les followers sont à portée d'un bâtiment
 		for (_f in followers)
+		{
 			overlapBuilding(_f, _f.leader.buildings);
+		}
 		
 		for (_b in buildings)
 		{
@@ -593,17 +594,13 @@ class Rioter extends FlxSprite // un seul objet graphique
 				_otherLeader.followers.push(_f);
 			}
 			_otherLeader.health += this.health;
-			
-			
 			_otherLeader.followers.push(this);
-			this.health = 0;
 			
 			for ( _f in _otherLeader.followers)
 			{
 				_f.alpha = 1 - (_f.followNumber + 1) / 10;
 			}
 			_otherLeader.alpha = 1;
-			
 			
 			followers.clear();		
 		}		

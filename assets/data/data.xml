@@ -24,31 +24,31 @@
 	<building type="bar">
 		<cost value="50"/>
 		<motivation value ="100"/>
-		<health value ="-1"/>
+		<health value ="0"/>
 		<speed value ="0"/>
-		<gold value ="2"/>
+		<gold value ="3"/>
 		<mana value ="0"/>
-		<radius value ="4"/>
+		<radius value ="5"/>
 	</building>
 
 	<building type="garage">
 		<cost value="50"/>
 		<motivation value ="0"/>
 		<health value ="0"/>
-		<speed value ="20"/>
-		<gold value ="2"/>
+		<speed value ="50"/>
+		<gold value ="-1"/>
 		<mana value ="0"/>
-		<radius value ="4"/>
+		<radius value ="3"/>
 	</building>
 
 	<building type="coffeeShop">
 		<cost value="50"/>
-		<motivation value ="0"/>
+		<motivation value ="-10"/>
 		<health value ="0"/>
-		<speed value ="-30"/>
-		<gold value ="1"/>
+		<speed value ="-20"/>
+		<gold value ="5"/>
 		<mana value ="0"/>
-		<radius value ="4"/>	
+		<radius value ="6"/>	
 	</building>
 	
 
