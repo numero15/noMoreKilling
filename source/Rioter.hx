@@ -445,7 +445,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 		for (op in opponents)
 		{		
 			// formule calcul des dommages SIMON
-			addToDamage = Std.int(health / 10) * (1 + speed / 100);
+			addToDamage = Std.int((health / 10) * (1 + speed / 100));
 			
 			if (addToDamage < 50)
 				addToDamage = 50;
