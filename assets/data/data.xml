@@ -4,7 +4,7 @@
 		<motivation value ="10"/><!--motivation par crowd-->
         <motivationMax value ="200"/><!--motivation par crowd-->
 		<health value ="75"/><!--health par tile-->
-		<speed value ="0"/><!-- vitesse de déplacement & modificateur de Damage-->
+		<speed value ="300"/><!-- vitesse de déplacement & modificateur de Damage-->
         <speedMax value ="900"/><!-- vitesse de déplacement maximum-->
 		<firePower value="0"/><!-- modificateur sur Damage-->
 	</crowd>
@@ -13,7 +13,7 @@
 		<motivation value ="10"/><!--motivation par crowd-->
         <motivationMax value ="200"/><!--motivation par crowd-->
 		<health value ="75"/><!--health par tile-->
-		<speed value ="0"/><!-- vitesse de déplacement & modificateur de Damage-->
+		<speed value ="300"/><!-- vitesse de déplacement & modificateur de Damage-->
         <speedMax value ="900"/><!-- vitesse de déplacement maximum-->
 		<firePower value="0"/><!-- modificateur sur Damage-->
 	</crowd>
@@ -23,7 +23,7 @@
 	<!-- building types -->
 	<building type="bar">
 		<cost value="50"/>
-		<motivation value ="100"/>
+		<motivation value ="50"/>
 		<health value ="0"/>
 		<speed value ="0"/>
 		<gold value ="3"/>
@@ -36,19 +36,19 @@
 		<motivation value ="0"/>
 		<health value ="0"/>
 		<speed value ="50"/>
-		<gold value ="-1"/>
+		<gold value ="10"/>
 		<mana value ="0"/>
 		<radius value ="3"/>
 	</building>
 
 	<building type="coffeeShop">
 		<cost value="50"/>
-		<motivation value ="-10"/>
-		<health value ="0"/>
-		<speed value ="-20"/>
-		<gold value ="5"/>
+		<motivation value ="0"/>
+		<health value ="-10"/>
+		<speed value ="-10"/>
+		<gold value ="-3"/>
 		<mana value ="0"/>
-		<radius value ="6"/>	
+		<radius value ="3"/>	
 	</building>
 	
 
