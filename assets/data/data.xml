@@ -23,20 +23,20 @@
 	<!-- building types -->
 	<building type="bar">
 		<cost value="50"/>
-		<motivation value ="100"/>
-		<health value ="-1"/>
+		<motivation value ="200"/>
+		<health value ="0"/>
 		<speed value ="0"/>
-		<gold value ="2"/>
+		<gold value ="3"/>
 		<mana value ="0"/>
-		<radius value ="4"/>
+		<radius value ="5"/>
 	</building>
 
 	<building type="garage">
 		<cost value="50"/>
 		<motivation value ="0"/>
 		<health value ="0"/>
-		<speed value ="20"/>
-		<gold value ="2"/>
+		<speed value ="50"/>
+		<gold value ="-2"/>
 		<mana value ="0"/>
 		<radius value ="4"/>
 	</building>
@@ -46,7 +46,7 @@
 		<motivation value ="0"/>
 		<health value ="0"/>
 		<speed value ="-30"/>
-		<gold value ="1"/>
+		<gold value ="10"/>
 		<mana value ="0"/>
 		<radius value ="4"/>	
 	</building>
