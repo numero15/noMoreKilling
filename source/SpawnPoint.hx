@@ -63,7 +63,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	{
 		super.update(elapsed);
 		pourCentTimer = (FlxG.game.ticks - startTick) / delayTicks;
-		trace(pourCentTimer);
+		
 		if (FlxG.game.ticks >= startTick + delayTicks)
 		{
 			spawnCrowd();
@@ -112,6 +112,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		rioter = Reg.level.crowds.getFirstAvailable();
 		rioter.setup(this.x, this.y, "assets/images/crowd_" + faction + ".png", faction, _num);
 		rioter.leaderId = Reg.currentLeaderID;
+		
 		
 		if (_num == 0) // leader
 		{
