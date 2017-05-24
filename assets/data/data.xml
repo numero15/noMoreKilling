@@ -1,7 +1,7 @@
 <root>
 	<!-- crowd types, if needed -->
 	<crowd type="red">
-		<motivation value ="200"/><!--motivation par crowd-->
+		<motivation value ="10"/><!--motivation par crowd-->
         <motivationMax value ="200"/><!--motivation par crowd-->
 		<health value ="75"/><!--health par tile-->
 		<speed value ="0"/><!-- vitesse de déplacement & modificateur de Damage-->
@@ -43,10 +43,10 @@
 
 	<building type="coffeeShop">
 		<cost value="50"/>
-		<motivation value ="0"/>
+		<motivation value ="-10"/>
 		<health value ="0"/>
-		<speed value ="-10"/>
-		<gold value ="10"/>
+		<speed value ="-20"/>
+		<gold value ="5"/>
 		<mana value ="0"/>
 		<radius value ="6"/>	
 	</building>
