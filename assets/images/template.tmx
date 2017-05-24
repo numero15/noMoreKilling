@@ -55,40 +55,40 @@
    <properties>
     <property name="count" value="1"/>
     <property name="crowdSize" value="5"/>
-    <property name="delayFirstSpawn" value="10"/>
-    <property name="delaySpawns" value="10"/>
+    <property name="delayFirstSpawn" value="10000"/>
+    <property name="delaySpawns" value="10000"/>
    </properties>
   </object>
   <object id="3" gid="2" x="48" y="256" width="16" height="16">
    <properties>
     <property name="count" value="1"/>
     <property name="crowdSize" value="3"/>
-    <property name="delayFirstSpawn" value="2"/>
-    <property name="delaySpawns" value="10"/>
+    <property name="delayFirstSpawn" value="2000"/>
+    <property name="delaySpawns" value="10000"/>
    </properties>
   </object>
   <object id="8" gid="2" x="112" y="320" width="16" height="16">
    <properties>
     <property name="count" value="4"/>
     <property name="crowdSize" value="3"/>
-    <property name="delayFirstSpawn" value="2"/>
-    <property name="delaySpawns" value="10"/>
+    <property name="delayFirstSpawn" value="2000"/>
+    <property name="delaySpawns" value="10000"/>
    </properties>
   </object>
   <object id="9" gid="2" x="192" y="32" width="16" height="16">
    <properties>
     <property name="count" value="7"/>
     <property name="crowdSize" value="2"/>
-    <property name="delayFirstSpawn" value="10"/>
-    <property name="delaySpawns" value="4"/>
+    <property name="delayFirstSpawn" value="10000"/>
+    <property name="delaySpawns" value="4000"/>
    </properties>
   </object>
   <object id="10" gid="1" x="352" y="272" width="16" height="16">
    <properties>
     <property name="count" value="3"/>
     <property name="crowdSize" value="3"/>
-    <property name="delayFirstSpawn" value="10"/>
-    <property name="delaySpawns" value="10"/>
+    <property name="delayFirstSpawn" value="10000"/>
+    <property name="delaySpawns" value="10000"/>
    </properties>
   </object>
  </objectgroup>
