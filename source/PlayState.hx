@@ -54,8 +54,8 @@ class PlayState extends FlxState
 		//FlxG.scaleMode = new PixelPerfectScaleMode();
 		FlxG.plugins.add(new FlxMouseEventManager());
 		
-		Reg.money = 500;
-		Reg.stats = Xml.parse(sys.io.File.getContent(AssetPaths.data__xml)).firstChild();
+		Reg.money = 100;
+		Reg.stats = Xml.parse(sys.io.File.getContent("assets/data/data.xml")).firstChild();
 		Reg.currentLeaderID = 0;
 		
 		super.create();
@@ -114,7 +114,6 @@ class PlayState extends FlxState
 		add(draggedBuilding);
 		//add(draggedPower);
 		
-		
 		UI.cameras = activeCam;
 		UI.forEach(function(_b:FlxBasic):Void
 		{			
@@ -152,7 +151,7 @@ class PlayState extends FlxState
 			
 			for (b in UI.buildings)
 			{
-				if ( b.overlapsPoint(FlxG.mouse.getScreenPosition(cameraUI)))
+				if ( b.overlapsPoint(FlxG.mouse.getScreenPosition(cameraUI)) && b.isAffordable)
 				{
 					draggedBuilding.revive();
 					draggedBuilding.set(b.type);
@@ -212,7 +211,7 @@ class PlayState extends FlxState
 		{
 			if (draggedBuilding.alive)
 			{
-				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 68 
+				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 67
 					&& Reg.level.buildingBase.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 0 )
 				{
 					var _b : Building = new Building(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE)* Reg.TILE_SIZE, draggedBuilding.type);

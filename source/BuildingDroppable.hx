@@ -19,6 +19,8 @@ class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour place
 	public var effectHealth : Int;
 	public var effectSpeed : Int;
 	public var effectResource : Int;
+	public var cost : Int = 0;
+	public var isAffordable:Bool;
 	
 	public function new(?X:Float=0, ?Y:Float=0, _t:String) 
 	{
@@ -44,6 +46,20 @@ class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour place
 		}
 		
 		type = _t;
+	}
+	
+	public function setAffordable() :Void
+	{
+		if (Reg.money - cost >= 0)
+		{
+			isAffordable = true;
+			this.alpha = 1;
+		}
+		else
+		{
+			isAffordable = false;
+			this.alpha = .5;
+		}
 	}
 	
 }

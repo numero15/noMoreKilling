@@ -12,6 +12,7 @@ import flixel.addons.editors.tiled.TiledObjectLayer;
 import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.group.FlxGroup;
+import flixel.math.FlxRandom;
 import flixel.tile.FlxTilemap;
 import flixel.ui.FlxBar;
 import haxe.io.Path;
@@ -119,10 +120,10 @@ class TiledLevel extends TiledMap
 				collidableTileLayers.push(tilemap);
 			}
 			
-			if (tileLayer.name == "buildingBG")
+			/*if (tileLayer.name == "buildingBG")
 			{
 				buildingBase = tilemap;
-			}
+			}*/
 			
 			if (tileLayer.name == "fog01")
 			{
@@ -137,12 +138,44 @@ class TiledLevel extends TiledMap
 				fog02.y = 8;
 			}
 			
-			if (tileLayer.name == "buildingFG")
+			/*if (tileLayer.name == "buildingFG")
 			{
 				buildingTop = tilemap;
-				//trace(tileSet.firstGID);
-			}
+			}*/
 		}
+		
+		generateBuildings();
+	}
+	
+	public function generateBuildings():Void
+	{
+		var _a : Array<Int> = [];
+		var _r : FlxRandom = new FlxRandom();
+		var _tm : FlxTilemap;
+		
+		_a = [];
+		for ( i in 0 ... (collidableTileLayers[0].widthInTiles * collidableTileLayers[0].heightInTiles))
+		{
+			if(collidableTileLayers[0].getData()[i]==68 && _r.int(0,4)>1)
+			_a.push(_r.int(26, 45));
+			else
+			_a.push(0);
+		}
+		_tm = new FlxTilemap();
+		_tm.loadMapFromArray(_a,collidableTileLayers[0].widthInTiles , collidableTileLayers[0].heightInTiles, "assets/images/tilemapBuilding.png", Reg.TILE_SIZE, Reg.TILE_SIZE);
+		buildingBase = _tm;
+		
+		_a = [];
+		for ( i in 0 ... (collidableTileLayers[0].widthInTiles * (collidableTileLayers[0].heightInTiles-1)))
+		{
+			if(buildingBase.getData()[i + collidableTileLayers[0].widthInTiles ]>=26)
+			_a.push((buildingBase.getData()[i + collidableTileLayers[0].widthInTiles ])-26);
+			else
+			_a.push(0);
+		}
+		_tm = new FlxTilemap();
+		_tm.loadMapFromArray(_a,collidableTileLayers[0].widthInTiles , collidableTileLayers[0].heightInTiles-1, "assets/images/tilemapBuilding.png", Reg.TILE_SIZE, Reg.TILE_SIZE);
+		buildingTop = _tm;
 	}
 	
 	public function loadObjects(state:PlayState)
