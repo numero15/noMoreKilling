@@ -214,8 +214,8 @@ class PlayState extends FlxState
 			
 			if (draggedBuilding.alive)
 			{
-				draggedBuilding.x = Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE  ;
-				draggedBuilding.y = Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE  ;
+				draggedBuilding.x = Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE - draggedBuilding.width/2 + Reg.TILE_SIZE / 2; //formule de merde
+				draggedBuilding.y = Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE - draggedBuilding.height/2 + Reg.TILE_SIZE;//formule de merde
 			}
 		}
 		

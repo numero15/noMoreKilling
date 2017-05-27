@@ -99,7 +99,7 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 				}
 			}
 		}	
-		radiusGFX.alpha = .15;
+		radiusGFX.alpha = 0;
 		
 		
 		btn_remove = new FlxSprite(0, 0, "assets/images/btnClose.png");
@@ -113,8 +113,6 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 		
 		add(radiusGFX);
 		add(buildingHitbox);
-		
-		
 		
 		/*timerAnimate = new FlxTimer();
 		timerAnimate.start(1, animate, 1);	*/	

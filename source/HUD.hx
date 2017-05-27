@@ -65,7 +65,9 @@ class HUD extends FlxGroup
 					case "cost" :
 						_b.cost = Std.parseInt(_stat.get("value"));
 				}
-			}			
+			}	
+			
+			_b.remove(_b.radiusGFX);
 			buildings.add(_b);
 		}
 		
