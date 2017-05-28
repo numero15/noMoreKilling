@@ -38,6 +38,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public function setup(X:Float, Y:Float, image_path:String /*source du .png*/, _faction : String, _followNumber: Int):Void
 	{
 		this.revive();
+		this.alpha = 0;
 		this.setPosition(X + Reg.TILE_SIZE * .1, Y + Reg.TILE_SIZE * .1);
 		this.loadGraphic(image_path, true, 16, 16);
 		this.animation.frameIndex = 3;
@@ -684,8 +685,10 @@ class Rioter extends FlxSprite // un seul objet graphique
 		{
 			followers.clear();
 			followers = null;
-			//bar.kill();
 		}
+		
+		if (followNumber == 0)
+			bar.kill();
 	}
 	
 	override function destroy():Void

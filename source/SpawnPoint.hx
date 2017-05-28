@@ -110,7 +110,6 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		var rioter : Rioter;
 		// spawn leader
 		rioter = Reg.level.crowds.getFirstAvailable();
-		rioter.alpha = 0;
 		rioter.setup(this.x, this.y, "assets/images/crowd_" + faction + ".png", faction, _num);
 		rioter.leaderId = Reg.currentLeaderID;
 		
@@ -126,6 +125,8 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			rioter.bar.parent = rioter;
 			rioter.bar.parentVariable = "health";
 			rioter.bar.setRange(0, 400);
+			rioter.bar.x = rioter.x;
+			rioter.bar.y = rioter.y;	
 			//rioter.bar.visible = false;		
 		}
 		else //followers
@@ -155,7 +156,6 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 				}
 			}			
 		}
-		
 		if (_num == crowdSize-1)
 		{
 			currentLeader = null;
