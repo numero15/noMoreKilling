@@ -24,7 +24,7 @@
 	<building type="bar">
 		<cost value="50"/>
 		<motivation value ="50"/>
-		<health value ="0"/>
+		<health value ="20"/>
 		<speed value ="0"/>
 		<gold value ="3"/>
 		<mana value ="0"/>

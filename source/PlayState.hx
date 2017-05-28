@@ -169,7 +169,6 @@ class PlayState extends FlxState
 					draggedBuilding.set(b.type);
 					draggedBuilding.x = FlxG.mouse.screenX;
 					draggedBuilding.y = FlxG.mouse.screenY;
-					//draggedBuilding.scale.x = draggedBuilding.scale.y = FlxG.camera.zoom;
 					draggedBuilding.updateHitbox();
 					break;
 				}
@@ -285,44 +284,7 @@ class PlayState extends FlxState
 		cameraDroppable.scroll.x = FlxG.camera.scroll.x;
 		cameraDroppable.scroll.y = FlxG.camera.scroll.y;
     }
-	
-	/*private function rioterCollide(r1 : Rioter, r2 : Rioter):Void
-	{
-		
-		//combat
-		if (r1.faction != r2.faction)
-		{
-			r1.stopCrowd();
-			r2.stopCrowd();
-			
-			r1.addOpponent(r2);
-			r2.addOpponent(r1);
-		}
-		
-		//joint
-		else if(r1.faction == r2.faction && r1.leaderId != r2.leaderId) // meme faction mais foule differente
-		{
-			if (r1.followNumber == 0)
-			{
-				if (r2.followNumber != 0)
-					r1.jointOtherCrowd(r2.leader, r2.followNumber);
-				
-				else
-					r1.jointOtherCrowd(r2, r2.followNumber);				
-			}
-			
-			else if (r2.followNumber == 0)
-			{
-				if (r1.followNumber != 0)
-					r2.jointOtherCrowd(r1.leader, r1.followNumber);
-				
-				else
-					r2.jointOtherCrowd(r1, r1.followNumber);				
-			}
-			
-		}
-	}*/
-	
+
 	private function updateFight(/*_t:FlxTimer*/):Void
 	{		
 		for (r in Reg.level.crowds)

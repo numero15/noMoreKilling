@@ -165,14 +165,13 @@ class Rioter extends FlxSprite // un seul objet graphique
 				
 				//move followers
 				
-				
 				//update followers in order
 				var i : Int;
 				i = 0;
 				while (i < followers.length)
 				{
 					for (_f in followers)
-					{					
+					{		
 						if (_f.followNumber == i + 1)
 						{
 							i++;
@@ -202,7 +201,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 					}
 				}
 			}
-			
 		}	
 	}
 	
@@ -352,6 +350,46 @@ class Rioter extends FlxSprite // un seul objet graphique
 		}
 	}
 	
+	public function addRioter():Void
+	{
+		if (followNumber > 0) return;
+		
+		var _r : Rioter;
+		var _coord : FlxPoint;
+		_coord = new FlxPoint();
+		_r = Reg.level.crowds.getFirstAvailable();
+		
+		//trouver le dernier follower
+		if(this.followers.length>=1)
+		{
+			for (_last_r in this.followers)		
+			{
+				if (_last_r.followNumber == this.followers.length-1)
+				{
+					_coord = _last_r.previousPos;
+					break;
+				}
+			}
+		}
+		
+		else
+		{
+			_coord = this.previousPos;
+		}
+		
+		
+		_r.setup(_coord.x, _coord.y, "assets/images/crowd_" + faction + ".png", faction, this.followers.length+1);
+		_r.leaderId = this.leaderId;
+		
+		_r.leader = this;
+		this.followers.add(_r);
+		
+		for (_rioter in this.followers)		
+		{
+			_rioter.setAlpha();		
+		}
+	}
+	
 	public function addOpponent(_opponent:Rioter):Void // appeler uniquement sur les leaders
 	{
 		var newOpponent : Bool = true;
@@ -485,7 +523,11 @@ class Rioter extends FlxSprite // un seul objet graphique
 			
 			
 			motivation += _b.effectMotivation;
-		}		
+		}	
+		
+		
+		if (this.followers.length + 1 < health / 100)		
+			addRioter();
 	}
 	
 	public function hit():Void // appeler uniquement sur les leaders
@@ -595,7 +637,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 			_otherLeader.health += this.health;
 			_otherLeader.followers.push(this);
 			
-			trace(_otherLeader.health);
 			for ( _f in _otherLeader.followers)
 			{
 				//_f.alpha = 1 - (_f.followNumber + 1) / 10;
@@ -618,7 +659,9 @@ class Rioter extends FlxSprite // un seul objet graphique
 	{
 		if (followNumber > 0)
 		{
-			alpha = 1 - followNumber / (leader.health/100);
+			alpha = 1 - followNumber / (leader.health / 100);
+			if (alpha < .4)
+				alpha = .4;
 		}
 	}
 	

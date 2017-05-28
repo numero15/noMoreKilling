@@ -110,6 +110,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		var rioter : Rioter;
 		// spawn leader
 		rioter = Reg.level.crowds.getFirstAvailable();
+		rioter.alpha = 0;
 		rioter.setup(this.x, this.y, "assets/images/crowd_" + faction + ".png", faction, _num);
 		rioter.leaderId = Reg.currentLeaderID;
 		
@@ -134,11 +135,11 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			rioter.setAlpha();
 		}
 		
-		for (_buildingStats in Reg.stats.elementsNamed("crowd"))
+		for (_rioterStats in Reg.stats.elementsNamed("crowd"))
 		{		
-			if (_buildingStats.get('type') == faction)
+			if (_rioterStats.get('type') == faction)
 			{
-				for ( _stat in _buildingStats.elements())
+				for ( _stat in _rioterStats.elements())
 				{
 					switch _stat.nodeName
 					{
