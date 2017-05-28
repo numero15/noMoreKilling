@@ -54,7 +54,7 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		FlxG.debugger.visible = true;
-		FlxG.log.redirectTraces = true;	
+		FlxG.log.redirectTraces = false;	
 		//FlxG.scaleMode = new PixelPerfectScaleMode();
 		FlxG.plugins.add(new FlxMouseEventManager());
 		
@@ -86,7 +86,7 @@ class PlayState extends FlxState
 		
 		var activeCam : Array <FlxCamera>;		
 		activeCam = new Array();
-		activeCam.push(FlxG.cameras.list[1]);		
+		activeCam.push(FlxG.cameras.list[1]);
 		
 		Reg.level.foregroundTiles.cameras = [FlxG.cameras.list[0]];
 		Reg.level.buildingBase.cameras = [FlxG.cameras.list[0]];
@@ -109,10 +109,10 @@ class PlayState extends FlxState
 		add(Reg.level.buildingBase);
 		add(Reg.level.crowds);
 		add(Reg.level.fog01);
+		add(Reg.level.fog02);
 		add(Reg.level.spawnTiles);
 		add(Reg.level.UIBars);
-		add(Reg.level.buildingTop);		
-		add(Reg.level.fog02);
+		add(Reg.level.buildingTop);			
 		add(Reg.level.UIBtnsClose);
 		add(UI);
 		add(draggedBuilding);
@@ -189,10 +189,10 @@ class PlayState extends FlxState
 				cameraDroppable.scroll.y = FlxG.camera.scroll.y;
 			}
 			
-			/*if (draggedBuilding.alive)
+			if (draggedBuilding.alive)
 			{
 				
-				draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom)// + (Reg.TILE_SIZE - FlxG.camera.scroll.x % Reg.TILE_SIZE - Reg.TILE_SIZE);  TODO ajuster au zoom, utiliser des var
+				/*draggedBuilding.x = Std.int((FlxG.mouse.getScreenPosition(cameraUI).x )/ (Reg.TILE_SIZE * FlxG.camera.zoom)) * (Reg.TILE_SIZE * FlxG.camera.zoom)// + (Reg.TILE_SIZE - FlxG.camera.scroll.x % Reg.TILE_SIZE - Reg.TILE_SIZE);  TODO ajuster au zoom, utiliser des var
 				if (FlxG.camera.scroll.x % Reg.TILE_SIZE != 0)
 					{
 						draggedBuilding.x += Reg.TILE_SIZE - (FlxG.camera.scroll.x % Reg.TILE_SIZE);
@@ -203,14 +203,14 @@ class PlayState extends FlxState
 						draggedBuilding.y += Reg.TILE_SIZE - (FlxG.camera.scroll.y % Reg.TILE_SIZE);
 						trace(FlxG.camera.scroll.y % Reg.TILE_SIZE);
 					}
-				
-				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 68 
+				*/
+				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 67 
 				&& Reg.level.buildingBase.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 0 )
 					draggedBuilding.alpha = 1;
 				
 				else
-					draggedBuilding.alpha = .5;					
-			}*/
+					draggedBuilding.alpha = .35;					
+			}
 			
 			if (draggedBuilding.alive)
 			{

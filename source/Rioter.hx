@@ -457,7 +457,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 			else
 				op.damage += addToDamage;
 		}
-		trace(opponents.length);
 		
 		if (opponents.length == 0) // remettre la foule en marche si elle n'a pas de combat en cour
 			this.isMoving = true;	
@@ -578,7 +577,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 			{
 				_f.followNumber =  _followNumber + 1 + _f.followNumber;
 				_f.leaderId = _otherLeader.leaderId;
-				leader = _otherLeader;
+				_f.leader = _otherLeader;
 			}
 			
 			for ( _f in _otherLeader.followers) // change les parametre des followers de l'autre foule
@@ -596,9 +595,18 @@ class Rioter extends FlxSprite // un seul objet graphique
 			_otherLeader.health += this.health;
 			_otherLeader.followers.push(this);
 			
+			trace(_otherLeader.health);
 			for ( _f in _otherLeader.followers)
 			{
-				_f.alpha = 1 - (_f.followNumber + 1) / 10;
+				//_f.alpha = 1 - (_f.followNumber + 1) / 10;
+				
+				_f.setAlpha();
+				
+				if (_f.alpha <= 0)
+				{
+					_otherLeader.followers.remove(_f);
+					_f.kill();
+				}
 			}
 			_otherLeader.alpha = 1;
 			

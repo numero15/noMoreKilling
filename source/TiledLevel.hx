@@ -16,6 +16,8 @@ import flixel.math.FlxRandom;
 import flixel.tile.FlxTilemap;
 import flixel.ui.FlxBar;
 import haxe.io.Path;
+import flixel.math.FlxPoint;
+import flixel.graphics.frames.FlxTileFrames;
 
 /**
  * @author Samuel Batista
@@ -109,9 +111,27 @@ class TiledLevel extends TiledMap
 			var imagePath 		= new Path(tileSet.imageSource);
 			var processedPath 	= c_PATH_LEVEL_TILESHEETS + imagePath.file + "." + imagePath.ext;
 			
+			
+			
+			// évite décalage des textures au scroll
+			/*var tileSize: FlxPoint = FlxPoint.get(Reg.TILE_SIZE, Reg.TILE_SIZE);
+			var tilesetTileFrames: Array<FlxTileFrames> = new Array<FlxTileFrames>();
+			tilesetTileFrames.push(FlxTileFrames.fromRectangle(/*AssetPaths.tiles__png*//*processedPath, tileSize));		
+			var tileSpacing: FlxPoint = FlxPoint.get(0, 0);
+			var tileBorder: FlxPoint = FlxPoint.get(2, 2);
+			var mergedTileset:FlxTileFrames = FlxTileFrames.combineTileFrames(tilesetTileFrames, tileSpacing, tileBorder);
+			tileSize.put();
+			tileSpacing.put();
+			tileBorder.put();*/
+			//
+			
+			
 			var tilemap:FlxTilemap = new FlxTilemap();
-			tilemap.loadMapFromArray(tileLayer.tileArray, width, height, processedPath,
-				tileSet.tileWidth, tileSet.tileHeight, OFF, tileSet.firstGID, tileSet.firstGID, tileSet.firstGID+12); //tileSet.firstGID => numero du premier tile de la feuille (sur l'ensemble des tiles du niveau)
+			tilemap.loadMapFromArray(tileLayer.tileArray, width, height, processedPath/*mergedTileset*/,
+			tileSet.tileWidth, tileSet.tileHeight, OFF, tileSet.firstGID, tileSet.firstGID, tileSet.firstGID+12); //tileSet.firstGID => numero du premier tile de la feuille (sur l'ensemble des tiles du niveau)
+			
+			tilemap.useScaleHack = false;
+			
 			if (tileLayer.name == "ground")
 			{
 				foregroundTiles = tilemap;
@@ -135,7 +155,7 @@ class TiledLevel extends TiledMap
 			{
 				fog02= tilemap;
 				fog02.alpha = .1;
-				fog02.y = 8;
+				//fog02.y = 8;
 			}
 			
 			/*if (tileLayer.name == "buildingFG")
@@ -248,7 +268,9 @@ class TiledLevel extends TiledMap
 	
 	public function moveFog():Void
 	{
-		fog01.x = Math.sin(FlxG.game.ticks / 7000) * 24;
-		fog02.x = Math.cos(FlxG.game.ticks / 7000) * 24;
+		/*fog01.x = Math.sin(FlxG.game.ticks / 7000) * 24;
+		fog02.x = Math.cos(FlxG.game.ticks / 7000) * 24;*/
+		fog01.x = Math.sin(FlxG.game.ticks / 5000) * Reg.TILE_SIZE;
+		fog02.x = Math.cos(FlxG.game.ticks / 5000) * Reg.TILE_SIZE;
 	}
 }
