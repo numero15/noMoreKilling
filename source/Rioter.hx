@@ -90,7 +90,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 			if (FlxG.game.ticks >= startTick + delayTicks-speed)
 			{
 				startTick = FlxG.game.ticks;
-				if(isMoving)
+				if(isMoving && !isPlayer)
 					updatePaths();
 			}
 			
@@ -121,7 +121,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 			
 		if (isPlayer)
 		{
-			
+			p = [new FlxPoint(0,0), new FlxPoint(Reg.level.player.x + Reg.TILE_SIZE/2, Reg.level.player.y + Reg.TILE_SIZE/2)];
 		}
 				
 		// si motivation maximum trouver un path

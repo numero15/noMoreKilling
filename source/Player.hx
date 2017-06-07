@@ -38,6 +38,7 @@ class Player extends FlxSprite
 	{
 		leader = _r;
 		leader.isPlayer = true;
+		haveCrowd = true;
 	}
 	
 	public function loseCrowd():Void
@@ -66,6 +67,9 @@ class Player extends FlxSprite
 			
 		this.x = currentPath[currentNode].x;
 		this.y = currentPath[currentNode].y;
+		
+		if(haveCrowd)
+			leader.updatePaths();
 		
 		currentNode++;
 	}

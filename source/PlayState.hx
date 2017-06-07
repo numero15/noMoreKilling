@@ -334,7 +334,10 @@ class PlayState extends FlxState
 		FlxTimer.globalManager.active = false;
 		//FlxTween.globalManager.active = false;
 		var state:SubStateDialogue = new SubStateDialogue();
-		state.setup(_p,_r);
+		if(_r.followNumber==0)
+			state.setup(_p, _r);
+		else
+			state.setup(_p, _r.leader);
 		openSubState(state);
 	}
 	
