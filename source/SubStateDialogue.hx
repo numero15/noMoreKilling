@@ -106,21 +106,17 @@ class SubStateDialogue extends FlxSubState
 		}
 		answers = new Array<Answer>();
 		
-		//Bisou
 		//accès xml		
 		for (_dialogueData in xml.elementsNamed("dialogue")) //itère dans les dialogues
 		{		
 			if (Std.parseInt(_dialogueData.get('id')) == _id)
 			{
-				// var i : Int = 0;
 				for (_answer in _dialogueData.elementsNamed('answer'))
 				{
 					answers.push(new Answer(
 						_answer.firstElement().firstChild().toString(),
 						Std.parseInt(_answer.get('id')),
 						Std.parseInt(_answer.get('effect'))));
-
-					// i++;
 				}				
 				
 				questionString = new String(_dialogueData.firstElement().firstChild().toString());					
