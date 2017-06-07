@@ -29,6 +29,9 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public var startTick : Int;
 	public var delayTicks : Int;
 	public var previousPos : FlxPoint;
+	public var currentPos : FlxPoint;
+	private var moveX: Float;
+	private var moveY : Float;
 	
 	public function new()
 	{		
@@ -39,17 +42,22 @@ class Rioter extends FlxSprite // un seul objet graphique
 	{
 		this.revive();
 		this.alpha = 0;
-		this.setPosition(X + Reg.TILE_SIZE * .1, Y + Reg.TILE_SIZE * .1);
+		
 		this.loadGraphic(image_path, true, 16, 16);
 		this.animation.frameIndex = 3;
 		this.cameras = [FlxG.cameras.list[0]];
 		
-		previousPos = new FlxPoint(X, Y);
+		
 		
 		alpha = 1;
-		updateHitbox();
+		
 		setSize(Reg.TILE_SIZE * .8, Reg.TILE_SIZE * .8);
 		centerOffsets();
+		updateHitbox();
+		
+		this.setPosition(X,Y);
+		currentPos = new FlxPoint(x, y);
+		previousPos = new FlxPoint(x, y);
 		
 		faction = _faction;
 		followNumber = _followNumber;
@@ -76,14 +84,16 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public override function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
+		
+		move();
+		
 		if (followNumber == 0)
 		{
-			/*trace ("FACTION = " + faction);
+			/*trace ("FACTION = " + faction); //SIMON
 			trace ("motivation = " + motivation);
 			trace("speed = " + speed);
 			trace("health = " + health);
 			trace("damage = " + damage);*/
-			
 			if (FlxG.game.ticks >= startTick + delayTicks-speed)
 			{
 				startTick = FlxG.game.ticks;
@@ -95,6 +105,40 @@ class Rioter extends FlxSprite // un seul objet graphique
 			bar.y = this.y;		
 		}
 	}
+	
+	private function move():Void
+	{
+		if (moveX > 0)
+		{
+			if (this.x + moveX <= currentPos.x)
+				this.x += moveX;
+			else
+				this.x = currentPos.x;
+		}
+		if (moveX < 0)
+		{
+			if (this.x + moveX >= currentPos.x)
+				this.x += moveX;
+			else
+				this.x = currentPos.x;
+		}
+		if (moveY > 0)
+		{
+			if (this.y + moveY <= currentPos.y)
+				this.y+= moveY;
+			else
+				this.y = currentPos.y;
+		}
+		if (moveY < 0)
+		{
+			if (this.y + moveY >= currentPos.y)
+				this.y += moveY;
+			else
+				this.y = currentPos.y;
+		}
+		
+	}
+	
 	
 	override public function draw():Void
 	{
@@ -114,6 +158,13 @@ class Rioter extends FlxSprite // un seul objet graphique
 		
 		if (followNumber==0 && isMoving) // est le leader, par sécurité
 		{		
+			// positionne la foule à la fin de son déplacement
+			this.setPosition(currentPos.x, currentPos.y);
+			
+			for (_f in followers)
+			_f.setPosition(_f.currentPos.x, _f.currentPos.y);
+			
+			
 			// si motivation maximum trouver un path
 			if (motivation == motivationMax)
 			{
@@ -157,12 +208,20 @@ class Rioter extends FlxSprite // un seul objet graphique
 			}
 			
 			if (!collide(new FlxPoint(p[1].x - this.width / 2, p[1].y - this.height / 2)))
+			//if (!collide(currentPos))
 			{
 				// move leader
 				previousPos.x = x;
 				previousPos.y = y;
-				this.x = p[1].x - this.width / 2;
-				this.y = p[1].y - this.height / 2;
+				
+				currentPos.x = p[1].x - this.width / 2;
+				currentPos.y = p[1].y - this.height / 2;
+				
+				//remplacer par mouvement
+				//this.x = p[1].x - this.width / 2;
+				//this.y = p[1].y - this.height / 2;
+				moveX =  ((p[1].x - this.width / 2) - previousPos.x) / 45;
+				moveY = ( (p[1].y - this.height / 2) - previousPos.y) / 45;
 				
 				//move followers
 				
@@ -183,8 +242,13 @@ class Rioter extends FlxSprite // un seul objet graphique
 							
 							if (_f.followNumber == 1)
 							{						
-								_f.x = previousPos.x;
-								_f.y = previousPos.y;
+								_f.currentPos.x = previousPos.x;
+								_f.currentPos.y = previousPos.y;
+								//remplacer par mouvement
+								//_f.x = previousPos.x;
+								//_f.y = previousPos.y;
+								_f.moveX =  (previousPos.x - _f.previousPos.x)/45;
+								_f.moveY =  (previousPos.y - _f.previousPos.y)/45;
 							}
 							
 							else
@@ -193,8 +257,13 @@ class Rioter extends FlxSprite // un seul objet graphique
 								{
 									if (_pf.followNumber == _f.followNumber-1)
 									{
-										_f.x = _pf.previousPos.x;
-										_f.y = _pf.previousPos.y;
+										_f.currentPos.x = _pf.previousPos.x;
+										_f.currentPos.y = _pf.previousPos.y;
+										//remplacer par mouvement
+										//_f.x = _pf.previousPos.x;
+										//_f.y = _pf.previousPos.y;
+										_f.moveX =  (_pf.previousPos.x - _f.previousPos.x)/45;
+										_f.moveY =  (_pf.previousPos.y - _f.previousPos.y)/45;
 									}
 								}
 							}
@@ -206,32 +275,31 @@ class Rioter extends FlxSprite // un seul objet graphique
 	}
 	
 	
-	private function randomMovement():Array<FlxPoint>
+	private function randomMovement():Array<FlxPoint> // ATTENTION this.position doit etre égla à this.currentPos
 	{
 		
 		var directions : Array<FlxPoint>;
 				directions = new Array <FlxPoint>();
 				var direction : FlxPoint = new FlxPoint();
 				var coordTile : FlxPoint = new FlxPoint();
-				coordTile.set(Math.round(this.x / Reg.TILE_SIZE), Math.round(this.y / Reg.TILE_SIZE));
+				
+				coordTile.set(Math.round(this.currentPos.x / Reg.TILE_SIZE), Math.round(this.currentPos.y / Reg.TILE_SIZE));
+				//remplacer par mouvement
+				//coordTile.set(Math.round(this.x / Reg.TILE_SIZE), Math.round(this.y / Reg.TILE_SIZE));
 				
 				// trouve les case adjacentes libres
-				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x + 1), Std.int(coordTile.y)))!= FlxObject.ANY)
 				if(freeTile(new FlxPoint(coordTile.x + 1, coordTile.y)))	
 				//right					
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
 
-				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x - 1), Std.int(coordTile.y)))!= FlxObject.ANY)
 					//left	
 				if(freeTile(new FlxPoint(coordTile.x - 1, coordTile.y)))	
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE,  coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
 
-				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) + 1))!= FlxObject.ANY)
 				if(freeTile(new FlxPoint(coordTile.x, coordTile.y+1)))		
 				//down					
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE));
 
-				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) - 1))!= FlxObject.ANY)
 				if(freeTile(new FlxPoint(coordTile.x, coordTile.y-1)))		
 				//up
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE));
@@ -285,7 +353,9 @@ class Rioter extends FlxSprite // un seul objet graphique
 	{
 		for (_r in Reg.level.crowds)
 		{
-			if (_r.x == _p.x && _r.y == _p.y && _r.alive)
+			if (_r.alive)
+			{
+			if (_r.currentPos.x == _p.x && _r.currentPos.y == _p.y )
 			{
 				//fight
 				if (_r.faction != faction)
@@ -322,11 +392,12 @@ class Rioter extends FlxSprite // un seul objet graphique
 				}
 				
 			}
+			}
 		}
 		return false;		
 	}
 	
-	private function findNewPath(_unit:FlxSprite, _goal:FlxSprite ):Array<FlxPoint>
+	private function findNewPath(_unit:FlxSprite, _goal:FlxSprite ):Array<FlxPoint> // ATTENTION this.position doit etre égla à this.currentPos
 	{
 		var pathPoints:Array<FlxPoint> = Reg.level.collidableTileLayers[0].findPath(
 			FlxPoint.get(_unit.x + _unit.width / 2, _unit.y + _unit.height / 2),
@@ -429,14 +500,16 @@ class Rioter extends FlxSprite // un seul objet graphique
 			{
 				removeBool = true;	
 				
-				if (distInTile(this.getPosition(), op.getPosition() )< 2)
+				//if (distInTile(this.getPosition(), op.getPosition() )< 2)
+				if (distInTile(this.currentPos, op.getPosition() )< 2)
 				{
 					removeBool = false;
 				}
 					
 				for (op_f in op.followers)
 				{					
-					if (distInTile(this.getPosition(), op_f.getPosition()) < 2)
+					//if (distInTile(this.getPosition(), op_f.getPosition()) < 2)
+					if (distInTile(this.currentPos, op_f.getPosition()) < 2)
 					{
 						removeBool = false;
 						break;
@@ -445,14 +518,16 @@ class Rioter extends FlxSprite // un seul objet graphique
 				
 				for (f in followers)
 				{
-					if (distInTile(f.getPosition(), op.getPosition() )< 2)
+					//if (distInTile(f.getPosition(), op.getPosition() )< 2)
+					if (distInTile(f.currentPos, op.getPosition() )< 2)
 					{
 						removeBool = false;
 					}
 						
 					for (op_f in op.followers)
 					{					
-						if (distInTile(f.getPosition(), op_f.getPosition()) < 2)
+						//if (distInTile(f.getPosition(), op_f.getPosition()) < 2)
+						if (distInTile(f.currentPos, op_f.getPosition()) < 2)
 						{
 							removeBool = false;
 							break;

@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxG;
 import flixel.text.FlxText;
+import flixel.ui.FlxButton;
 import openfl.display.BitmapData;
 import flixel.math.FlxPoint;
 /**
@@ -21,10 +22,14 @@ class HUD extends FlxGroup
 	private var buildingsStats: Xml;
 	private var moneyText : FlxText;
 	private var prevMoney : Int;
+	private var btn_pause : FlxButton;
+	private var parentState : PlayState;
 	
-	public function new() 
+	public function new(_ps :PlayState) 
 	{
 		super();
+		
+		parentState = _ps;
 		
 		buildingsStats = Xml.parse(sys.io.File.getContent("assets/data/data.xml")).firstChild();		
 		
@@ -41,6 +46,8 @@ class HUD extends FlxGroup
 		moneyText.x = FlxG.width / 2;
 		moneyText.y = 16;
 		
+		btn_pause = new FlxButton(32, 32, "pause", _ps.pause);	
+		btn_pause.loadGraphic ("assets/images/btn_pause.png");
 		
 		buildings = new  FlxTypedGroup<BuildingDroppable>();
 		
@@ -80,6 +87,7 @@ class HUD extends FlxGroup
 		add(moneyText);
 		add(buildings);
 		add(miniMap);
+		add(btn_pause);
 	}
 	
 	public function getMiniMap(?wallColor:Int = 0x00000000, ?openColor:Int = 0xFF909090):FlxSprite

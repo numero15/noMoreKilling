@@ -41,6 +41,7 @@ class TiledLevel extends TiledMap
 	public var buildings : FlxTypedGroup<Building>;
 	public var UIBars : FlxTypedGroup<FlxBar>;
 	public var UIBtnsClose :  FlxTypedGroup<FlxSprite>;
+	public var player : Player;
 	
 	// Sprites of images layers
 	public var imagesLayer:FlxGroup;
@@ -62,6 +63,7 @@ class TiledLevel extends TiledMap
 		buildings = new FlxTypedGroup<Building>();
 		UIBars = new FlxTypedGroup<FlxBar>(25);
 		UIBtnsClose = new FlxTypedGroup<FlxSprite>();
+		player = new Player(0,0);
 		
 		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
 		
@@ -214,6 +216,11 @@ class TiledLevel extends TiledMap
 				{
 					loadSpawn(state, o, objectLayer, objectsLayer);
 				}
+			}
+			
+			if (layer.name == "player")
+			{
+				player.setPosition(objectLayer.objects[0].x, objectLayer.objects[0].y - Reg.TILE_SIZE);				
 			}
 		}
 	}

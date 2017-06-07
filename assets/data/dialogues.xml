@@ -1,0 +1,14 @@
+<root>
+	<dialogue id="0">
+		<texte>question ?</texte>
+		<motivation value ="10"/>
+        <answer id ="0" effect="1">
+        	<texte>answer 01</texte>
+   		</answer>
+   		 <answer id ="0" effect="-1">
+   		 	<texte>answer 02</texte>
+   		</answer>
+	</dialogue>
+    
+ 
+</root>

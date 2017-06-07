@@ -12,6 +12,7 @@ import flixel.system.scaleModes.PixelPerfectScaleMode;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.util.FlxTimer;
 //import flixel.util.FlxTimer;
 import flixel.input.mouse.FlxMouseEventManager;
 
@@ -27,6 +28,7 @@ import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.util.FlxColor;
 import flixel.util.FlxPath;
 import flixel.FlxCamera;
+
 /**
  * A FlxState which can be used for the actual gameplay.
  */
@@ -93,6 +95,7 @@ class PlayState extends FlxState
 		Reg.level.fog01.cameras = [FlxG.cameras.list[0]];
 		Reg.level.buildingTop.cameras = [FlxG.cameras.list[0]];
 		Reg.level.fog02.cameras = [FlxG.cameras.list[0]];
+		Reg.level.player.cameras = [FlxG.cameras.list[0]];
 		
 		draggedBuilding = new BuildingDroppable(0, 0, "bar");
 		draggedBuilding.kill();
@@ -102,14 +105,15 @@ class PlayState extends FlxState
 		draggedPower.kill();
 		draggedPower.cameras = [FlxG.cameras.list[2]];
 		
-		UI = new HUD();	
+		UI = new HUD(this);	
 		
 		add(Reg.level.foregroundTiles);
 		add(Reg.level.buildings);
 		add(Reg.level.buildingBase);
 		add(Reg.level.crowds);
-		add(Reg.level.fog01);
-		add(Reg.level.fog02);
+		add(Reg.level.player);
+		//add(Reg.level.fog01);
+		//add(Reg.level.fog02);
 		add(Reg.level.spawnTiles);
 		add(Reg.level.UIBars);
 		add(Reg.level.buildingTop);			
@@ -140,6 +144,8 @@ class PlayState extends FlxState
 		//timerFight.start(1, updateFight, 0);
 		fightStartTick = FlxG.game.ticks;
 		fightDelayTicks = 1000;
+		
+		pause();
 	}
 
 	/**
@@ -147,8 +153,9 @@ class PlayState extends FlxState
 	 */
 	override public function update(elapsed:Float):Void
 	{		
-		//FlxG.overlap(Reg.level.crowds, rioterCollide);
 		Reg.level.moveFog();
+		
+		FlxG.overlap(Reg.level.player, Reg.level.crowds, openSubStateDialogue);
 		
 		if (FlxG.game.ticks >= fightStartTick + fightDelayTicks)
 		{
@@ -308,5 +315,29 @@ class PlayState extends FlxState
 				r.hit();// décompter les dégats
 			}
 		}
+	}	
+	
+	public function openSubStateDialogue(_p:Player, _r:Rioter):Void
+	{
+		if (_p.haveCrowd)
+			return;
+		
+		_p.x = _r.x;
+		_p.y = _r.y;
+		// This is temp substate, it will be destroyed after closing
+		FlxTimer.globalManager.active = false;
+		//FlxTween.globalManager.active = false;
+		var state:SubStateDialogue = new SubStateDialogue();
+		state.setup(_p,_r);
+		openSubState(state);
+	}
+	
+	public function pause():Void
+	{
+		// This is temp substate, it will be destroyed after closing
+		FlxTimer.globalManager.active = false;
+		//FlxTween.globalManager.active = false;
+		var state:SubStateFight = new SubStateFight();
+		openSubState(state);
 	}
 }
