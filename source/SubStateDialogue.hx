@@ -106,6 +106,7 @@ class SubStateDialogue extends FlxSubState
 		}
 		answers = new Array<Answer>();
 		
+		//Bisou
 		//accès xml		
 		for (_dialogueData in xml.elementsNamed("dialogue")) //itère dans les dialogues
 		{		
