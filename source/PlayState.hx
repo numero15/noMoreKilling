@@ -227,7 +227,7 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.justReleased)
 		{
-			if (draggedBuilding.alive)
+			if (draggedBuilding.alive) // drop building
 			{
 				if (Reg.level.foregroundTiles.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 67
 					&& Reg.level.buildingBase.getTile(Std.int(FlxG.mouse.x / Reg.TILE_SIZE), Std.int(FlxG.mouse.y / Reg.TILE_SIZE)) == 0 )
@@ -238,6 +238,12 @@ class PlayState extends FlxState
 					Reg.level.buildings.add(_b);
 				}
 				draggedBuilding.kill();
+			}
+			
+			//move player
+			else
+			{
+				Reg.level.player.findNewPath(new FlxPoint(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE));
 			}
 			
 			if (draggedPower.alive)
