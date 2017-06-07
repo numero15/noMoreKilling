@@ -38,6 +38,8 @@ class Player extends FlxSprite
 	{
 		leader = _r;
 		leader.isPlayer = true;
+		x = leader.x;
+		y = leader.y;
 	}
 	
 	public function loseCrowd():Void
@@ -52,6 +54,10 @@ class Player extends FlxSprite
 		{
 			startTick = FlxG.game.ticks;
 			move();
+			if (haveCrowd)
+			{
+				
+			}
 		}
 		
 	}
@@ -87,7 +93,5 @@ class Player extends FlxSprite
 			currentPath = pathPoints;
 			currentNode = 1;
 		}
-		
-		trace("findPath");
 	}
 }
