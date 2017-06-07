@@ -64,8 +64,8 @@ class Player extends FlxSprite
 		if (currentPath == null)
 			return;
 			
-		this.x = currentPath[currentNode].x - Reg.TILE_SIZE/2;
-		this.y = currentPath[currentNode].y - Reg.TILE_SIZE/2;
+		this.x = currentPath[currentNode].x;
+		this.y = currentPath[currentNode].y;
 		
 		currentNode++;
 	}
@@ -73,7 +73,7 @@ class Player extends FlxSprite
 	public function findNewPath( _goal:FlxPoint ):Void
 	{
 		var pathPoints:Array<FlxPoint> = Reg.level.collidableTileLayers[0].findPath(
-			FlxPoint.get((this.x/Reg.TILE_SIZE)*Reg.TILE_SIZE ,
+			FlxPoint.get((this.x/Reg.TILE_SIZE)*Reg.TILE_SIZE,
 			(this.y/Reg.TILE_SIZE)*Reg.TILE_SIZE),
 			FlxPoint.get((_goal.x/Reg.TILE_SIZE)*Reg.TILE_SIZE,
 			(_goal.y/Reg.TILE_SIZE)*Reg.TILE_SIZE),
@@ -86,6 +86,13 @@ class Player extends FlxSprite
 		{
 			currentPath = pathPoints;
 			currentNode = 1;
+			startTick = FlxG.game.ticks-1000;
+			
+			for (i in 0...pathPoints.length - 1)
+			{
+				pathPoints[i].x -= Reg.TILE_SIZE / 2;
+				pathPoints[i].y -= Reg.TILE_SIZE / 2;
+			}
 		}
 		
 		trace("findPath");

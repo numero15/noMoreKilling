@@ -151,6 +151,9 @@ class SubStateDialogue extends FlxSubState
 	
 	private function closeThis():Void
 	{
+		//test en attendant que les condtions de victoire/défaite marchent
+		player.getCrowd(leader);
+		
 		FlxTimer.globalManager.active = true;
 		FlxTween.globalManager.active = true;
 		this.close();
@@ -170,6 +173,6 @@ class SubStateDialogue extends FlxSubState
 			answers[answers.length - i + 1] = null;
 		}
 
-		CloseThis();
+		closeThis();
 	}
 }
