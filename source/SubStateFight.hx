@@ -34,13 +34,14 @@ class SubStateFight extends FlxSubState
 		closeBtn = new FlxButton(FlxG.width * 0.5 - 40, FlxG.height * 0.5, "Close", closeThis);
 		closeBtn.cameras = [FlxG.cameras.list[1]]; // la camera 1 est réservée à l'UI et au elements non affectés par le zoom
 		
-		crowds = new FlxTypedGroup<Fighter>(200);
+		crowds = new FlxTypedGroup<Fighter>(600);
 		
-		for (i in 0...200)
+		for (i in 0...600)
 		{
 			var _r = new Fighter(0, 0);
 			_r.makeGraphic(Reg.TILE_SIZE, Reg.TILE_SIZE, FlxColor.RED);
 			_r.kill();
+			_r.cameras = [FlxG.cameras.list[1]];
 			crowds.add(_r);
 		}
 		
@@ -53,6 +54,7 @@ class SubStateFight extends FlxSubState
 		generateCrowd(0xff0000ff, 1);
 		
 		//défini une cible pour chaque fighter
+		crowds.forEachAlive(function(_f:Fighter){_f.findTarget(); } );	
 		
 	}
 	
@@ -64,10 +66,11 @@ class SubStateFight extends FlxSubState
 		_x =FlxG.width / 2  + FlxG.width / 4 * -direction  ;
 		_y =  FlxG.random.float(0, Reg.TILE_SIZE / 2);
 		
-		for ( i in 0...30) // generation foule 1
+		for ( i in 0...50) // generation foule
 		{
 			_f  = crowds.getFirstAvailable();
-			_f.revive();	
+			_f.revive();
+			_f.setup(crowds);
 			
 			_y += Reg.TILE_SIZE+ FlxG.random.float(0, Reg.TILE_SIZE);
 			if (_y > FlxG.height - Reg.TILE_SIZE)
@@ -79,7 +82,7 @@ class SubStateFight extends FlxSubState
 			_f.makeGraphic(Reg.TILE_SIZE, Reg.TILE_SIZE, _color);
 			_f.x = _x + FlxG.random.float(-Reg.TILE_SIZE/2, Reg.TILE_SIZE/2);
 			_f.y = _y;
-			_f.velocity.x = 20 * direction + FlxG.random.int( -5, 5);	
+			//_f.velocity.x = 20 * direction + FlxG.random.int( -5, 5);	
 			_f.faction = _color;
 			_f.health = FlxG.random.int(10, 15);
 		}
@@ -87,46 +90,60 @@ class SubStateFight extends FlxSubState
 	
 	private function overlapCallback(_f1 : Fighter, _f2 : Fighter):Void
 	{
-		/*_f1.velocity.x = 0;
-		_f1.velocity.y = 0;
-		_f2.velocity.x = 0;
-		_f2.velocity.y = 0;*/
+		//collision si les deux foule sont de la même faction
+		
+		
 		if (_f1.faction == _f2.faction)
 		{
-			if (_f1.velocity.x > 0 && _f2.velocity.x > 0)
+			/*if (_f1.velocity.x > 0 && _f2.velocity.x > 0)
 			{
 				if (_f1.x > _f2.x)
+				{
 					_f1.moves = false;
+				}
 				else
+				{
 					_f2.moves = false;
+				}
 			}
 			
 			else if (_f1.velocity.x < 0 && _f2.velocity.x < 0)
 			{
 				if (_f1.x < _f2.x)
+				{
 					_f1.moves = false;
+				}
 				else
+				{
 					_f2.moves = false;
-			}
+				}
+			}*/
 		}
+		
+		// collision si les foules sont ennemies
 		else
 		{
 			_f1.moves = false;
 			_f2.moves = false;
-			_f1.health -= .1;
-			_f2.health -= .1;
+			_f1.health -= .01;
+			_f2.health -= .01;
 		}
+	}
+	
+	private function processCallback(_f1 : Fighter, _f2 : Fighter):Bool
+	{
+		if (_f1.isOnScreen(FlxG.cameras.list[1]) && _f2.isOnScreen(FlxG.cameras.list[1]) && _f1.alive && _f2.alive )
+			return true;
+			
+		else
+			return false;
 	}
 	
 	override public function update(elapsed:Float):Void
 	{
-		super.update(elapsed);
-		
-		crowds.forEachAlive(function(_f:Fighter){_f.moves = true;} );
-		
-		
-		FlxG.overlap(crowds, overlapCallback);
-		
+		super.update(elapsed);		
+		crowds.forEachAlive(function(_f:Fighter){_f.moves = true;} );			
+		FlxG.overlap(crowds, overlapCallback, processCallback);
 	}
 	
 	

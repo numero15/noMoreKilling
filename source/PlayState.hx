@@ -153,7 +153,9 @@ class PlayState extends FlxState
 	 * Function that is called once every frame.
 	 */
 	override public function update(elapsed:Float):Void
-	{		
+	{	
+		
+		
 		Reg.level.moveFog();
 		
 		FlxG.overlap(Reg.level.player, Reg.level.crowds, openSubStateDialogue);
