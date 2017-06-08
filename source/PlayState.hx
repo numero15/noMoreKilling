@@ -145,7 +145,8 @@ class PlayState extends FlxState
 		fightStartTick = FlxG.game.ticks;
 		fightDelayTicks = 1000;
 		
-		pause();
+		///pause();
+		openSubStateFight();
 	}
 
 	/**
@@ -341,12 +342,21 @@ class PlayState extends FlxState
 		openSubState(state);
 	}
 	
+	public function openSubStateFight():Void
+	{	
+		FlxTimer.globalManager.active = false;
+		//FlxTween.globalManager.active = false;
+		var state:SubStateFight = new SubStateFight();		
+		state.setup();
+		openSubState(state);
+	}
+	
 	public function pause():Void
-	{
+	{/*
 		// This is temp substate, it will be destroyed after closing
 		FlxTimer.globalManager.active = false;
 		//FlxTween.globalManager.active = false;
 		var state:SubStateFight = new SubStateFight();
-		openSubState(state);
+		openSubState(state);*/
 	}
 }

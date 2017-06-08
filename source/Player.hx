@@ -31,7 +31,7 @@ class Player extends FlxSprite
 		haveCrowd = false;
 		path = null;
 		startTick = FlxG.game.ticks;
-		delayTicks = 1000;
+		delayTicks = 300;
 	}
 	
 	public function getCrowd(_r:Rioter):Void
@@ -52,6 +52,13 @@ class Player extends FlxSprite
 		if (FlxG.game.ticks >= startTick + delayTicks)
 		{
 			startTick = FlxG.game.ticks;
+			
+			if (haveCrowd)
+				delayTicks = leader.delayTicks - leader.speed;
+				
+			else
+				delayTicks = 300;
+				
 			move();
 		}
 		

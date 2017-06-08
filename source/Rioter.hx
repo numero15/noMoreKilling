@@ -627,51 +627,52 @@ class Rioter extends FlxSprite // un seul objet graphique
 	
 	public function jointOtherCrowd(_otherLeader : Rioter, _followNumber:Int):Void // for leaders
 	{
-		if (followNumber == 0)
+		if (followNumber != 0 || isPlayer)
+		return;
+		
+		followNumber =  _followNumber + 1;
+		leaderId = _otherLeader.leaderId;
+		leader = _otherLeader;
+		bar.kill();
+		
+		for ( _f in followers) // change les parametres des followers
 		{
-			followNumber =  _followNumber + 1;
-			leaderId = _otherLeader.leaderId;
-			leader = _otherLeader;
-			bar.kill();
+			_f.followNumber =  _followNumber + 1 + _f.followNumber;
+			_f.leaderId = _otherLeader.leaderId;
+			_f.leader = _otherLeader;
+		}
+		
+		for ( _f in _otherLeader.followers) // change les parametre des followers de l'autre foule
+		{
+			if (_f.followNumber > _followNumber)
+			{
+				_f.followNumber += this.followers.length + 1;
+			}				
+		}
+		// ajoute les followers à l'autre foule
+		for ( _f in followers)
+		{
+			_otherLeader.followers.push(_f);
+		}
+		_otherLeader.health += this.health;
+		_otherLeader.followers.push(this);
+		
+		for ( _f in _otherLeader.followers)
+		{
+			//_f.alpha = 1 - (_f.followNumber + 1) / 10;
 			
-			for ( _f in followers) // change les parametres des followers
-			{
-				_f.followNumber =  _followNumber + 1 + _f.followNumber;
-				_f.leaderId = _otherLeader.leaderId;
-				_f.leader = _otherLeader;
-			}
+			_f.setAlpha();
 			
-			for ( _f in _otherLeader.followers) // change les parametre des followers de l'autre foule
+			if (_f.alpha <= 0)
 			{
-				if (_f.followNumber > _followNumber)
-				{
-					_f.followNumber += this.followers.length + 1;
-				}				
+				_otherLeader.followers.remove(_f);
+				_f.kill();
 			}
-			// ajoute les followers à l'autre foule
-			for ( _f in followers)
-			{
-				_otherLeader.followers.push(_f);
-			}
-			_otherLeader.health += this.health;
-			_otherLeader.followers.push(this);
-			
-			for ( _f in _otherLeader.followers)
-			{
-				//_f.alpha = 1 - (_f.followNumber + 1) / 10;
+		}
+		_otherLeader.alpha = 1;
+		
+		followers.clear();		
 				
-				_f.setAlpha();
-				
-				if (_f.alpha <= 0)
-				{
-					_otherLeader.followers.remove(_f);
-					_f.kill();
-				}
-			}
-			_otherLeader.alpha = 1;
-			
-			followers.clear();		
-		}		
 	}
 	
 	public function setAlpha():Void
