@@ -24,11 +24,11 @@ class SubStateFight extends FlxSubState
 		
 	}
 	
-	public function setup(? _r1:Rioter, ?_r2:Rioter):Void
+	public function setup( _r1:Rioter, _r2:Rioter):Void
 	{
 		BG = new FlxSprite();
-		BG.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		BG.alpha = .3;
+		BG.makeGraphic(FlxG.width, FlxG.height, FlxColor.GRAY);
+		BG.alpha = 1;
 		BG.cameras = [FlxG.cameras.list[1]];
 		
 		closeBtn = new FlxButton(FlxG.width * 0.5 - 40, FlxG.height * 0.5, "Close", closeThis);
@@ -48,42 +48,47 @@ class SubStateFight extends FlxSubState
 		add(closeBtn);
 		add(BG);
 		add(crowds);
-		
 		//genère les foules	
-		generateCrowd(0xff00ff00, -1);
-		generateCrowd(0xff0000ff, 1);
+		generateCrowd(_r1.faction, _r1.speed, _r1.health, -1);
+		generateCrowd(_r2.faction, _r2.speed, _r2.health, 1);
 		
 		//défini une cible pour chaque fighter
 		crowds.forEachAlive(function(_f:Fighter){_f.findTarget(); } );	
 		
 	}
 	
-	private function generateCrowd(_color:UInt, direction: Int):Void
+	private function generateCrowd(_faction :String, _speed:Int, _health:Float, direction: Int):Void
 	{
 		var _f : Fighter;
 		var _x : Float;
 		var _y : Float;
 		_x =FlxG.width / 2  + FlxG.width / 4 * -direction  ;
-		_y =  FlxG.random.float(0, Reg.TILE_SIZE / 2);
+		_y =  FlxG.random.float(0, Reg.TILE_SIZE / 2) + FlxG.height/4;
 		
-		for ( i in 0...50) // generation foule
+		for ( i in 0...Std.int(_health/10)) // generation foule
 		{
 			_f  = crowds.getFirstAvailable();
 			_f.revive();
-			_f.setup(crowds);
+			if (direction ==-1)
+				_f.flipX = true;
 			
-			_y += Reg.TILE_SIZE+ FlxG.random.float(0, Reg.TILE_SIZE);
-			if (_y > FlxG.height - Reg.TILE_SIZE)
+			_f.faction = _faction;
+			_f.setup(crowds);
+			_f.speed = _speed;
+			
+			
+			_y += Reg.TILE_SIZE / 2 + FlxG.random.float(0, Reg.TILE_SIZE / 2);
+			
+			
+			if (_y > 3*FlxG.height/4 - Reg.TILE_SIZE)
 			{
-				_y = FlxG.random.float(0, Reg.TILE_SIZE / 2);
+				_y = FlxG.random.float(0, Reg.TILE_SIZE / 2) + FlxG.height/4;
 				_x -= Reg.TILE_SIZE*2 * direction;
 			}
-			 
-			_f.makeGraphic(Reg.TILE_SIZE, Reg.TILE_SIZE, _color);
 			_f.x = _x + FlxG.random.float(-Reg.TILE_SIZE/2, Reg.TILE_SIZE/2);
 			_f.y = _y;
 			//_f.velocity.x = 20 * direction + FlxG.random.int( -5, 5);	
-			_f.faction = _color;
+			
 			_f.health = FlxG.random.int(10, 15);
 		}
 	}
@@ -95,9 +100,9 @@ class SubStateFight extends FlxSubState
 		
 		if (_f1.faction == _f2.faction)
 		{
-			/*if (_f1.velocity.x > 0 && _f2.velocity.x > 0)
+			if (_f1.velocity.x > 0 && _f2.velocity.x > 0)
 			{
-				if (_f1.x > _f2.x)
+				if (_f1.x < _f2.x)
 				{
 					_f1.moves = false;
 				}
@@ -109,7 +114,7 @@ class SubStateFight extends FlxSubState
 			
 			else if (_f1.velocity.x < 0 && _f2.velocity.x < 0)
 			{
-				if (_f1.x < _f2.x)
+				if (_f1.x > _f2.x)
 				{
 					_f1.moves = false;
 				}
@@ -117,7 +122,7 @@ class SubStateFight extends FlxSubState
 				{
 					_f2.moves = false;
 				}
-			}*/
+			}
 		}
 		
 		// collision si les foules sont ennemies
@@ -125,8 +130,8 @@ class SubStateFight extends FlxSubState
 		{
 			_f1.moves = false;
 			_f2.moves = false;
-			_f1.health -= .01;
-			_f2.health -= .01;
+			_f1.health -= .5;
+			_f2.health -= .5;
 		}
 	}
 	

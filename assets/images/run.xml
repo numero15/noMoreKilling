@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:aefc7b463e8f4630cb9c3f5b230521fc:d545ec67f82ac18e0ece394b8a9e106f:c11cbcf89c15b7857fe5213233812bab$ -->
+<TextureAtlas imagePath="run.png" width="160" height="16">
+    <SubTexture name="run_cycle_00" x="0" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_01" x="16" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_2" x="32" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_03" x="48" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_04" x="64" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_05" x="80" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_06" x="96" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_07" x="112" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_08" x="128" y="0" width="16" height="16"/>
+    <SubTexture name="run_cycle_09" x="144" y="0" width="16" height="16"/>
+</TextureAtlas>

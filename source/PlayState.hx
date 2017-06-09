@@ -348,8 +348,16 @@ class PlayState extends FlxState
 	{	
 		FlxTimer.globalManager.active = false;
 		//FlxTween.globalManager.active = false;
-		var state:SubStateFight = new SubStateFight();		
-		state.setup();
+		var state:SubStateFight = new SubStateFight();	
+		var r1 : Rioter = new Rioter();
+		r1.speed = 5;
+		r1.faction = "red";
+		r1.health =  700;
+		var r2 : Rioter = new Rioter();
+		r2.speed = 1;
+		r2.faction = "yellow";
+		r2.health =  200;
+		state.setup(r1,r2);
 		openSubState(state);
 	}
 	
