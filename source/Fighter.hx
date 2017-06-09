@@ -17,8 +17,10 @@ class Fighter extends FlxSprite
 	public var faction : String;
 	public var crowds : FlxTypedGroup<Fighter>;
 	private var target:Fighter;
-	public var speed : Int;	// modificateur de vitesse
-
+	public var speed : Int;	// modificateur de vitesse	
+	public var state : String;
+	private var isColliding:Bool;
+	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
 		super(X, Y, SimpleGraphic);		
@@ -27,6 +29,9 @@ class Fighter extends FlxSprite
 	public function setup(_c:FlxTypedGroup<Fighter>):Void
 	{
 		crowds = _c;
+		state = "init";
+		isColliding = false;
+		
 		
 		loadGraphic("assets/images/run.png", true, 16, 16);
 		switch(faction)
@@ -36,17 +41,23 @@ class Fighter extends FlxSprite
 			case 'yellow' :
 				this.setColorTransform(FlxG.random.float(.7, 1),1, FlxG.random.float(.5, 1), 1, 0, 0, 0, 0);
 		}
-		animation.add('run', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],FlxG.random.int(10,14));
-		animation.play('run');
+		animation.add('run', [ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], 12);
+		animation.add('idle', [ 7,8], 12);
+		animation.add('fight', [ 0,1,2,3,4], 12);
+		
 		
 		updateHitbox();
 		setSize(Reg.TILE_SIZE * .5, Reg.TILE_SIZE * .5);
 		centerOffsets();
+		
+		changeState('run');
 	}
 	
 	override function update(elapsed: Float):Void
 	{
 		if (health < 0) kill();
+		
+		
 		
 		if(target!=null)
 		{
@@ -59,8 +70,51 @@ class Fighter extends FlxSprite
 		}
 		
 		super.update(elapsed);
+		//moves = true;
+		
+		if (state == "idle" || state =="fight")
+				if(!isColliding)
+					changeState("run");
+			
+		isColliding = false;
 	}
 	
+	
+	public function collide(_f:Fighter):Void
+	{
+		
+		if (faction == _f.faction)
+		{
+			if (velocity.x > 0 && _f.velocity.x > 0)
+			{
+				if (x < _f.x)
+				{
+					changeState("idle");
+					isColliding = true;
+					//moves = false;
+				}
+			}
+			
+			else if (velocity.x < 0 && _f.velocity.x < 0)
+			{
+				if (x > _f.x)
+				{
+					changeState("idle");
+					isColliding = true;
+					//moves = false;
+				}
+			}
+		}
+		
+		// collision si les foules sont ennemies
+		else
+		{
+			//moves = false;
+			health -= .1;
+			changeState("fight");
+			isColliding = true;
+		}
+	}
 	
 	public function findTarget():Void
 	{
@@ -89,13 +143,41 @@ class Fighter extends FlxSprite
 		}
 		
 		if (!haveTarget)
+		{
 			target = null;
+			velocity.x = 0;
+			velocity.y = 0;
+			changeState("idle");
+		}
 		
 		//calcul la vitesse
 		else
 		{			
 			velocity.x =-(this.x- target.x) /  this.getPosition().distanceTo(target.getPosition())* (20 + speed*5) ;
-			velocity.y =- ( this.y - target.y) / this.getPosition().distanceTo(target.getPosition()) * (20 + speed*5);
+			velocity.y =- ( this.y - target.y) / this.getPosition().distanceTo(target.getPosition()) * (20 + speed * 5);
+			changeState("run");
+		}
+	}
+	
+	private function changeState(_s:String):Void
+	{
+		if (_s == state)
+			return;
+			
+		state = _s;
+		switch (state)
+		{
+			case "run":
+				animation.play('run', true, false, -1);
+				moves = true;
+				
+			case "idle":
+				animation.play('idle');
+				moves = false;
+				
+			case "fight":
+				animation.play('fight');
+				moves = false;
 		}
 	}
 	

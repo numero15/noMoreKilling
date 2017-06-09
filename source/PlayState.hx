@@ -352,11 +352,11 @@ class PlayState extends FlxState
 		var r1 : Rioter = new Rioter();
 		r1.speed = 5;
 		r1.faction = "red";
-		r1.health =  700;
+		r1.health =  1000;
 		var r2 : Rioter = new Rioter();
 		r2.speed = 1;
 		r2.faction = "yellow";
-		r2.health =  200;
+		r2.health =  1000;
 		state.setup(r1,r2);
 		openSubState(state);
 	}

@@ -76,7 +76,6 @@ class SubStateFight extends FlxSubState
 			_f.setup(crowds);
 			_f.speed = _speed;
 			
-			
 			_y += Reg.TILE_SIZE / 2 + FlxG.random.float(0, Reg.TILE_SIZE / 2);
 			
 			
@@ -97,7 +96,7 @@ class SubStateFight extends FlxSubState
 	{
 		//collision si les deux foule sont de la même faction
 		
-		
+		/*
 		if (_f1.faction == _f2.faction)
 		{
 			if (_f1.velocity.x > 0 && _f2.velocity.x > 0)
@@ -132,7 +131,9 @@ class SubStateFight extends FlxSubState
 			_f2.moves = false;
 			_f1.health -= .5;
 			_f2.health -= .5;
-		}
+		}*/
+		_f1.collide(_f2);
+		_f2.collide(_f1);
 	}
 	
 	private function processCallback(_f1 : Fighter, _f2 : Fighter):Bool
@@ -147,7 +148,7 @@ class SubStateFight extends FlxSubState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);		
-		crowds.forEachAlive(function(_f:Fighter){_f.moves = true;} );			
+		//crowds.forEachAlive(function(_f:Fighter){_f.moves = true;} );			
 		FlxG.overlap(crowds, overlapCallback, processCallback);
 	}
 	
