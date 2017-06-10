@@ -46,7 +46,7 @@ class HUD extends FlxGroup
 		moneyText.x = FlxG.width / 2;
 		moneyText.y = 16;
 		
-		btn_pause = new FlxButton(32, 32, "pause", _ps.pause);	
+		btn_pause = new FlxButton(32, 32, "", _ps.pause);	
 		btn_pause.loadGraphic ("assets/images/btn_pause.png");
 		
 		buildings = new  FlxTypedGroup<BuildingDroppable>();

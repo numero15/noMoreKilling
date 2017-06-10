@@ -78,10 +78,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 	
 	public override function update(elapsed:Float):Void 
 	{
-		
-		trace('rioter update');
-		
-		
 		super.update(elapsed);
 		if (followNumber == 0)
 		{
