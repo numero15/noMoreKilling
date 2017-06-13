@@ -63,6 +63,7 @@ class PlayState extends FlxState
 		Reg.money = 100;
 		Reg.stats = Xml.parse(sys.io.File.getContent("assets/data/data.xml")).firstChild();
 		Reg.currentLeaderID = 0;
+		Reg.buildingsAvailables = ["bar","garage","coffeeShop"];
 		
 		super.create();
 		bgColor = FlxColor.GRAY;	

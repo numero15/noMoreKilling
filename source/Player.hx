@@ -166,7 +166,7 @@ class Player extends FlxSprite
 			
 			// remove menu construction building
 			Reg.level.buildingButtons.forEachAlive(function(_bt:FlxButton){_bt.kill(); });				
-			//UI.menuBuildings.kill();
+			Reg.level.UI.menuBuildings.kill();
 				
 			isMoving = true;
 			

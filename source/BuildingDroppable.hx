@@ -48,6 +48,30 @@ class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour place
 				GFX.animation.frameIndex = 25;
 		}
 		
+		for (_buildingStats in Reg.stats.elementsNamed("building"))
+		{		
+			if (_buildingStats.get('type') == type)
+			{
+				for ( _stat in _buildingStats.elements())
+				{
+					switch _stat.nodeName {
+						/*case "motivation" :
+							effectMotivation = Std.parseInt( _stat.get("value"));
+						case "health" :
+							effectHealth = Std.parseInt(_stat.get("value"));
+						case "speed" :
+							effectSpeed = Std.parseInt(_stat.get("value"));
+						case "gold" :
+							effectResource = Std.parseInt(_stat.get("value"));
+						case "cost" :
+							Reg.money -=  Std.parseInt(_stat.get("value"));*/
+						case "radius" :
+							radius =  Std.parseInt(_stat.get("value"));
+					}
+				}
+			}			
+		}
+		
 		radiusGFX.makeGraphic((radius * 2 + 1) * Reg.TILE_SIZE, (radius * 2 + 1) * Reg.TILE_SIZE, FlxColor.TRANSPARENT);
 		radiusGFX.x = radiusGFX.y = -radius * Reg.TILE_SIZE;
 		
