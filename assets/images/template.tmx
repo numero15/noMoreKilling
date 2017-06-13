@@ -53,7 +53,7 @@
  <objectgroup name="spawn">
   <object id="11" gid="1" x="144" y="256" width="16" height="16">
    <properties>
-    <property name="count" value="3"/>
+    <property name="count" value="0"/>
     <property name="crowdSize" value="3"/>
     <property name="delayFirstSpawn" value="1"/>
     <property name="delaySpawns" value="10000"/>

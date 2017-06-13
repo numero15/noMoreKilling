@@ -17,6 +17,7 @@ import flixel.tile.FlxTilemap;
 import flixel.ui.FlxBar;
 import haxe.io.Path;
 import flixel.math.FlxPoint;
+import flixel.ui.FlxButton;
 import flixel.graphics.frames.FlxTileFrames;
 
 /**
@@ -41,6 +42,8 @@ class TiledLevel extends TiledMap
 	public var buildings : FlxTypedGroup<Building>;
 	public var UIBars : FlxTypedGroup<FlxBar>;
 	public var UIBtnsClose :  FlxTypedGroup<FlxSprite>;
+	public var buildingButtons : FlxTypedGroup<FlxButton>;
+	public var UI : HUD;
 	public var player : Player;
 	
 	// Sprites of images layers
@@ -63,6 +66,7 @@ class TiledLevel extends TiledMap
 		buildings = new FlxTypedGroup<Building>();
 		UIBars = new FlxTypedGroup<FlxBar>(25);
 		UIBtnsClose = new FlxTypedGroup<FlxSprite>();
+		buildingButtons = new FlxTypedGroup<FlxButton>(4);
 		player = new Player(0,0);
 		
 		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
@@ -81,7 +85,16 @@ class TiledLevel extends TiledMap
 			_b.kill();
 			_b.cameras = [FlxG.cameras.list[0]];
 			UIBars.add(_b);
-		}	
+		}
+		
+		for (i in 0...4)
+		{
+			var _b = new FlxButton(0, 0, "");
+			_b.loadGraphic ("assets/images/btnClose.png");
+			_b.kill();
+			_b.cameras = [FlxG.cameras.list[0]];
+			buildingButtons.add(_b);
+		}
 
 		//loadImages();
 		loadObjects(state);

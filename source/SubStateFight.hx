@@ -28,7 +28,7 @@ class SubStateFight extends FlxSubState
 	override public function create():Void 
 	{
 		super.create();	
-		FlxG.debugger.visible = false;
+		//FlxG.debugger.visible = false;
 	}
 	
 	public function setup( _r1:Rioter, _r2:Rioter):Void
@@ -114,6 +114,7 @@ class SubStateFight extends FlxSubState
 			_f.revive();			
 			_f.side = _side;
 			_f.faction = _faction;
+			_f.healthMax = 5;
 			_f.setup(crowds);
 			_f.speed = _speed + FlxG.random.int(-1,1);
 			
@@ -136,43 +137,6 @@ class SubStateFight extends FlxSubState
 	private function overlapCallback(_f1 : Fighter, _f2 : Fighter):Void
 	{
 		//collision si les deux foule sont de la même faction
-		
-		/*
-		if (_f1.faction == _f2.faction)
-		{
-			if (_f1.velocity.x > 0 && _f2.velocity.x > 0)
-			{
-				if (_f1.x < _f2.x)
-				{
-					_f1.moves = false;
-				}
-				else
-				{
-					_f2.moves = false;
-				}
-			}
-			
-			else if (_f1.velocity.x < 0 && _f2.velocity.x < 0)
-			{
-				if (_f1.x > _f2.x)
-				{
-					_f1.moves = false;
-				}
-				else
-				{
-					_f2.moves = false;
-				}
-			}
-		}
-		
-		// collision si les foules sont ennemies
-		else
-		{
-			_f1.moves = false;
-			_f2.moves = false;
-			_f1.health -= .5;
-			_f2.health -= .5;
-		}*/
 		_f1.collide(_f2);
 		_f2.collide(_f1);
 	}

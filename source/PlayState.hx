@@ -12,6 +12,7 @@ import flixel.system.scaleModes.PixelPerfectScaleMode;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.ui.FlxButton;
 import flixel.util.FlxTimer;
 //import flixel.util.FlxTimer;
 import flixel.input.mouse.FlxMouseEventManager;
@@ -36,7 +37,6 @@ class PlayState extends FlxState
 {
 	public var prevMouseCoord : FlxPoint;
 	//var timerFight : FlxTimer;
-	var UI : HUD;
 	var cameraUI : FlxCamera;
 	var cameraDroppable : FlxCamera;
 	var draggedBuilding : BuildingDroppable; // objet temporaire quand on drag drop un batiment
@@ -70,7 +70,7 @@ class PlayState extends FlxState
 		Reg.level = new TiledLevel("assets/images/template.tmx", this);
 		
 		FlxG.camera.zoom = 1;
-		FlxG.camera.width = 480;
+		FlxG.camera.width = 854;
 		FlxG.camera.height = 480;
 		FlxG.camera.x = 0;
 		FlxG.camera.y = 0;
@@ -96,6 +96,7 @@ class PlayState extends FlxState
 		Reg.level.buildingTop.cameras = [FlxG.cameras.list[0]];
 		Reg.level.fog02.cameras = [FlxG.cameras.list[0]];
 		Reg.level.player.cameras = [FlxG.cameras.list[0]];
+		Reg.level.buildingButtons.cameras = [FlxG.cameras.list[0]];
 		
 		draggedBuilding = new BuildingDroppable(0, 0, "bar");
 		draggedBuilding.kill();
@@ -105,7 +106,7 @@ class PlayState extends FlxState
 		draggedPower.kill();
 		draggedPower.cameras = [FlxG.cameras.list[2]];
 		
-		UI = new HUD(this);	
+		Reg.level.UI = new HUD(this);	
 		
 		add(Reg.level.foregroundTiles);
 		add(Reg.level.buildings);
@@ -118,17 +119,18 @@ class PlayState extends FlxState
 		add(Reg.level.UIBars);
 		add(Reg.level.buildingTop);			
 		add(Reg.level.UIBtnsClose);
-		add(UI);
+		add(Reg.level.buildingButtons);
+		add(Reg.level.UI);
 		add(draggedBuilding);
 		//add(draggedPower);
 		
-		UI.cameras = activeCam;
-		UI.forEach(function(_b:FlxBasic):Void
+		Reg.level.UI.cameras = activeCam;
+		Reg.level.UI.forEach(function(_b:FlxBasic):Void
 		{			
 			_b.cameras = activeCam;
 		});
 		
-		for (_b in UI.buildings)
+		for (_b in Reg.level.UI.buildings)
 		{
 			_b.cameras = activeCam;
 		}
@@ -138,6 +140,12 @@ class PlayState extends FlxState
 			spawn.init();
 		}
 		
+		
+		for (_b in Reg.level.buildingButtons)
+		{
+			_b.onDown.callback = Reg.level.UI.openBuildingMenu.bind(_b);
+		}
+		
 		prevMouseCoord = new FlxPoint(0, 0);
 		
 		//timerFight = new FlxTimer();
@@ -145,8 +153,8 @@ class PlayState extends FlxState
 		fightStartTick = FlxG.game.ticks;
 		fightDelayTicks = 1000;
 		
-		///pause();
-		openSubStateFight();
+		//pause();
+		//openSubStateFight();
 	}
 
 	/**
@@ -154,8 +162,6 @@ class PlayState extends FlxState
 	 */
 	override public function update(elapsed:Float):Void
 	{	
-		
-		
 		Reg.level.moveFog();
 		
 		FlxG.overlap(Reg.level.player, Reg.level.crowds, openSubStateDialogue);
@@ -171,7 +177,7 @@ class PlayState extends FlxState
 			prevMouseCoord.x = FlxG.mouse.screenX;
 			prevMouseCoord.y = FlxG.mouse.screenY;
 			
-			for (b in UI.buildings)
+			for (b in Reg.level.UI.buildings)
 			{
 				if ( b.overlapsPoint(FlxG.mouse.getScreenPosition(cameraUI)) && b.isAffordable)
 				{
@@ -187,7 +193,7 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.pressed)
 		{
-			if (!UI.BG.overlapsPoint(FlxG.mouse.getScreenPosition()) && !draggedBuilding.alive  && !draggedPower.alive) // scroll map seulement si on n'est pas sur l'UI et que l'on ne drag pas de building/power
+			if (!Reg.level.UI.BG.overlapsPoint(FlxG.mouse.getScreenPosition()) && !draggedBuilding.alive  && !draggedPower.alive) // scroll map seulement si on n'est pas sur l'UI et que l'on ne drag pas de building/power
 			{
 				FlxG.camera.scroll.x -= Std.int((FlxG.mouse.screenX - prevMouseCoord.x)/*/Reg.TILE_SIZE*/) /** Reg.TILE_SIZE*/;
 				prevMouseCoord.x = FlxG.mouse.screenX;
@@ -246,7 +252,7 @@ class PlayState extends FlxState
 			//move player
 			else
 			{
-				Reg.level.player.findNewPath(new FlxPoint(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE));
+				Reg.level.player.findNewPath(new FlxPoint(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE));				
 			}
 			
 			if (draggedPower.alive)

@@ -517,7 +517,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 		
 		if (opponents.length == 0) // remettre la foule en marche si elle n'a pas de combat en cour
 			this.isMoving = true;	
-
+			
 		// calculer les effets des batiments
 		buildings.clear();
 		
