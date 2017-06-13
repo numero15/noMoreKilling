@@ -21,7 +21,7 @@ class Answer
 	}
 }
 
-class SubStateDialogue extends FlxSubState
+class SubStateDialogue extends FlxUIState
 {
 	private var BG : FlxSprite;	
 	private var closeBtn:FlxButton;
@@ -34,6 +34,13 @@ class SubStateDialogue extends FlxSubState
 	private var questionString : String;
 	private var answers : Array<Answer>;
 	private var xml : Xml;
+
+	private var qtePanel : Rectangle;
+	private var historyPanel : Rectangle;
+	private var answersPanel : Rectangle;
+	private var feedbackPanel : Rectangle;
+
+	private var qteButtons : Array<FlxButtons>;
 	
 	public function setup(_p:Player, _r:Rioter):Void 
 	{		
@@ -41,6 +48,11 @@ class SubStateDialogue extends FlxSubState
 		leader = _r;
 		player = _p;
 		xml = Xml.parse(sys.io.File.getContent("assets/data/dialogues.xml")).firstChild();
+		
+		historyPanel = new Rectangle(0, 0, FlxG.width*2/3, FlxG.height*3/4);
+		qtePanel = new Rectangle(historyPanel.width, 0, FlxG.width-historyPanel.width, FlxG.height/5);
+		answersPanel = new Rectangle(0, historyPanel.height, historyPanel.width, FlxG.height-historyPanel.height);
+		feedbackPanel = new Rectangle(historyPanel.width, qtePanel.height, FlxG.width-historyPanel.width, FlxG.height-qtePanel.height);
 		
 		//aide mémoire, accès aux stats des persos :
 		/*trace('player stats :');
@@ -67,9 +79,9 @@ class SubStateDialogue extends FlxSubState
 
 		answerButtons = new Array<FlxButton>();
 
-		questionText = new FlxText(10, FlxG.height - 100, FlxG.width/2, questionString, 11);
+		questionText = new FlxText(historyPanel.x, historyPanel.y, historyPanel.width, questionString, 11);
 		for(i in 0...3) {
-			answerButtons[i] = new FlxButton(FlxG.width/2, FlxG.height - 100 + 20*i, answers[i].text);
+			answerButtons[i] = new FlxButton(answersPanel.x, answersPanel.y + 20*i, answers[i].text);
 			answerButtons[i].onUp.callback = goToDialog.bind(answers[i]);
 		}
 		// answerButtons[0] = new FlxButton(FlxG.width/2, FlxG.height - 100, answers[0].text, goToDialog(answers[0]));
@@ -168,7 +180,7 @@ class SubStateDialogue extends FlxSubState
 			answerButtons[answers.length - i + 1].destroy();
 			answers[answers.length - i + 1] = null;
 		}
-
-		closeThis();
+		
+		this.closeThis();
 	}
 }
