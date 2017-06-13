@@ -155,6 +155,11 @@ class PlayState extends FlxState
 		
 		//pause();
 		//openSubStateFight();
+		var r1 : Rioter = new Rioter();
+		r1.speed = 5;
+		r1.faction = "red";
+		r1.health =  1000;
+		openSubStateDialogue(Reg.level.player, r1);
 	}
 
 	/**
