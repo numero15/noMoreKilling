@@ -197,16 +197,21 @@ class Building extends FlxSpriteGroup // les GFX du batiment sont dans les calqu
 	
 	private function removeBuilding(?Sprite:FlxSprite)
 	{
+		Reg.level.buildings.remove(this);
 		FlxMouseEventManager.add(buildingHitbox, onDown, onUp, onOver, onOut, false, true, false);
 		FlxMouseEventManager.add(btn_remove, null, removeBuilding, null, null, false, true, false);
 		//timerAnimate.cancel();
 		//timerAnimate.destroy();
 		radiusGFX.destroy();
+		radiusGFX = null;
 		buildingHitbox.destroy();
+		buildingHitbox = null;
 		btn_remove.destroy();
+		btn_remove = null;
 		Reg.level.buildingBase.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE), 0);
 		Reg.level.buildingTop.setTile(Std.int(this.x / Reg.TILE_SIZE), Std.int(this.y / Reg.TILE_SIZE) - 1, 0);
 		kill();
+		destroy();		
 	}
 	
 }

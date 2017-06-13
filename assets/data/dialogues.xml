@@ -1,12 +1,26 @@
 <root>
 	<dialogue id="0">
 		<texte>question ?</texte>
-		<motivation value ="10"/>
-        <answer id ="0" effect="1">
+        <answer id ="1" effect="1">
         	<texte>answer 01</texte>
    		</answer>
-   		 <answer id ="0" effect="-1">
+   		 <answer id ="-1" effect="-1">
    		 	<texte>answer 02</texte>
+   		</answer>
+		<answer id ="-1" effect="10">
+   		 	<texte>answer 03</texte>
+   		</answer>
+	</dialogue>
+	<dialogue id="1">
+		<texte>question ENCORE ?</texte>
+        <answer id ="0" effect="1">
+        	<texte>bla 01</texte>
+   		</answer>
+   		 <answer id ="-1" effect="-1">
+   		 	<texte>bla 02</texte>
+   		</answer>
+		<answer id ="-1" effect="10">
+   		 	<texte>bla 03</texte>
    		</answer>
 	</dialogue>
     

@@ -13,11 +13,10 @@ import flixel.math.FlxPoint;
  * ...
  * @author ...
  */
-class HUD extends FlxGroup
+class OldHUD extends FlxGroup
 {
 	
 	public var buildings : FlxTypedGroup<BuildingDroppable>;
-	public var menuBuildings : FlxGroup;
 	public var BG : FlxSprite;
 	private var miniMap : FlxSprite;
 	private var buildingsStats: Xml;
@@ -33,10 +32,6 @@ class HUD extends FlxGroup
 		parentState = _ps;
 		
 		buildingsStats = Xml.parse(sys.io.File.getContent("assets/data/data.xml")).firstChild();		
-		
-		menuBuildings = new FlxGroup();
-		menuBuildings.add(new BuildingDroppable(0, 0, "garage"));
-		menuBuildings.members[0].cameras = [FlxG.cameras.list[0]];
 		
 		BG = new FlxSprite();
 		BG.makeGraphic(480, 64);
@@ -88,10 +83,9 @@ class HUD extends FlxGroup
 		miniMap.updateHitbox();*/
 		miniMap.x = FlxG.width - miniMap.width;
 		
-		//add(BG);
+		add(BG);
 		add(moneyText);
-		add(menuBuildings);
-		//add(buildings);
+		add(buildings);
 		add(miniMap);
 		add(btn_pause);
 	}
@@ -120,16 +114,6 @@ class HUD extends FlxGroup
 		{
 			_b.setAffordable();
 		}
-	}
-	
-	public function openBuildingMenu(_b : FlxButton):Void
-	{
-		var _pos : FlxPoint = _b.getPosition();
-		_pos.x = Std.int(_pos.x / Reg.TILE_SIZE * Reg.TILE_SIZE) + Reg.TILE_SIZE / 2;
-		_pos.y = Std.int(_pos.y / Reg.TILE_SIZE * Reg.TILE_SIZE) + Reg.TILE_SIZE;
-		
-		cast(menuBuildings.members[0], BuildingDroppable).set("bar");
-		cast(menuBuildings.members[0], BuildingDroppable).setPosition(_pos.x, _pos.y);
 	}
 	
 	override function update(elapsed:Float):Void
