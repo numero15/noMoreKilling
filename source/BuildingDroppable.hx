@@ -38,6 +38,7 @@ class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour place
 	
 	public function set (_t:String)
 	{
+		type = _t;
 		switch(_t)
 		{
 			case "bar":
@@ -62,9 +63,9 @@ class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour place
 						case "speed" :
 							effectSpeed = Std.parseInt(_stat.get("value"));
 						case "gold" :
-							effectResource = Std.parseInt(_stat.get("value"));
+							effectResource = Std.parseInt(_stat.get("value"));*/
 						case "cost" :
-							Reg.money -=  Std.parseInt(_stat.get("value"));*/
+							cost =  Std.parseInt(_stat.get("value"));
 						case "radius" :
 							radius =  Std.parseInt(_stat.get("value"));
 					}
@@ -104,8 +105,15 @@ class BuildingDroppable extends FlxSpriteGroup // uniquement utilisé pour place
 		radiusGFX.x = x - radiusGFX.width / 2;
 		radiusGFX.y = y - radiusGFX.height / 2 - Reg.TILE_SIZE / 2;
 		
-		
 		type = _t;
+	}
+	
+	override function update(elapsed:Float):Void
+	{
+		
+		//if (!alive)
+			setAffordable();
+		super.update(elapsed);
 	}
 	
 	public function setAffordable() :Void

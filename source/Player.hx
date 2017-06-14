@@ -131,9 +131,20 @@ class Player extends FlxSprite
 			if (_btn != null)
 			{
 				_btn.revive();
+				_btn.active = true;
 				_btn.setPosition(pos.x * Reg.TILE_SIZE, pos.y * Reg.TILE_SIZE);
 				_btn.scrollFactor.set(1, 1);
 			}
+		}
+	}
+	
+	private function killButtons() : Void
+	{		
+		for (_btn in Reg.level.buildingButtons)
+		{
+			_btn.active = false;
+			_btn.kill();
+			Reg.level.UI.menuBuildings.kill();
 		}
 	}
 	
@@ -170,6 +181,7 @@ class Player extends FlxSprite
 				
 			isMoving = true;
 			
+			killButtons();
 			
 			/*this.path = new FlxPath(currentPath);
 			this.path.start();*/

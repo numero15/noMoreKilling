@@ -117,13 +117,13 @@ class HUD extends FlxGroup
 		return minimap;
 	}
 	
-	private function setAffordables():Void
+/*	private function setAffordables():Void
 	{
 		for (_b in buildings)
 		{
 			_b.setAffordable();
 		}
-	}
+	}*/
 	
 	public function openBuildingMenu(_b : FlxButton):Void
 	{
@@ -131,8 +131,11 @@ class HUD extends FlxGroup
 		_pos.x = Std.int(_pos.x / Reg.TILE_SIZE * Reg.TILE_SIZE) + Reg.TILE_SIZE / 2;
 		_pos.y = Std.int(_pos.y / Reg.TILE_SIZE * Reg.TILE_SIZE) + Reg.TILE_SIZE;
 		
+		_b.active = false;
+		_b.kill();
+		
 		if (menuBuildings.alive == false)
-			menuBuildings.customRevive(_pos);
+			menuBuildings.customRevive(_pos,_b);
 		
 		//cast(menuBuildings.members[0], BuildingDroppable).set("bar");
 		//cast(menuBuildings.members[0], BuildingDroppable).setPosition(_pos.x, _pos.y);
@@ -145,9 +148,9 @@ class HUD extends FlxGroup
 		moneyText.text = Std.string(Reg.money +" §");
 		moneyText.x = (FlxG.width - moneyText.width) / 2;
 		
-		if (prevMoney != Reg.money)
+		/*if (prevMoney != Reg.money)
 		setAffordables();
-		
+		*/
 		/*for (i in 0...Reg.level.foregroundTiles.totalTiles) {
 			if (!Reg.level.foregroundTiles.overlapsPoint(FlxPoint.get(i % Reg.level.foregroundTiles.widthInTiles * 16, i / Reg.level.foregroundTiles.widthInTiles * 16))) miniMap.pixels.setPixel(i % Reg.level.foregroundTiles.widthInTiles, Math.floor(i / Reg.level.foregroundTiles.widthInTiles), 0xFF909090);
 		}
