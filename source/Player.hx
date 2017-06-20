@@ -40,15 +40,12 @@ class Player extends FlxSprite
 	
 	public function getCrowd(_r:Rioter):Void
 	{
-		leader = _r;
-		leader.isPlayer = true;
-
 		haveCrowd = true;
 	}
 	
 	public function loseCrowd():Void
 	{
-		leader.isPlayer = false;
+		haveCrowd = false;
 	}
 	
 	override function update(elapsed:Float):Void

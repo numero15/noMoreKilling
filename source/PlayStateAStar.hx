@@ -38,6 +38,7 @@ class PlayState extends FlxState
 	public var prevMouseCoord : FlxPoint;
 	//var timerFight : FlxTimer;
 	var cameraUI : FlxCamera;
+	var cameraDroppable : FlxCamera;
 	var draggedPower : Power; // objet temporaire quand on drag drop ou pouvoir
 	
 	var oriCameraZoom:Float;
@@ -77,6 +78,9 @@ class PlayState extends FlxState
 		cameraUI = new FlxCamera(0, 0, Std.int(FlxG.width), Std.int(FlxG.height));
 		cameraUI.bgColor = FlxColor.TRANSPARENT;
 		FlxG.cameras.add(cameraUI);			
+		cameraDroppable = new FlxCamera(0, 0, Std.int(FlxG.width), Std.int(FlxG.height));
+		cameraDroppable.bgColor = FlxColor.TRANSPARENT;
+		FlxG.cameras.add(cameraDroppable);	
 		
 		oriCameraZoom = FlxG.camera.zoom;
         oriCameraWidth = FlxG.camera.width;
@@ -138,7 +142,9 @@ class PlayState extends FlxState
 		}
 		
 		prevMouseCoord = new FlxPoint(0, 0);
-
+		
+		//timerFight = new FlxTimer();
+		//timerFight.start(1, updateFight, 0);
 		fightStartTick = FlxG.game.ticks;
 		fightDelayTicks = 1000;
 		
@@ -154,7 +160,6 @@ class PlayState extends FlxState
 		Reg.level.moveFog();
 		
 		FlxG.overlap(Reg.level.player, Reg.level.crowds, openSubStateDialogue);
-		FlxG.overlap(Reg.level.crowds,crowdsCollide);
 		
 		if (FlxG.game.ticks >= fightStartTick + fightDelayTicks)
 		{
@@ -170,19 +175,27 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.pressed)
 		{
+			//if (!Reg.level.UI.BG.overlapsPoint(FlxG.mouse.getScreenPosition())) // scroll map seulement si on n'est pas sur l'UI et que l'on ne drag pas de building/power
 			if(FlxG.mouse.getScreenPosition()!=prevMouseCoord) // si la souris a bougée
 			{
 				FlxG.camera.scroll.x -= Std.int((FlxG.mouse.screenX - prevMouseCoord.x));
 				prevMouseCoord.x = FlxG.mouse.screenX;
 				FlxG.camera.scroll.y -= Std.int((FlxG.mouse.screenY - prevMouseCoord.y));
-				prevMouseCoord.y = FlxG.mouse.screenY;				
+				prevMouseCoord.y = FlxG.mouse.screenY;
+				
+				/*cameraDroppable.scroll.x = FlxG.camera.scroll.x;
+				cameraDroppable.scroll.y = FlxG.camera.scroll.y;*/
+				
 			}
 		}
 		
 		if (FlxG.mouse.justReleased)
 		{
-			
-			Reg.level.player.findNewPath(new FlxPoint(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE));				
+			//move player
+			//else
+			//{
+				Reg.level.player.findNewPath(new FlxPoint(Std.int(FlxG.mouse.x / Reg.TILE_SIZE) * Reg.TILE_SIZE, Std.int(FlxG.mouse.y / Reg.TILE_SIZE) * Reg.TILE_SIZE));				
+			//}
 			
 			if (draggedPower.alive)
 				draggedPower.kill();
@@ -207,7 +220,7 @@ class PlayState extends FlxState
 			FlxG.camera.zoom = 3;
 		
 		
-
+		cameraDroppable.zoom = FlxG.camera.zoom;
 		
         var newWidth:Float = oriCameraZoom / FlxG.camera.zoom * oriCameraWidth;
         var newHeight:Float = oriCameraZoom / FlxG.camera.zoom * oriCameraHeight;
@@ -215,10 +228,13 @@ class PlayState extends FlxState
         var newY:Float = (FlxG.height - FlxG.camera.height);
        
         if ( FlxG.camera.zoom <= 1)
+		{
 			FlxG.camera.setSize(Std.int(newWidth), Std.int(newHeight));
+			cameraDroppable.setSize(Std.int(newWidth), Std.int(newHeight));
+		}
 		
         FlxG.camera.setPosition( - FlxG.camera.width / 2 + oriCameraWidth / 2, - FlxG.camera.height / 2 + oriCameraHeight / 2);
-
+		cameraDroppable.setPosition( - FlxG.camera.width / 2 + oriCameraWidth / 2, - FlxG.camera.height / 2 + oriCameraHeight / 2);
        
         Reg.level.foregroundTiles.updateBuffers();
 		Reg.level.buildingBase.updateBuffers();
@@ -228,40 +244,39 @@ class PlayState extends FlxState
 		
 		FlxG.camera.scroll.x += (prevCenterCoord.x - centerCoord.x);		
 		FlxG.camera.scroll.y += (prevCenterCoord.y - centerCoord.y);
-
+		
+		cameraDroppable.scroll.x = FlxG.camera.scroll.x;
+		cameraDroppable.scroll.y = FlxG.camera.scroll.y;
     }
 
 	private function updateFight(/*_t:FlxTimer*/):Void
 	{		
 		for (r in Reg.level.crowds)
 		{
-			if (r.alive) // agir seulement sur les leaders
-				r.fight(); // cacluler
-			
-			/*if (!r.alive) 			
+			if (r.followNumber == 0  && r.alive) // agir seulement sur les leaders
 			{
-				r.destroy();
-				Reg.level.crowds.remove(r,true);
-			}*/
+				r.fight(); // cacluler
+			}
+			
+			if (!r.alive) 			
+			{
+				//r.destroy();
+				//Reg.level.crowds.remove(r,true);
+			}
 		}
 		
 		for (r in Reg.level.crowds)
 		{			
-			if (r.alive) // agir seulement sur les leaders
+			if (r.followNumber == 0 && r.alive) // agir seulement sur les leaders
 			{
 				r.hit();// décompter les dégats
 			}
 		}
 	}	
 	
-	public function crowdsCollide(_p:BasicRioter, _r:BasicRioter):Void
+	public function openSubStateDialogue(_p:Player, _r:Rioter):Void
 	{
-		trace('rioter collide');
-	}
-	
-	public function openSubStateDialogue(_p:Player, _r:BasicRioter):Void
-	{
-		if (!_p.haveCrowd)
+		if (_p.haveCrowd)
 			return;
 		
 		_p.x = _r.x;
@@ -270,7 +285,10 @@ class PlayState extends FlxState
 		FlxTimer.globalManager.active = false;
 		//FlxTween.globalManager.active = false;
 		var state:SubStateDialogue = new SubStateDialogue();
-		//state.setup(_p, _r);
+		if(_r.followNumber==0)
+			state.setup(_p, _r);
+		else
+			state.setup(_p, _r.leader);
 		openSubState(state);
 	}
 	

@@ -29,9 +29,8 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public var startTick : Int;
 	public var delayTicks : Int;
 	public var previousPos : FlxPoint;
-	public var currentPos : FlxPoint;
-	private var moveX: Float;
-	private var moveY : Float;
+	public var isPlayer : Bool;
+
 	
 	public function new()
 	{		
@@ -42,22 +41,17 @@ class Rioter extends FlxSprite // un seul objet graphique
 	{
 		this.revive();
 		this.alpha = 0;
-		
+		this.setPosition(X + Reg.TILE_SIZE * .1, Y + Reg.TILE_SIZE * .1);
 		this.loadGraphic(image_path, true, 16, 16);
 		this.animation.frameIndex = 3;
 		this.cameras = [FlxG.cameras.list[0]];
 		
-		
+		previousPos = new FlxPoint(X, Y);
 		
 		alpha = 1;
-		
+		updateHitbox();
 		setSize(Reg.TILE_SIZE * .8, Reg.TILE_SIZE * .8);
 		centerOffsets();
-		updateHitbox();
-		
-		this.setPosition(X,Y);
-		currentPos = new FlxPoint(x, y);
-		previousPos = new FlxPoint(x, y);
 		
 		faction = _faction;
 		followNumber = _followNumber;
@@ -70,6 +64,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 		speed = 0;
 		startTick = FlxG.game.ticks;
 		delayTicks = 1000;
+		isPlayer = false;
 		
 		switch(faction)
 		{
@@ -84,12 +79,9 @@ class Rioter extends FlxSprite // un seul objet graphique
 	public override function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
-		
-		move();
-		
 		if (followNumber == 0)
 		{
-			/*trace ("FACTION = " + faction); //SIMON
+			/*trace ("FACTION = " + faction);
 			trace ("motivation = " + motivation);
 			trace("speed = " + speed);
 			trace("health = " + health);
@@ -98,7 +90,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 			if (FlxG.game.ticks >= startTick + delayTicks-speed)
 			{
 				startTick = FlxG.game.ticks;
-				if(isMoving)
+				if(isMoving && !isPlayer)
 					updatePaths();
 			}
 			
@@ -106,40 +98,6 @@ class Rioter extends FlxSprite // un seul objet graphique
 			bar.y = this.y;		
 		}
 	}
-	
-	private function move():Void
-	{
-		if (moveX > 0)
-		{
-			if (this.x + moveX <= currentPos.x)
-				this.x += moveX;
-			else
-				this.x = currentPos.x;
-		}
-		if (moveX < 0)
-		{
-			if (this.x + moveX >= currentPos.x)
-				this.x += moveX;
-			else
-				this.x = currentPos.x;
-		}
-		if (moveY > 0)
-		{
-			if (this.y + moveY <= currentPos.y)
-				this.y+= moveY;
-			else
-				this.y = currentPos.y;
-		}
-		if (moveY < 0)
-		{
-			if (this.y + moveY >= currentPos.y)
-				this.y += moveY;
-			else
-				this.y = currentPos.y;
-		}
-		
-	}
-	
 	
 	override public function draw():Void
 	{
@@ -157,150 +115,137 @@ class Rioter extends FlxSprite // un seul objet graphique
 		var paths : Array<Array<FlxPoint>> = new Array<Array<FlxPoint>>();			
 		var p : Array<FlxPoint> = new Array <FlxPoint> ();
 		
-		if (followNumber==0 && isMoving) // est le leader, par sécurité
-		{		
-			// positionne la foule à la fin de son déplacement
-			this.setPosition(currentPos.x, currentPos.y);
+
+		if (followNumber != 0 || !isMoving) // est le leader, par sécurité
+			return;
 			
-			for (_f in followers)
-			_f.setPosition(_f.currentPos.x, _f.currentPos.y);
-			
-			
-			// si motivation maximum trouver un path
-			if (motivation == motivationMax)
-			{
-				for (rioterEnemy in Reg.level.crowds)
-				{
-					if (rioterEnemy.followNumber==0 && rioterEnemy.faction == enemy && rioterEnemy.alive)
-					{					
-						p = findNewPath(this, rioterEnemy);					
-						if (p != null)
-							paths.push (p);						
-					}
-				}
-			//}
-			
-				if (paths.length == 1) // si un seul chemin
-					p = paths[0];				
+		if (isPlayer)
+		{
+			p = [new FlxPoint(0,0), new FlxPoint(Reg.level.player.x + Reg.TILE_SIZE/2, Reg.level.player.y + Reg.TILE_SIZE/2)];
+		}
 				
-				// sinon si plusieurs chemins prendre le plus court
-				else if (paths.length >= 1)
+		// si motivation maximum trouver un path
+		else if (motivation == motivationMax)
+		{
+			for (rioterEnemy in Reg.level.crowds)
+
+			{
+				if (rioterEnemy.followNumber==0 && rioterEnemy.faction == enemy && rioterEnemy.alive)
+				{					
+					p = findNewPath(this, rioterEnemy);					
+					if (p != null)
+						paths.push (p);						
+				}
+			}
+			
+			if (paths.length == 1) // si un seul chemin
+				p = paths[0];				
+			
+			// sinon si plusieurs chemins prendre le plus court
+			else if (paths.length >= 1)
+			{
+				// trouve la destination la plus proche PAS TESTE
+				var shorterPath : Int = paths[0].length;
+				var shorterPathId : Int = 0;
+				for (i in 1...paths.length)
 				{
-					// trouve la destination la plus proche PAS TESTE
-					var shorterPath : Int = paths[0].length;
-					var shorterPathId : Int = 0;
-					for (i in 1...paths.length)
+					if (paths[i].length < shorterPath)
 					{
-						if (paths[i].length < shorterPath)
-						{
-							shorterPathId = i;
-							shorterPath = paths[i].length;
-						}
+						shorterPathId = i;
+						shorterPath = paths[i].length;
 					}
-					p = paths[shorterPathId];				
 				}
-				
-				else
-					p = randomMovement();
-			}
-			else // si pas de cible déplacement aléatoire
-			{				
-				p = randomMovement();
+				p = paths[shorterPathId];				
 			}
 			
-			if (!collide(new FlxPoint(p[1].x - this.width / 2, p[1].y - this.height / 2)))
-			//if (!collide(currentPos))
+			else
+				p = randomMovement();
+		}
+		else // si pas de cible déplacement aléatoire
+		{				
+			p = randomMovement();
+		}
+		
+		if (!collide(new FlxPoint(p[1].x - this.width / 2, p[1].y - this.height / 2)))
+		{
+			// move leader
+			previousPos.x = x;
+			previousPos.y = y;
+			this.x = p[1].x - this.width / 2;
+			this.y = p[1].y - this.height / 2;
+			
+
+			//move followers
+			
+			//update followers in order
+			var i : Int;
+			i = 0;
+			while (i < followers.length)
 			{
-				// move leader
-				previousPos.x = x;
-				previousPos.y = y;
-				
-				currentPos.x = p[1].x - this.width / 2;
-				currentPos.y = p[1].y - this.height / 2;
-				
-				//remplacer par mouvement
-				//this.x = p[1].x - this.width / 2;
-				//this.y = p[1].y - this.height / 2;
-				moveX =  ((p[1].x - this.width / 2) - previousPos.x) / 45;
-				moveY = ( (p[1].y - this.height / 2) - previousPos.y) / 45;
-				
-				//move followers
-				
-				//update followers in order
-				var i : Int;
-				i = 0;
-				while (i < followers.length)
-				{
-					for (_f in followers)
-					{		
-						if (_f.followNumber == i + 1)
+				for (_f in followers)
+				{		
+					if (_f.followNumber == i + 1)
+					{
+						i++;
+						
+						_f.previousPos.x = _f.x;
+						_f.previousPos.y = _f.y;
+						
+						
+						if (_f.followNumber == 1)
+						{						
+							_f.x = previousPos.x;
+							_f.y = previousPos.y;
+						}
+						
+						else
 						{
-							i++;
-							
-							_f.previousPos.x = _f.x;
-							_f.previousPos.y = _f.y;
-							
-							
-							if (_f.followNumber == 1)
-							{						
-								_f.currentPos.x = previousPos.x;
-								_f.currentPos.y = previousPos.y;
-								//remplacer par mouvement
-								//_f.x = previousPos.x;
-								//_f.y = previousPos.y;
-								_f.moveX =  (previousPos.x - _f.previousPos.x)/45;
-								_f.moveY =  (previousPos.y - _f.previousPos.y)/45;
-							}
-							
-							else
+							for (_pf in followers)
+
 							{
-								for (_pf in followers)
+								if (_pf.followNumber == _f.followNumber-1)
 								{
-									if (_pf.followNumber == _f.followNumber-1)
-									{
-										_f.currentPos.x = _pf.previousPos.x;
-										_f.currentPos.y = _pf.previousPos.y;
-										//remplacer par mouvement
-										//_f.x = _pf.previousPos.x;
-										//_f.y = _pf.previousPos.y;
-										_f.moveX =  (_pf.previousPos.x - _f.previousPos.x)/45;
-										_f.moveY =  (_pf.previousPos.y - _f.previousPos.y)/45;
-									}
+
+									_f.x = _pf.previousPos.x;
+									_f.y = _pf.previousPos.y;
+
 								}
 							}
 						}
 					}
 				}
 			}
-		}	
+		}
+			
 	}
 	
 	
-	private function randomMovement():Array<FlxPoint> // ATTENTION this.position doit etre égla à this.currentPos
+	private function randomMovement():Array<FlxPoint>
 	{
 		
 		var directions : Array<FlxPoint>;
 				directions = new Array <FlxPoint>();
 				var direction : FlxPoint = new FlxPoint();
 				var coordTile : FlxPoint = new FlxPoint();
-				
-				coordTile.set(Math.round(this.currentPos.x / Reg.TILE_SIZE), Math.round(this.currentPos.y / Reg.TILE_SIZE));
-				//remplacer par mouvement
-				//coordTile.set(Math.round(this.x / Reg.TILE_SIZE), Math.round(this.y / Reg.TILE_SIZE));
+				coordTile.set(Math.round(this.x / Reg.TILE_SIZE), Math.round(this.y / Reg.TILE_SIZE));
 				
 				// trouve les case adjacentes libres
+				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x + 1), Std.int(coordTile.y)))!= FlxObject.ANY)
 				if(freeTile(new FlxPoint(coordTile.x + 1, coordTile.y)))	
 				//right					
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
 
+				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x - 1), Std.int(coordTile.y)))!= FlxObject.ANY)
 					//left	
 				if(freeTile(new FlxPoint(coordTile.x - 1, coordTile.y)))	
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE,  coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2));
 
+				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) + 1))!= FlxObject.ANY)
 				if(freeTile(new FlxPoint(coordTile.x, coordTile.y+1)))		
 				//down					
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 + Reg.TILE_SIZE));
 
+				//if (Reg.level.foregroundTiles.getTileCollisions (Reg.level.foregroundTiles.getTile(Std.int(coordTile.x), Std.int(coordTile.y) - 1))!= FlxObject.ANY)
 				if(freeTile(new FlxPoint(coordTile.x, coordTile.y-1)))		
 				//up
 					directions.push(new FlxPoint(coordTile.x * Reg.TILE_SIZE + Reg.TILE_SIZE / 2, coordTile.y * Reg.TILE_SIZE + Reg.TILE_SIZE / 2 - Reg.TILE_SIZE));
@@ -352,11 +297,13 @@ class Rioter extends FlxSprite // un seul objet graphique
 	
 	private function collide(_p:FlxPoint):Bool // appeler uniquement sur les leaders
 	{
+		var _isColliding : Bool;
+		
+		_isColliding = false;
+		
 		for (_r in Reg.level.crowds)
 		{
-			if (_r.alive)
-			{
-			if (_r.currentPos.x == _p.x && _r.currentPos.y == _p.y )
+			if (_r.x == _p.x && _r.y == _p.y && _r.alive)
 			{
 				//fight
 				if (_r.faction != faction)
@@ -376,8 +323,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 						addOpponent(_r.leader);
 					}				
 					
-					
-					return true;
+					_isColliding =  true;
 				}
 				
 				//joint
@@ -389,16 +335,16 @@ class Rioter extends FlxSprite // un seul objet graphique
 					else							
 						jointOtherCrowd(_r, _r.followNumber);	
 					
-					return true;
+					_isColliding =  true;
 				}
 				
 			}
-			}
 		}
-		return false;		
+		
+		return _isColliding;		
 	}
 	
-	private function findNewPath(_unit:FlxSprite, _goal:FlxSprite ):Array<FlxPoint> // ATTENTION this.position doit etre égla à this.currentPos
+	private function findNewPath(_unit:FlxSprite, _goal:FlxSprite ):Array<FlxPoint>
 	{
 		var pathPoints:Array<FlxPoint> = Reg.level.collidableTileLayers[0].findPath(
 			FlxPoint.get(_unit.x + _unit.width / 2, _unit.y + _unit.height / 2),
@@ -501,16 +447,14 @@ class Rioter extends FlxSprite // un seul objet graphique
 			{
 				removeBool = true;	
 				
-				//if (distInTile(this.getPosition(), op.getPosition() )< 2)
-				if (distInTile(this.currentPos, op.getPosition() )< 2)
+				if (distInTile(this.getPosition(), op.getPosition() )< 2)
 				{
 					removeBool = false;
 				}
 					
 				for (op_f in op.followers)
 				{					
-					//if (distInTile(this.getPosition(), op_f.getPosition()) < 2)
-					if (distInTile(this.currentPos, op_f.getPosition()) < 2)
+					if (distInTile(this.getPosition(), op_f.getPosition()) < 2)
 					{
 						removeBool = false;
 						break;
@@ -519,16 +463,14 @@ class Rioter extends FlxSprite // un seul objet graphique
 				
 				for (f in followers)
 				{
-					//if (distInTile(f.getPosition(), op.getPosition() )< 2)
-					if (distInTile(f.currentPos, op.getPosition() )< 2)
+					if (distInTile(f.getPosition(), op.getPosition() )< 2)
 					{
 						removeBool = false;
 					}
 						
 					for (op_f in op.followers)
 					{					
-						//if (distInTile(f.getPosition(), op_f.getPosition()) < 2)
-						if (distInTile(f.currentPos, op_f.getPosition()) < 2)
+						if (distInTile(f.getPosition(), op_f.getPosition()) < 2)
 						{
 							removeBool = false;
 							break;
@@ -575,7 +517,7 @@ class Rioter extends FlxSprite // un seul objet graphique
 		
 		if (opponents.length == 0) // remettre la foule en marche si elle n'a pas de combat en cour
 			this.isMoving = true;	
-
+			
 		// calculer les effets des batiments
 		buildings.clear();
 		
@@ -685,51 +627,52 @@ class Rioter extends FlxSprite // un seul objet graphique
 	
 	public function jointOtherCrowd(_otherLeader : Rioter, _followNumber:Int):Void // for leaders
 	{
-		if (followNumber == 0)
+		if (followNumber != 0 || isPlayer)
+		return;
+		
+		followNumber =  _followNumber + 1;
+		leaderId = _otherLeader.leaderId;
+		leader = _otherLeader;
+		bar.kill();
+		
+		for ( _f in followers) // change les parametres des followers
 		{
-			followNumber =  _followNumber + 1;
-			leaderId = _otherLeader.leaderId;
-			leader = _otherLeader;
-			bar.kill();
+			_f.followNumber =  _followNumber + 1 + _f.followNumber;
+			_f.leaderId = _otherLeader.leaderId;
+			_f.leader = _otherLeader;
+		}
+		
+		for ( _f in _otherLeader.followers) // change les parametre des followers de l'autre foule
+		{
+			if (_f.followNumber > _followNumber)
+			{
+				_f.followNumber += this.followers.length + 1;
+			}				
+		}
+		// ajoute les followers à l'autre foule
+		for ( _f in followers)
+		{
+			_otherLeader.followers.push(_f);
+		}
+		_otherLeader.health += this.health;
+		_otherLeader.followers.push(this);
+		
+		for ( _f in _otherLeader.followers)
+		{
+			//_f.alpha = 1 - (_f.followNumber + 1) / 10;
 			
-			for ( _f in followers) // change les parametres des followers
-			{
-				_f.followNumber =  _followNumber + 1 + _f.followNumber;
-				_f.leaderId = _otherLeader.leaderId;
-				_f.leader = _otherLeader;
-			}
+			_f.setAlpha();
 			
-			for ( _f in _otherLeader.followers) // change les parametre des followers de l'autre foule
+			if (_f.alpha <= 0)
 			{
-				if (_f.followNumber > _followNumber)
-				{
-					_f.followNumber += this.followers.length + 1;
-				}				
+				_otherLeader.followers.remove(_f);
+				_f.kill();
 			}
-			// ajoute les followers à l'autre foule
-			for ( _f in followers)
-			{
-				_otherLeader.followers.push(_f);
-			}
-			_otherLeader.health += this.health;
-			_otherLeader.followers.push(this);
-			
-			for ( _f in _otherLeader.followers)
-			{
-				//_f.alpha = 1 - (_f.followNumber + 1) / 10;
+		}
+		_otherLeader.alpha = 1;
+		
+		followers.clear();		
 				
-				_f.setAlpha();
-				
-				if (_f.alpha <= 0)
-				{
-					_otherLeader.followers.remove(_f);
-					_f.kill();
-				}
-			}
-			_otherLeader.alpha = 1;
-			
-			followers.clear();		
-		}		
 	}
 	
 	public function setAlpha():Void

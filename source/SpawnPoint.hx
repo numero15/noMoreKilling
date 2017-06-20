@@ -22,8 +22,6 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 	
 	public var bar : FlxBar;
 	
-	//private var currentCrowd: Int = 0;
-	
 	
 	private var timerSpawn : FlxTimer; // délai entre le spawn de chaque vague de rioters
 	
@@ -44,8 +42,6 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		{
 			startTick = FlxG.game.ticks;
 			delayTicks = delayFirstSpawn;
-			//timerSpawn = new FlxTimer();
-			//timerSpawn.start(delayFirstSpawn, spawnCrowd, 1);
 		}
 		pourCentTimer = 0;
 		bar = Reg.level.UIBars.getFirstAvailable();
@@ -85,24 +81,7 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 			
 			startTick = FlxG.game.ticks;
 			delayTicks = delaySpawns;
-			//bar.setRange(0, delayTicks);
-			
-			/*if (timerSpawn != null)
-				timerSpawn.reset(delaySpawns);
-			
-			else
-			{
-				timerSpawn = new FlxTimer();
-				timerSpawn.start(delaySpawns, spawnCrowd, 1);
-			}*/
 		}
-		
-		/*else if (timerSpawn != null)
-		{
-			timerSpawn.cancel();
-			timerSpawn.destroy();
-			timerSpawn = null;
-		}*/
 	}
 	
 	public function spawnRioter (_num:Int):Void
@@ -110,31 +89,16 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 		var rioter : Rioter;
 		// spawn leader
 		rioter = Reg.level.crowds.getFirstAvailable();
-		rioter.setup(this.x, this.y, "assets/images/crowd_" + faction + ".png", faction, _num);
-		rioter.leaderId = Reg.currentLeaderID;
-		
-		
-		if (_num == 0) // leader
-		{
-			currentLeader = rioter;
-			rioter.health = crowdSize * 100;
+		rioter.setup(this.x, this.y, "assets/images/crowd_" + faction + ".png", faction);	
+		rioter.health = 10;
 			
-			// à finir
-			rioter.bar = Reg.level.UIBars.getFirstAvailable();
-			rioter.bar.revive();
-			rioter.bar.parent = rioter;
-			rioter.bar.parentVariable = "health";
-			rioter.bar.setRange(0, 400);
-			rioter.bar.x = rioter.x;
-			rioter.bar.y = rioter.y;	
-			//rioter.bar.visible = false;		
-		}
-		else //followers
-		{
-			rioter.leader = currentLeader;
-			currentLeader.followers.add(rioter);
-			rioter.setAlpha();
-		}
+		/*rioter.bar = Reg.level.UIBars.getFirstAvailable();
+		rioter.bar.revive();
+		rioter.bar.parent = rioter;
+		rioter.bar.parentVariable = "health";
+		rioter.bar.setRange(0, 400);
+		rioter.bar.x = rioter.x;
+		rioter.bar.y = rioter.y;	*/			
 		
 		for (_rioterStats in Reg.stats.elementsNamed("crowd"))
 		{		
@@ -155,10 +119,6 @@ class SpawnPoint extends FlxSprite // un seul objet graphique
 					}
 				}
 			}			
-		}
-		if (_num == crowdSize-1)
-		{
-			currentLeader = null;
 		}
 		rioter = null;
 	}

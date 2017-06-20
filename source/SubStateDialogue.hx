@@ -7,6 +7,8 @@ import flixel.util.FlxColor;
 import flixel.input.mouse.FlxMouseEventManager;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
+import flixel.FlxState;
+import flash.geom.Rectangle;
 
 class Answer
 {
@@ -21,7 +23,7 @@ class Answer
 	}
 }
 
-class SubStateDialogue extends FlxUIState
+class SubStateDialogue extends FlxSubState
 {
 	private var BG : FlxSprite;	
 	private var closeBtn:FlxButton;
@@ -40,7 +42,7 @@ class SubStateDialogue extends FlxUIState
 	private var answersPanel : Rectangle;
 	private var feedbackPanel : Rectangle;
 
-	private var qteButtons : Array<FlxButtons>;
+	private var qteButtons : Array<FlxButton>;
 	
 	public function setup(_p:Player, _r:Rioter):Void 
 	{		
