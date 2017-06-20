@@ -23,7 +23,6 @@ class Answer
 	}
 }
 
-<<<<<<< HEAD
 class Rectangle {
 	public var x : Float;
 	public var y : Float;
@@ -38,8 +37,6 @@ class Rectangle {
 	}
 }
 
-=======
->>>>>>> origin/master
 class SubStateDialogue extends FlxSubState
 {
 	private var BG : FlxSprite;	
@@ -61,11 +58,7 @@ class SubStateDialogue extends FlxSubState
 	private var answersPanel : Rectangle;
 	private var feedbackPanel : Rectangle;
 
-<<<<<<< HEAD
-	// private var qteButtons : Array<FlxButton>;
-=======
 	private var qteButtons : Array<FlxButton>;
->>>>>>> origin/master
 	
 	public function setup(_p:Player, _r:Rioter):Void 
 	{		
