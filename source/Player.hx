@@ -40,15 +40,12 @@ class Player extends FlxSprite
 	
 	public function getCrowd(_r:Rioter):Void
 	{
-		leader = _r;
-		leader.isPlayer = true;
-
 		haveCrowd = true;
 	}
 	
 	public function loseCrowd():Void
 	{
-		leader.isPlayer = false;
+		haveCrowd = false;
 	}
 	
 	override function update(elapsed:Float):Void
@@ -131,9 +128,20 @@ class Player extends FlxSprite
 			if (_btn != null)
 			{
 				_btn.revive();
+				_btn.active = true;
 				_btn.setPosition(pos.x * Reg.TILE_SIZE, pos.y * Reg.TILE_SIZE);
 				_btn.scrollFactor.set(1, 1);
 			}
+		}
+	}
+	
+	private function killButtons() : Void
+	{		
+		for (_btn in Reg.level.buildingButtons)
+		{
+			_btn.active = false;
+			_btn.kill();
+			Reg.level.UI.menuBuildings.kill();
 		}
 	}
 	
@@ -166,10 +174,11 @@ class Player extends FlxSprite
 			
 			// remove menu construction building
 			Reg.level.buildingButtons.forEachAlive(function(_bt:FlxButton){_bt.kill(); });				
-			//UI.menuBuildings.kill();
+			Reg.level.UI.menuBuildings.kill();
 				
 			isMoving = true;
 			
+			killButtons();
 			
 			/*this.path = new FlxPath(currentPath);
 			this.path.start();*/

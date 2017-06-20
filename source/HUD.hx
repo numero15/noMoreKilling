@@ -17,7 +17,7 @@ class HUD extends FlxGroup
 {
 	
 	public var buildings : FlxTypedGroup<BuildingDroppable>;
-	public var menuBuildings : FlxGroup;
+	public var menuBuildings : MenuBuildings;
 	public var BG : FlxSprite;
 	private var miniMap : FlxSprite;
 	private var buildingsStats: Xml;
@@ -34,9 +34,9 @@ class HUD extends FlxGroup
 		
 		buildingsStats = Xml.parse(sys.io.File.getContent("assets/data/data.xml")).firstChild();		
 		
-		menuBuildings = new FlxGroup();
-		menuBuildings.add(new BuildingDroppable(0, 0, "garage"));
-		menuBuildings.members[0].cameras = [FlxG.cameras.list[0]];
+		menuBuildings = new MenuBuildings();
+		/*menuBuildings.add(new BuildingDroppable(0, 0, "garage"));
+		menuBuildings.members[0].cameras = [FlxG.cameras.list[0]];*/
 		
 		BG = new FlxSprite();
 		BG.makeGraphic(480, 64);
@@ -55,6 +55,7 @@ class HUD extends FlxGroup
 		btn_pause.loadGraphic ("assets/images/btn_pause.png");
 		
 		buildings = new  FlxTypedGroup<BuildingDroppable>();
+		
 		
 		var i : Int = 0;
 		var _b : BuildingDroppable;
@@ -94,6 +95,8 @@ class HUD extends FlxGroup
 		//add(buildings);
 		add(miniMap);
 		add(btn_pause);
+		
+		buildings.kill();
 	}
 	
 	public function getMiniMap(?wallColor:Int = 0x00000000, ?openColor:Int = 0xFF909090):FlxSprite
@@ -114,13 +117,13 @@ class HUD extends FlxGroup
 		return minimap;
 	}
 	
-	private function setAffordables():Void
+/*	private function setAffordables():Void
 	{
 		for (_b in buildings)
 		{
 			_b.setAffordable();
 		}
-	}
+	}*/
 	
 	public function openBuildingMenu(_b : FlxButton):Void
 	{
@@ -128,8 +131,14 @@ class HUD extends FlxGroup
 		_pos.x = Std.int(_pos.x / Reg.TILE_SIZE * Reg.TILE_SIZE) + Reg.TILE_SIZE / 2;
 		_pos.y = Std.int(_pos.y / Reg.TILE_SIZE * Reg.TILE_SIZE) + Reg.TILE_SIZE;
 		
-		cast(menuBuildings.members[0], BuildingDroppable).set("bar");
-		cast(menuBuildings.members[0], BuildingDroppable).setPosition(_pos.x, _pos.y);
+		_b.active = false;
+		_b.kill();
+		
+		if (menuBuildings.alive == false)
+			menuBuildings.customRevive(_pos,_b);
+		
+		//cast(menuBuildings.members[0], BuildingDroppable).set("bar");
+		//cast(menuBuildings.members[0], BuildingDroppable).setPosition(_pos.x, _pos.y);
 	}
 	
 	override function update(elapsed:Float):Void
@@ -139,9 +148,9 @@ class HUD extends FlxGroup
 		moneyText.text = Std.string(Reg.money +" §");
 		moneyText.x = (FlxG.width - moneyText.width) / 2;
 		
-		if (prevMoney != Reg.money)
+		/*if (prevMoney != Reg.money)
 		setAffordables();
-		
+		*/
 		/*for (i in 0...Reg.level.foregroundTiles.totalTiles) {
 			if (!Reg.level.foregroundTiles.overlapsPoint(FlxPoint.get(i % Reg.level.foregroundTiles.widthInTiles * 16, i / Reg.level.foregroundTiles.widthInTiles * 16))) miniMap.pixels.setPixel(i % Reg.level.foregroundTiles.widthInTiles, Math.floor(i / Reg.level.foregroundTiles.widthInTiles), 0xFF909090);
 		}

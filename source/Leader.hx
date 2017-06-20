@@ -7,7 +7,7 @@ import flixel.util.FlxPath;
 import flixel.FlxG;
 import flixel.FlxObject;
 
-class Rioter extends BasicRioter // un seul objet graphique
+class Leader extends BasicRioter // un seul objet graphique
 {
 	
 	public function new()

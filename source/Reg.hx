@@ -19,4 +19,5 @@ class Reg
 	
 	public static var money : Int;
 	public static var currentLeaderID : Int;
+	public static var buildingsAvailables : Array<String>;
 }
