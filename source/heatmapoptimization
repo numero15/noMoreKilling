@@ -1,0 +1,76 @@
+class HeatmapTile {
+
+    public value:Int;
+    public initialValue:Int;
+    public check:Bool;
+    public neighbors:Array<HeatMapTile>;
+
+    increase(by:Int) {
+        checked = true;
+        if(by > 9) return;
+
+        value = Max(initialValue+by, value);
+    
+        for(i in 0...neighbors.length) {
+            if(!neighbors[i].checked)
+                neighbors[i].increase(by + 1);
+        }
+    }
+
+    reset() {
+        value = initialValue;
+    }
+}
+
+class Heatmap {
+    HeatmapTile[][] tiles;
+
+    function setup() {
+        for(i in 0...10) {
+            for(j in 0...10) {
+                tiles[i][j].neighbors = ...
+                tiles[i][j].checked = false;
+                tiles[i][j].initialValue = ...
+            }
+        }
+    }
+
+    function increaseAtForFaction(i:Int, j:Int) {
+        reset();
+
+        //For each leader
+        tiles[i][j].increase(0);
+    }
+
+    function reset() {
+        for(i in 0...10) {
+            for(j in 0...10) {
+                tiles[i][j].reset();
+                tiles[i][j].checked = false;
+            }
+        }
+    }
+}
+
+
+
+
+class DensityMapTile {
+    public people:Array<Rioter>
+
+    function new() {
+        people = new Array<Rioter>();
+    }
+
+    public function density() {
+        return people.length;
+    }
+
+    public function add(rioter:Rioter) {
+        people.push(rioter);
+    }
+
+    public function pop(rioter:Rioter) {
+        people.pop(rioter);
+    }
+}
